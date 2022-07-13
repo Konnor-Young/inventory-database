@@ -10,5 +10,13 @@ const cardSchema = mongoose.Schema({
 const orderSchema = mongoose.Schema({
     number: { type: Number },
     price: { type: mongoose.Types.Decimal128},
-    direct: { type: String}
-})
+    direct: { type: Boolean}
+});
+
+const Card = mongoose.model("Card", cardSchema);
+const Order = mongoose.model("Order", orderSchema);
+
+module.exports = {
+    Card,
+    Order,
+}
