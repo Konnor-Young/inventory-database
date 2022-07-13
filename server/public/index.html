@@ -51,8 +51,9 @@
           </nav>
           <!-- Inventory Page -->
           <div id="view-inventory" v-if="currentPage == 'Inventory'">
+            <button @click="getCards()">Get Cards</button>
             View inventory
-            <div v-for="card in inventory">{{ card }}</div>
+            <!-- <div v-for="card in inventory">{{ card }}</div> -->
           </div>
 
           <!-- Add Card Page -->
@@ -71,8 +72,10 @@
 
           <!--View Orders -->
           <div id="view-orders" v-if="currentPage == 'View Orders'">
+            <button @click="getOrders">Get Orders</button>
             View Orders
-            <div v-for="order in orders">{{ orders }}</div>
+
+            <!-- <div v-for="order in orders">{{ orders }}</div> -->
           </div>
 
           <!-- Add Order Page -->
