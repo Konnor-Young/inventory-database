@@ -1,6 +1,7 @@
 const express = require(`express`);
 const app = express();
 const cors = require(`cors`);
+const { Card, Order } = require(`../persist/model`);
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public/`));
