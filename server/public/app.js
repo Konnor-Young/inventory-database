@@ -24,8 +24,8 @@ new Vue({
                 credentials: "include"
             });
 
-            // let data = await response.json();
-            // console.log(data);
+            let data = await response.json();
+            console.log(data);
             console.log(this.cardList);
         },
         getOrders: async function () {
@@ -34,8 +34,8 @@ new Vue({
                 credentials: "include"
             });
 
-            // let data = await response.json();
-            // console.log(data);
+            let data = await response.json();
+            console.log(data);
             console.log(this.orderList);
         },
     },

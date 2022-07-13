@@ -18,9 +18,7 @@
           <button :disabled="currentPage == 'Add Order'" @click="currentPage = 'Add Order'">Add Order</button>
         </nav>
         <!-- Inventory Page -->
-        <div id="view-inventory" v-if="currentPage == 'Inventory'">View inventory
-          <button @click="getCards()">Get Cards</button>
-        </div>
+        <div id="view-inventory" v-if="currentPage == 'Inventory'">View inventory</div>
 
         <!-- Add Card Page -->
         <div id="add-card" v-if="currentPage == 'Add Card'">
@@ -30,9 +28,7 @@
         </div>
         
         <!--View Orders -->
-        <div id="view-orders" v-if="currentPage == 'View Orders'">View Orders
-          <button @click="getOrders()"><h1>Get orders</h1></button>
-        </div>
+        <div id="view-orders" v-if="currentPage == 'View Orders'">View Orders</div>
           
         
 
