@@ -14,29 +14,26 @@
         <nav>
           <button :disabled="currentPage == 'Inventory'" @click="currentPage = 'Inventory'">Inventory</button>
           <button :disabled="currentPage == 'Add Card'" @click="currentPage = 'Add Card'">Add Card</button>
-          <button :disabled="currentPage == 'View Orders'" @click="currentPage = 'View Orders">View Orders</button>
+          <button :disabled="currentPage == 'View Orders'" @click="currentPage = 'View Orders'">View Orders</button>
           <button :disabled="currentPage == 'Add Order'" @click="currentPage = 'Add Order'">Add Order</button>
         </nav>
         <!-- Inventory Page -->
-        <div id="view-inventory" v-if="currentPage == 'Inventory'">
-          <h1>View inventory</h1>
-          <button></button>
-        </div>
+        <div id="view-inventory" v-if="currentPage == 'Inventory'">View inventory</div>
 
         <!-- Add Card Page -->
-        <div id="add-card" v-if="currentPage == 'Add Card'">Add Card
+        <div id="add-card" v-if="currentPage == 'Add Card'">
           <div class=search-card v-if="addCardSubPage == 'searchCard'">Search Card</div>
           <div class="add-to-pile" v-if="addCardSubPage == 'addToPile'">Add To Pile</div>
           <div class="pile" v-if="addCardSubPage == 'pile'">Pile</div>
         </div>
         
         <!--View Orders -->
-        <div id="view-orders" v-if="currentPage == 'Current Orders'"></div>
-          <button></button>
-        </div>
+        <div id="view-orders" v-if="currentPage == 'View Orders'">View Orders</div>
+          
+        
 
         <!-- Add Order Page -->
-        <div id="add-orders" v-if="currentPage == 'Add an Order'">
+        <div id="add-orders" v-if="currentPage == 'Add Order'">
           <div class=search-card v-if="addOrderSubPage == 'searchCard'">Search Card</div>
           <div class="add-to-pile" v-if="addOrderSubPage == 'addToPile'">Add To Pile</div>
           <div class="pile" v-if="addOrderSubPage == 'pile'">Pile</div>
