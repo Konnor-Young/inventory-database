@@ -19,7 +19,7 @@ app.get("/cards", async (req, res)=>{
 app.get("/orders", async (req, res)=>{
     let orderList;
     try {
-        orderList = await orderList.find({});
+        orderList = await Order.find({});
     } catch (err) {
         console.log(`could not find orders`, err);
         res.status(500).json({message: `orders not found`, err: err});
