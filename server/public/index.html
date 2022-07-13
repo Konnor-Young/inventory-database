@@ -11,6 +11,9 @@
     <v-app>
       <v-main>
         <h1>{{ currentPage }}</h1>
+        <nav>
+          <button
+        </nav>
         <!-- Inventory Page -->
         <div id="view-inventory" v-if="viewInventory && !addCard && !addOrders && !viewOrders">
           <h1>View inventory</h1>
@@ -18,28 +21,22 @@
         </div>
 
         <!-- Add Card Page -->
-        <div id="add-card" v-if="currentPage == 'addCard'">Add Card
+        <div id="add-card" v-if="currentPage == 'Add Card'">Add Card
           <div class=search-card v-if="addCardSubpage == 'searchCard'">Search Card</div>
           <div class="add-to-pile" v-if="addCardSubpage == 'addToPile'">Add To Pile</div>
           <div class="pile" v-if="addCardSubpage == 'pile'">Pile</div>
         </div>
         
-        <!-- View Order Page -->
-        <div id="view-orders" v-if="viewOrders && !viewInventory && !addCard && !addOrders">
-          <h1>View Orders</h1>
+        <!--View Orders -->
+        <div id="view-orders" v-if="currentPage == 'Current Orders'"></div>
+          <button></button>
         </div>
 
         <!-- Add Order Page -->
         <div id="add-orders" v-if="addOrders && !viewInventory && !addCard && !viewOrders">
-          <div class=search-card v-if="addOrders && searchCard && !addToPile && !pile">
-            <h1>Search Card</h1>
-          </div>
-          <div class="add-to-pile" v-if="addOrders && addToPile && !searchCard && !pile">
-            <h1>Add To Pile<h1>
-          </div>
-          <div class="pile" v-if="addOrders && pile && !addToPile && !searchCard">
-            <h1>Pile</h1>
-          </div>
+          <div class=search-card v-if="addOrders && searchCard && !addToPile && !pile">Search Card</div>
+          <div class="add-to-pile" v-if="addOrders && addToPile && !searchCard && !pile">Add To Pile</div>
+          <div class="pile" v-if="addOrders && pile && !addToPile && !searchCard">Pile</div>
         </div>
         
         

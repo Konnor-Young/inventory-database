@@ -5,7 +5,7 @@ new Vue({
     vuetify: new Vuetify(),
     data: {
         message: "HI WORLD",
-        currentPage: "viewInventory",
+        currentPage: "View Inventory",
         addCardSubPage: "searchCard",
         addOrderSubPage: "searchCard",
         // viewInventory: false,
@@ -15,7 +15,6 @@ new Vue({
         // addToPile: false,
         // pile: false,
     },
-
     methods: {
         goToViewInventory: function () {
             this
@@ -24,5 +23,5 @@ new Vue({
         goToAddCard: function () {
             this.addCard = true;
         },
-    }
+    },
 });
