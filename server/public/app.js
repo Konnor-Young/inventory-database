@@ -1,4 +1,4 @@
-
+const URL = "http://localhost:8080"
 
 new Vue({
     el: '#app',
@@ -8,6 +8,8 @@ new Vue({
         currentPage: "Inventory",
         addCardSubPage: "searchCard",
         addOrderSubPage: "searchCard",
+        cardList: ["test", "Test"],
+        orderList: ["order1", "order2"],
         // viewInventory: false,
         // viewOrders: false,
         // addCard: false,
@@ -16,5 +18,25 @@ new Vue({
         // pile: false,
     },
     methods: {
+        getCards: async function () {
+            let response = await fetch(`${URL}/cards`, {
+                method: "GET",
+                credentials: "include"
+            });
+
+            // let data = await response.json();
+            // console.log(data);
+            console.log(this.cardList);
+        },
+        getOrders: async function () {
+            let response = await fetch(`${URL}/orders`, {
+                method: "GET",
+                credentials: "include"
+            });
+
+            // let data = await response.json();
+            // console.log(data);
+            console.log(this.orderList);
+        },
     },
 });
