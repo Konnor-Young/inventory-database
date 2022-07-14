@@ -28,7 +28,7 @@ var app = new Vue({
             console.log(response.status);
             console.log(data);
         },
-        getCard: async function () {
+        getCards: async function () {
             let response = await fetch(`${URL}/cards`, {
                 method: 'GET',
                 credentials: "include",
@@ -64,7 +64,9 @@ var app = new Vue({
                 credentials: 'include',
             });
             let data = await response.json();
-            if (response.status == 200) {
+            console.log(response.status);
+            console.log(data);
+            if (response.status == 201) {
                 this.getOrders();
             }
         },
