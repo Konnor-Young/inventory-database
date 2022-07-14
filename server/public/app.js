@@ -1,3 +1,5 @@
+const { response } = require("express");
+
 const URL = 'http://localhost:8080';
 // vuetify: new Vuetify(),
 var app = new Vue({
@@ -54,14 +56,14 @@ var app = new Vue({
                 price: this.orderPrice,
                 direct: this.directStatus,
             };
-        this.postOrder(newOrder);
+            this.postOrder(newOrder);
         },
         postOrder: async function (order) {
             let response = await fetch(`${URL}/orders`, {
                 method: 'POST',
                 body: JSON.stringify(order),
                 headers: {
-                'content-type': 'application/json',
+                    'content-type': 'application/json',
                 },
                 credentials: 'include',
             });
@@ -89,9 +91,31 @@ var app = new Vue({
                 this.getCards();
             }
         },
+        patchCard: async function (update, card_id) {
+            let response = await fetch(`${URL}/cards/card_id`, {
+                method: "PATCH",
+                body: JSON.stringify(update),
+                headers: {
+                    "Content Type": "application/json"
+                },
+                credentials: "include"
+            });
+            let data = await response.json();
+            console.log(response.status);
+            console.log(data);
+            if (response.status == 201) {
+                this.getCards()
+            }
+        },
+        updateCard: function (card_id) {
+            let updatedCard = {
+                condition: this.cardConditionInput
+            }
+            this.patchCard(updatedCard, card_id);
+        },
     },
     created: function () {
-      this.getCards();
-      this.getOrders();
+        this.getCards();
+        this.getOrders();
     },
 });
