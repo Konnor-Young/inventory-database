@@ -145,7 +145,7 @@ var app = new Vue({
                 this.getOrders();
             }
         },
-        deleteCards: async function (card_id) {
+        deleteCard: async function (card_id) {
             let response = await fetch(`${URL}/cards/${card_id}`, {
                 method: 'DELETE',
                 credentials: 'include',
@@ -153,8 +153,8 @@ var app = new Vue({
             let data = await response.json();
             console.log(response.status);
             console.log(data);
-            if (response == 200) {
-                this.getOrders();
+            if (response.status == 200) {
+                this.getCards();
             }
         },
     },

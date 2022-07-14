@@ -90,16 +90,16 @@ app.patch("/orders/:id", async (req, res)=>{
 app.delete(`/cards/:id`, async (req, res)=>{
     let card;
     try{
-        card = Card.findByIdAndDelete(req.params.id);
+        card = await Card.findByIdAndDelete(req.params.id);
         if(!card){
             res.status(404).json({message: `card not found`});
             return;
         }
+        res.status(200).json(card);
     }catch(err){
         console.log(`could not delete`, err);
         res.status(500).json({message: `could not delete`, err: err});
     }
-    res.status(200).json(card);
 });
 
 module.exports = {

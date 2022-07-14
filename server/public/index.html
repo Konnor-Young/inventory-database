@@ -92,7 +92,7 @@
                 Price: ${{ order.price.$numberDecimal }}
                 <button @click="editOrder(order, index)">Update Order</button>
                 <div v-if="updatingOrder == index">
-                  Order Number: <input placeholder="orderNumber" v-model="orderNumber">
+                  Order Number: <input v-model="orderNumber">
                   <button @click="updateOrder(order._id)">Submit Update</button>
                 </div>
             </div>
