@@ -31,6 +31,17 @@
             <div v-for="card in cardList">
               <h1>Name: </h1>{{ card.name }}
               Condition: {{ card.condition }}
+              <button @click="updatingCard = true">Update Card</button>
+                <div v-if="updatingCard">
+                  <label for="condition">Condition:</label>
+                  <select name="condition" v-model="cardConditionInput">
+                    <option value="nm">nm</option>
+                    <option value="lp">lp</option>
+                    <option value="mp">mp</option>
+                    <option value="hp">hp</option>
+                  </select>
+                  <button @click="updateCard(card._id)">Submit Update</button>
+                </div>
             </div>
           </div>
 
@@ -67,6 +78,11 @@
             <div v-for="order in orderList">
                 Order Number: {{ order.number }}
                 Price: ${{ order.price.$numberDecimal }}
+                <button @click="updatingOrder = true">Update Order</button>
+                <div v-if="updatingOrder">
+                  Order Number: <input placeholder="currentOrder" v-model="orderNumber">
+                  <button @click="updateOrder(order._id)">Submit Update</button>
+                </div>
             </div>
           </div>
 

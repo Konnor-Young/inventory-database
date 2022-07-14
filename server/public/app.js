@@ -7,6 +7,8 @@ var app = new Vue({
         currentPage: "Inventory",
         addCardSubPage: "searchCard",
         addOrderSubPage: "searchCard",
+        updatingOrder: false,
+        updatingCard: false,
         cardList: [],
         orderList: [],
         cardNameInput: "",
