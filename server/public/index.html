@@ -43,6 +43,7 @@
               <h1>Name: </h1>{{ card.name }}
               Condition: {{ card.condition }}
               <button @click="editCard(card, index)">Update Card</button>
+              <button @click="deleteCard(card._id)">Remove Card</button>
                 <div v-if="updatingCard == index">
                   <label for="condition">Condition:</label>
                   <select name="condition" v-model="cardConditionInput">
