@@ -1,5 +1,3 @@
-const { response } = require("express");
-
 const URL = "http://localhost:8080"
 // vuetify: new Vuetify(),
 var app = new Vue({
@@ -51,7 +49,7 @@ var app = new Vue({
             let data = await response.json();
             console.log(response.status);
             console.log(data);
-            if (response.status == 200) {
+            if (response.status == 201) {
                 this.getCards();
             }
         },
