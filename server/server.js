@@ -53,6 +53,42 @@ app.post("/orders", async (req, res)=>{
         res.status(500).json({message: `could not create`, err: err});
     }
 });
+app.patch("/cards/:id", async (req, res)=>{
+
+    let card;
+    try {
+        card = await Card.findByIdAndUpdate(req.params.id, req.body, {new: true});
+        if (!card) {
+            res.status(404).json({
+              message: "Card Not Found!",
+            });
+            return;
+        } else {
+            res.status(201).json(card);
+        }
+    } catch (err) {
+        console.log(`could not find`, err);
+        res.status(500).json({message: `could not create`, err: err});
+    }
+});
+app.patch("/orders/:id", async (req, res)=>{
+
+    let order;
+    try {
+        order = await Order.findByIdAndUpdate(req.params.id, req.body, {new: true});
+        if (!order) {
+            res.status(404).json({
+              message: "Order Not Found!",
+            });
+            return;
+        } else {
+            res.status(201).json(order);
+        }
+    } catch (err) {
+        console.log(`could not find`, err);
+        res.status(500).json({message: `could not create`, err: err});
+    }
+});
 
 module.exports = {
     server: app
