@@ -56,7 +56,7 @@
             View Orders
             <div v-for="order in orderList">
                 Order Number: {{ order.number }}
-                Price: ${{ order.price }}
+                Price: ${{ order.price.$numberDecimal }}
             </div>
           </div>
 
