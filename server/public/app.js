@@ -1,5 +1,3 @@
-const { json } = require('express/lib/response');
-
 const URL = 'http://localhost:8080';
 // vuetify: new Vuetify(),
 var app = new Vue({
@@ -75,6 +73,18 @@ var app = new Vue({
         headers: {
           'content-type': 'application/json',
         },
+        credentials: include,
+      });
+      let data = await response.json();
+      console.log(response.status);
+      console.log(data);
+      if (response == 201) {
+        this.getOrders();
+      }
+    },
+    deleteCards: async function (card_id) {
+      let response = await fetch(`${URL}/orders/card_id`, {
+        method: 'DELETE',
         credentials: include,
       });
       let data = await response.json();
