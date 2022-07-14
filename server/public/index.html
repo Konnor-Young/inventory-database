@@ -28,11 +28,11 @@
           <!-- Inventory Page -->
           <div id="view-inventory" v-if="currentPage == 'Inventory'">
             View inventory
-            <div v-for="card in cardList">
+            <div v-for="card, index in cardList">
               <h1>Name: </h1>{{ card.name }}
               Condition: {{ card.condition }}
-              <button @click="updatingCard = true">Update Card</button>
-                <div v-if="updatingCard">
+              <button @click="editCard(card, index)">Update Card</button>
+                <div v-if="updatingCard == index">
                   <label for="condition">Condition:</label>
                   <select name="condition" v-model="cardConditionInput">
                     <option value="nm">nm</option>
@@ -75,12 +75,12 @@
           <!--View Orders -->
           <div id="view-orders" v-if="currentPage == 'View Orders'">
             View Orders
-            <div v-for="order in orderList">
+            <div v-for="order, index in orderList">
                 Order Number: {{ order.number }}
                 Price: ${{ order.price.$numberDecimal }}
-                <button @click="updatingOrder = true">Update Order</button>
-                <div v-if="updatingOrder">
-                  Order Number: <input placeholder="currentOrder" v-model="orderNumber">
+                <button @click="editOrder(order, index)">Update Order</button>
+                <div v-if="updatingOrder == index">
+                  Order Number: <input placeholder="orderNumber" v-model="orderNumber">
                   <button @click="updateOrder(order._id)">Submit Update</button>
                 </div>
             </div>

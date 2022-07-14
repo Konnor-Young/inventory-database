@@ -8,8 +8,10 @@ var app = new Vue({
         currentPage: "Inventory",
         addCardSubPage: "searchCard",
         addOrderSubPage: "searchCard",
-        updatingOrder: false,
-        updatingCard: false,
+        updatingOrder: -1,
+        updatingCard: -1,
+        currentOrder: {},
+        currentCard: {},
         cardList: [],
         orderList: [],
         cardNameInput: "",
@@ -36,10 +38,18 @@ var app = new Vue({
             };
             this.postOrder(newOrder);
         },
+        editOrder: function (order, order_index) {
+            this.updatingOrder = order_index;
+            this.currentOrder = order;
+        },
+        editCard: function (card, card_index){
+            this.updatingCard = card_index;
+            this.currentCard = card;
+        },
         updateCard: function (card_id) {
             let updatedCard = {
                 condition: this.cardConditionInput
-            }
+            };
             this.patchCard(updatedCard, card_id);
         },
         updateOrder: function (order_id) {
@@ -57,6 +67,7 @@ var app = new Vue({
             this.orderList = data;
             console.log(response.status);
             console.log(data);
+            this.updatingOrder = -1;
         },
         getCards: async function () {
             let response = await fetch(`${URL}/cards`, {
@@ -67,6 +78,7 @@ var app = new Vue({
             this.cardList = data
             console.log(response.status);
             console.log(data);
+            this.updatingCard = -1;
         },
         postOrder: async function (order) {
             let response = await fetch(`${URL}/orders`, {
@@ -106,7 +118,7 @@ var app = new Vue({
                 method: "PATCH",
                 body: JSON.stringify(update),
                 headers: {
-                    "Content Type": "application/json"
+                    "Content-Type": "application/json"
                 },
                 credentials: "include"
             });
@@ -117,22 +129,22 @@ var app = new Vue({
                 this.getCards()
             }
         },
-    },
-    patchOrder: async function (update, order_id) {
-        let response = await fetch(`${URL}/orders/${order_id}`, {
-            method: 'PATCH',
-            body: json.stringify(update),
-            headers: {
-            'content-type': 'application/json',
-            },
-            credentials: include,
-        });
-        let data = await response.json();
-        console.log(response.status);
-        console.log(data);
-        if (response == 201) {
-            this.getOrders();
-        }
+        patchOrder: async function (update, order_id) {
+            let response = await fetch(`${URL}/orders/${order_id}`, {
+                method: 'PATCH',
+                body: JSON.stringify(update),
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            });
+            let data = await response.json();
+            console.log(response.status);
+            console.log(data);
+            if (response.status == 201) {
+                this.getOrders();
+            }
+        },
     },
     created: function () {
         this.getCards();
