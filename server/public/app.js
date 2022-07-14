@@ -54,6 +54,15 @@ var app = new Vue({
             if (response.status == 200) {
                 this.getCards();
             }
+        },
+        newCard: function () {
+            let newCard = {
+                name: this.cardNameInput,
+                condition: this.cardConditionInput,
+                price: this.cardPriceInput
+            }
+            console.log(newCard);
+            this.postCards(newCard);
         }
     },
     created: function () {
