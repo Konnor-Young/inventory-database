@@ -54,7 +54,6 @@ app.post("/orders", async (req, res)=>{
     }
 });
 app.patch("/cards/:id", async (req, res)=>{
-
     let card;
     try {
         card = await Card.findByIdAndUpdate(req.params.id, req.body, {new: true});
@@ -72,7 +71,6 @@ app.patch("/cards/:id", async (req, res)=>{
     }
 });
 app.patch("/orders/:id", async (req, res)=>{
-
     let order;
     try {
         order = await Order.findByIdAndUpdate(req.params.id, req.body, {new: true});
@@ -88,6 +86,20 @@ app.patch("/orders/:id", async (req, res)=>{
         console.log(`could not find`, err);
         res.status(500).json({message: `could not create`, err: err});
     }
+});
+app.delete(`/cards/:id`, async (req, res)=>{
+    let card;
+    try{
+        card = Card.findByIdAndDelete(req.params.id);
+        if(!card){
+            res.status(404).json({message: `card not found`});
+            return;
+        }
+    }catch(err){
+        console.log(`could not delete`, err);
+        res.status(500).json({message: `could not delete`, err: err});
+    }
+    res.status(200).json(card);
 });
 
 module.exports = {
