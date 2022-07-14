@@ -1,45 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css"
-      rel="stylesheet"
-    />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"/>
   </head>
   <body>
     <div id="app">
-      <v-app>
-        <v-main>
+      <!-- <v-app>
+        <v-main> -->
           <h1>{{ currentPage }}</h1>
           <nav>
-            <button
-              :disabled="currentPage == 'Inventory'"
-              @click="currentPage = 'Inventory'"
-            >
+            <button :disabled="currentPage == 'Inventory'" @click="currentPage = 'Inventory'">
               Inventory
             </button>
-            <button
-              :disabled="currentPage == 'Add Card'"
-              @click="currentPage = 'Add Card'"
-            >
+            <button :disabled="currentPage == 'Add Card'" @click="currentPage = 'Add Card'">
               Add Card
             </button>
-            <button
-              :disabled="currentPage == 'View Orders'"
-              @click="currentPage = 'View Orders'"
-            >
+            <button :disabled="currentPage == 'View Orders'" @click="currentPage = 'View Orders'">
               View Orders
             </button>
             <button
@@ -52,7 +31,10 @@
           <!-- Inventory Page -->
           <div id="view-inventory" v-if="currentPage == 'Inventory'">
             View inventory
-            <div v-for="card in inventory">{{ card }}</div>
+            <div v-for="card in cardList">
+              <h1>Name: </h1>{{ card.name }}
+              Condition: {{ card.condition }}
+            </div>
           </div>
 
           <!-- Add Card Page -->
@@ -65,14 +47,17 @@
             </div>
             <div class="pile" v-if="addCardSubPage == 'pile'">
               Pile
-              <div v-for="cards in pile">{{ cards }}</div>
+              <!-- <div v-for="cards in pile">{{ cards }}</div> -->
             </div>
           </div>
 
           <!--View Orders -->
           <div id="view-orders" v-if="currentPage == 'View Orders'">
             View Orders
-            <div v-for="order in orders">{{ orders }}</div>
+            <div v-for="order in orderList">
+                Order Number: {{ order.number }}
+                Price: ${{ order.price }}
+            </div>
           </div>
 
           <!-- Add Order Page -->
@@ -90,8 +75,8 @@
           </div>
 
           <!-- <v-container>Hello world</v-container> -->
-        </v-main>
-      </v-app>
+        <!-- </v-main>
+      </v-app> -->
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>

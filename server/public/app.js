@@ -1,21 +1,14 @@
 const URL = "http://localhost:8080"
-
-new Vue({
+// vuetify: new Vuetify(),
+var app = new Vue({
     el: '#app',
-    vuetify: new Vuetify(),
     data: {
         message: "HI WORLD",
         currentPage: "Inventory",
         addCardSubPage: "searchCard",
         addOrderSubPage: "searchCard",
-        cardList: ["test", "Test"],
-        orderList: ["order1", "order2"],
-        // viewInventory: false,
-        // viewOrders: false,
-        // addCard: false,
-        // searchCard: false,
-        // addToPile: false,
-        // pile: false,
+        cardList: [],
+        orderList: [],
     },
     methods: {
         getCards: async function () {
@@ -25,6 +18,7 @@ new Vue({
             });
 
             let data = await response.json();
+            this.cardList = data;
             console.log(data);
             console.log(this.cardList);
         },
@@ -35,8 +29,13 @@ new Vue({
             });
 
             let data = await response.json();
+            this.orderList = data;
             console.log(data);
             console.log(this.orderList);
         },
+    },
+    created: function () {
+        this.getCards();
+        this.getOrders();
     },
 });
