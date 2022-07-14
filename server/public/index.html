@@ -36,6 +36,9 @@
 
           <!-- Add Card Page -->
           <div id="add-card" v-if="currentPage == 'Add Card'">
+            <button @click="addCardSubPage = searchCard" :disabled="addCardSubPage == searchCard">search a card</button>
+            <button @click="addCardSubPage = addToPile" :disabled="addCardSubPage == addToPile">confirm add</button>
+            <button @click="addCardSubPage = pile" :disabled="addCardSubPage == pile">my pile</button>
             <div class="search-card" v-if="addCardSubPage == 'searchCard'">
               Search Card
             </div>
@@ -45,6 +48,16 @@
             <div class="pile" v-if="addCardSubPage == 'pile'">
               Pile
               <!-- <div v-for="cards in pile">{{ cards }}</div> -->
+              Name: <input v-model="cardNameInput" type="text">
+              Price: $<input v-model="cardPriceInput" type="text">
+              <label for="condition">Condition:</label>
+              <select name="condition" v-model="cardConditionInput">
+                <option value="nm">nm</option>
+                <option value="lp">lp</option>
+                <option value="mp">mp</option>
+                <option value="hp">hp</option>
+              </select>
+              <button @click="newCard()">Add to Inventory</button>
             </div>
           </div>
 
@@ -59,6 +72,9 @@
 
           <!-- Add Order Page -->
           <div id="add-orders" v-if="currentPage == 'Add Order'">
+            <button @click="addOrderSubPage = searchCard" :disabled="addOrderSubPage == searchCard">search an order</button>
+            <button @click="addOrderSubPage = addToPile" :disabled="addOrderSubPage == addToPile">confirm add</button>
+            <button @click="addOrderSubPage = pile" :disabled="addOrderSubPage == pile">my pile</button>
             <div class="search-card" v-if="addOrderSubPage == 'searchCard'">
               Search Card
             </div>
@@ -67,7 +83,11 @@
             </div>
             <div class="pile" v-if="addOrderSubPage == 'pile'">
               Pile
-              <div v-for="card in orders">{{ orderCard }}</div>
+              <!-- <div v-for="card in orders">{{ orderCard }}</div> -->
+              Order Number: <input v-model="orderNumber" type="text">
+              Total Price: $<input v-model="orderPrice" type="text">
+              Direct? <input type="checkbox" v-model="directStatus">
+              <button @click="newOrder()">Add to Inventory</button>
             </div>
           </div>
 
