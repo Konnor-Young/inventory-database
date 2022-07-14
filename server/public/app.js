@@ -1,4 +1,4 @@
-const URL = "http://localhost:8080"
+const URL = 'http://localhost:8080';
 // vuetify: new Vuetify(),
 var app = new Vue({
     el: '#app',
@@ -12,29 +12,61 @@ var app = new Vue({
         cardNameInput: "",
         cardPriceInput: "",
         cardConditionInput: "",
+        orderNumber: 0,
+        orderPrice: '',
+        directStatus: false,
     },
     methods: {
-        getCards: async function () {
-            let response = await fetch(`${URL}/cards`, {
-                method: "GET",
-                credentials: "include"
-            });
-
-            let data = await response.json();
-            this.cardList = data;
-            console.log(data);
-            console.log(this.cardList);
-        },
         getOrders: async function () {
             let response = await fetch(`${URL}/orders`, {
-                method: "GET",
-                credentials: "include"
+                method: 'GET',
+                credentials: 'include',
             });
 
             let data = await response.json();
             this.orderList = data;
+            console.log(response.status);
             console.log(data);
-            console.log(this.orderList);
+        },
+        getCard: async function () {
+            let response = await fetch(`${URL}/cards`, {
+                method: 'GET',
+                credentials: "include",
+            });
+            let data = await response.json();
+            this.cardList = data
+            console.log(response.status);
+            console.log(data);
+        },
+        newCard: function () {
+            let newCard = {
+                name: this.cardNameInput,
+                condition: this.cardConditionInput,
+                price: this.cardPriceInput
+            };
+            this.postCards(newCard);
+        },
+        newOrder: function () {
+            let newOrder = {
+                number: this.orderNumber,
+                price: this.orderPrice,
+                direct: this.directStatus,
+            };
+        this.postOrder(newOrder);
+        },
+        postOrder: async function (order) {
+            let response = await fetch(`${URL}/orders`, {
+                method: 'POST',
+                body: JSON.stringify(order),
+                headers: {
+                'content-type': 'application/json',
+                },
+                credentials: 'include',
+            });
+            let data = await response.json();
+            if (response.status == 200) {
+                this.getOrders();
+            }
         },
         postCards: async function (card) {
             let response = await fetch(`${URL}/cards`, {
@@ -53,18 +85,9 @@ var app = new Vue({
                 this.getCards();
             }
         },
-        newCard: function () {
-            let newCard = {
-                name: this.cardNameInput,
-                condition: this.cardConditionInput,
-                price: this.cardPriceInput
-            }
-            console.log(newCard);
-            this.postCards(newCard);
-        }
     },
     created: function () {
-        this.getCards();
-        this.getOrders();
+      this.getCards();
+      this.getOrders();
     },
 });
