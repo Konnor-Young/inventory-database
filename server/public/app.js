@@ -21,6 +21,28 @@ var app = new Vue({
         directStatus: false,
     },
     methods: {
+        newCard: function () {
+            let newCard = {
+                name: this.cardNameInput,
+                condition: this.cardConditionInput,
+                price: this.cardPriceInput
+            };
+            this.postCards(newCard);
+        },
+        newOrder: function () {
+            let newOrder = {
+                number: this.orderNumber,
+                price: this.orderPrice,
+                direct: this.directStatus,
+            };
+            this.postOrder(newOrder);
+        },
+        updateCard: function (card_id) {
+            let updatedCard = {
+                condition: this.cardConditionInput
+            }
+            this.patchCard(updatedCard, card_id);
+        },
         getOrders: async function () {
             let response = await fetch(`${URL}/orders`, {
                 method: 'GET',
@@ -41,22 +63,6 @@ var app = new Vue({
             this.cardList = data
             console.log(response.status);
             console.log(data);
-        },
-        newCard: function () {
-            let newCard = {
-                name: this.cardNameInput,
-                condition: this.cardConditionInput,
-                price: this.cardPriceInput
-            };
-            this.postCards(newCard);
-        },
-        newOrder: function () {
-            let newOrder = {
-                number: this.orderNumber,
-                price: this.orderPrice,
-                direct: this.directStatus,
-            };
-            this.postOrder(newOrder);
         },
         postOrder: async function (order) {
             let response = await fetch(`${URL}/orders`, {
@@ -106,12 +112,6 @@ var app = new Vue({
             if (response.status == 201) {
                 this.getCards()
             }
-        },
-        updateCard: function (card_id) {
-            let updatedCard = {
-                condition: this.cardConditionInput
-            }
-            this.patchCard(updatedCard, card_id);
         },
     },
     created: function () {
