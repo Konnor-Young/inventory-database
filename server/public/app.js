@@ -39,7 +39,7 @@ var app = new Vue({
             console.log(this.orderList);
         },
         postCards: async function (card) {
-            let response = await fetch(`${URL}/card`, {
+            let response = await fetch(`${URL}/cards`, {
                 method: "POST",
                 body: JSON.stringify(card),
                 headers: {
