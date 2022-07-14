@@ -1,6 +1,5 @@
-const { response } = require("express");
+const URL = `http://localhost:8080`;
 
-const URL = 'http://localhost:8080';
 // vuetify: new Vuetify(),
 var app = new Vue({
     el: '#app',
@@ -43,12 +42,17 @@ var app = new Vue({
             }
             this.patchCard(updatedCard, card_id);
         },
+        updateOrder: function (order_id) {
+            let updatedOrder = {
+              number: this.orderNumber,
+            };
+            this.patchOrder(updatedOrder, order_id);
+          },
         getOrders: async function () {
             let response = await fetch(`${URL}/orders`, {
                 method: 'GET',
                 credentials: 'include',
             });
-
             let data = await response.json();
             this.orderList = data;
             console.log(response.status);
@@ -98,7 +102,7 @@ var app = new Vue({
             }
         },
         patchCard: async function (update, card_id) {
-            let response = await fetch(`${URL}/cards/card_id`, {
+            let response = await fetch(`${URL}/cards/${card_id}`, {
                 method: "PATCH",
                 body: JSON.stringify(update),
                 headers: {
@@ -113,6 +117,22 @@ var app = new Vue({
                 this.getCards()
             }
         },
+    },
+    patchOrder: async function (update, order_id) {
+        let response = await fetch(`${URL}/orders/${order_id}`, {
+            method: 'PATCH',
+            body: json.stringify(update),
+            headers: {
+            'content-type': 'application/json',
+            },
+            credentials: include,
+        });
+        let data = await response.json();
+        console.log(response.status);
+        console.log(data);
+        if (response == 201) {
+            this.getOrders();
+        }
     },
     created: function () {
         this.getCards();
