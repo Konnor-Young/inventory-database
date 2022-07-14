@@ -1,3 +1,5 @@
+const { json } = require('express/lib/response');
+
 const URL = 'http://localhost:8080';
 // vuetify: new Vuetify(),
 var app = new Vue({
@@ -45,6 +47,12 @@ var app = new Vue({
 
       this.postOrder(order);
     },
+    updateOrder: function (order_id) {
+      let updateOrder = {
+        number: this.orderNumber,
+      };
+      this.patchOrder(update, order_id);
+    },
 
     postOrder: async function (order) {
       let response = await fetch(`${URL}/orders`, {
@@ -60,6 +68,23 @@ var app = new Vue({
         this.getOrders();
       }
     },
+    patchOrder: async function (update, order_id) {
+      let response = await fetch(`${URL}/orders/order_id`, {
+        method: 'PATCH',
+        body: json.stringify(update),
+        headers: {
+          'content-type': 'application/json',
+        },
+        credentials: include,
+      });
+      let data = await response.json();
+      console.log(response.status);
+      console.log(data);
+      if (response == 201) {
+        this.getOrders();
+      }
+    },
+
     created: function () {
       this.getCards();
       this.getOrders();
