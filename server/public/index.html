@@ -1,41 +1,64 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet"/> -->
-    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet"/>
+
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"/>
   </head>
   <body>
     <div id="app">
-      <!-- <v-app>
-        <v-main> -->
-          <h1>{{ currentPage }}</h1>
-          <nav>
-            <ul>
-              <li>
-                <div class="nav-button" :disabled="currentPage == 'Inventory'" @click="currentPage = 'Inventory'">
-                  Inventory
-                </div>
-              </li>
-              <li>
-                <div class="nav-button" :disabled="currentPage == 'Add Card'" @click="currentPage = 'Add Card'">
-                  Add Card
-                </div>
-              </li>
-              <li>
-                <div class="nav-button" :disabled="currentPage == 'View Orders'" @click="currentPage = 'View Orders'">
-                  View Orders
-                </div>
-              </li>
-              <li>
-                <div class="nav-button" :disabled="currentPage == 'Add Order'" @click="currentPage = 'Add Order'">
-                  Add Order
-                </div>
-              </li>
-            </ul>
-          </nav>
+      <v-app>
+        <v-main>
+        <!-- Nav & Menu bar with image -->
+        <v-card class="overflow-auto">
+
+            <v-app-bar absolute color="#6A76AB" dark shrink-on-scroll prominent
+                        src="https://images.alphacoders.com/265/265693.png" fade-img-on-scroll
+                        scroll-target="#scrolling-techniques-3">
+
+              <template v-slot:img="{ props }">
+                <v-img v-bind="props"
+                gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)">
+                </v-img>
+              </template>
+
+              <v-app-bar-nav-icon></v-app-bar-nav-icon>
+
+              <v-app-bar-title>{{ currentPage }}</v-app-bar-title>
+
+              <v-spacer></v-spacer>
+
+              <v-btn icon>
+                <v-icon>mdi-magnify</v-icon>
+              </v-btn>
+        
+              <v-btn icon>
+                <v-icon>mdi-heart</v-icon>
+              </v-btn>
+        
+              <v-btn icon>
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+
+              <template v-slot:extension>
+                <v-tabs v-for="tab in pages" align-with-title>
+                  <v-tab>{{ tab }}</v-tab>
+                </v-tabs>
+              </template>
+
+            </v-app-bar>
+          
+            
+      </v-card>
+      
+        <v-sheet
+          id="scrolling-techniques-3"
+          class="overflow-y-auto"
+          max-height="600"
+        >
+        <v-container class="mt-auto" style="height: 1000px;">
           <!-- Inventory Page -->
           <div id="view-inventory" v-if="currentPage == 'Inventory'">
             View inventory
@@ -118,9 +141,37 @@
             </div>
           </div>
 
-          <!-- <v-container>Hello world</v-container> -->
-        <!-- </v-main>
-      </v-app> -->
+
+        
+      </v-container>
+    </v-sheet>
+  </v-main>
+
+              <ul>
+                <li>
+                  <div class="nav-button" :disabled="currentPage == 'Inventory'" @click="currentPage = 'Inventory'">
+                    Inventory
+                  </div>
+                </li>
+                <li>
+                  <div class="nav-button" :disabled="currentPage == 'Add Card'" @click="currentPage = 'Add Card'">
+                    Add Card
+                  </div>
+                </li>
+                <li>
+                  <div class="nav-button" :disabled="currentPage == 'View Orders'" @click="currentPage = 'View Orders'">
+                    View Orders
+                  </div>
+                </li>
+                <li>
+                  <div class="nav-button" :disabled="currentPage == 'Add Order'" @click="currentPage = 'Add Order'">
+                    Add Order
+                  </div>
+                </li>
+              </ul>
+            </nav>
+        
+      </v-app>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>

@@ -2,6 +2,7 @@ const URL = `http://localhost:8080`;
 
 // vuetify: new Vuetify(),
 var app = new Vue({
+    vuetify: new Vuetify(),
     el: '#app',
     data: {
         message: "HI WORLD",
@@ -20,6 +21,7 @@ var app = new Vue({
         orderNumber: 0,
         orderPrice: '',
         directStatus: false,
+        pages: ["Inventory", "Add Card", "View Orders", "Add Order"]
     },
     methods: {
         newCard: function () {
