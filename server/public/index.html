@@ -59,14 +59,20 @@
 
           <!-- Add Card Page -->
           <div id="add-card" v-if="currentPage == 'Add Card'">
-            <button @click="addCardSubPage = 'searchCard'" :disabled="addCardSubPage == 'searchCard'">search a card</button>
+            <button @click="addCardSubPage = 'searchCard'" :disabled="addCardSubPage == 'searchCard'">search a card            </button>
             <button @click="addCardSubPage = 'addToPile'" :disabled="addCardSubPage == 'addToPile'">confirm add</button>
             <button @click="addCardSubPage = 'pile'" :disabled="addCardSubPage == 'pile'">my pile</button>
             <div class="search-card" v-if="addCardSubPage == 'searchCard'">
-              Search Card
+              Search Card <br>
+              Name: <input v-model="searchName" type="text">
+              <button @click="getSearch">Search</button>
             </div>
             <div class="add-to-pile" v-if="addCardSubPage == 'addToPile'">
-              Add To Pile
+              Add To Pile <br>
+              <div v-for="card in searchResults">
+                {{ card.name }}
+                <img :src='card.image_uris.small'>
+              </div>
             </div>
             <div class="pile" v-if="addCardSubPage == 'pile'">
               Pile

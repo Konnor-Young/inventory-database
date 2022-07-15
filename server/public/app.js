@@ -1,4 +1,6 @@
 const URL = `http://localhost:8080`;
+const SEARCH_URL = `https://api.scryfall.com/cards/search?q=`
+const SEARCH_PARAM = `+unique%3Aprints`
 
 // vuetify: new Vuetify(),
 var app = new Vue({
@@ -20,6 +22,8 @@ var app = new Vue({
         orderNumber: 0,
         orderPrice: '',
         directStatus: false,
+        searchName: '',
+        searchResults: [],
     },
     methods: {
         newCard: function () {
@@ -57,7 +61,13 @@ var app = new Vue({
               number: this.orderNumber,
             };
             this.patchOrder(updatedOrder, order_id);
-          },
+        },
+        getSearch: async function () {
+            let response = await fetch(`${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`);
+            let data = await response.json();
+            this.searchResults = data.data;
+            this.addCardSubPage = 'addToPile';
+        },
         getOrders: async function () {
             let response = await fetch(`${URL}/orders`, {
                 method: 'GET',
@@ -158,7 +168,6 @@ var app = new Vue({
             }
         },
     },
-
     created: function () {
         this.getCards();
         this.getOrders();
