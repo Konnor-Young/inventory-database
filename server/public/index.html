@@ -4,9 +4,12 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet"/>
-
+    <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"/>
   </head>
+  <!-- <style>
+    
+    </style> -->
   <body>
     <div id="app">
       <v-app>
@@ -26,9 +29,9 @@
               </template>
 
               <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-              <v-app-bar-title class="float-left pr-10" >{{ currentPage }}</v-app-bar-title>
-
+              
+              <v-app-bar-title class="float-left pr-10 ml-2 font-weight-black">{{ currentPage }}</v-app-bar-title>
+              
               <v-spacer></v-spacer>
 
               <v-btn icon>
@@ -44,9 +47,13 @@
               </v-btn>
               <!-- <v-divider></v-divider> -->
               <template v-slot:extension>
-                <v-tabs v-for="tab in pages" align-with-title grow>
-                  
-                  <v-tab @Click="currentPage = tab">{{ tab }}</v-tab>
+                <!-- For loop going through pages (list of pages) and into tab -->
+                <v-tabs v-for="tab in pages" align-with-title grow hide-slider>
+                  <!-- Display component of each tab with on click and highlight after selection -->
+                  <v-tab @Click="currentPage = tab" class="rounded-lg rounded-b-0"
+                  v-bind:class="{ 'blue-grey lighten-4 deep-purple--text lighten-3 disabled' : currentPage === tab}"
+                  >{{ tab }}</v-tab>
+
                 </v-tabs>
               </template>
 
@@ -58,9 +65,9 @@
         <v-sheet
           id="scrolling-techniques-3"
           class="overflow-y-auto mt-16 pt-16"
-          max-height="600"
+          max-height="650"
         >
-        <v-container class="mt-16 pt-16" style="height: 1000px;">
+        <v-container class="mt-16 pt-16" style="height: 2000px;">
           <!-- Inventory Page -->
           <div id="view-inventory" v-if="currentPage == 'Inventory'">
             View inventory
@@ -150,99 +157,11 @@
     
   </v-card>
 
-  <!-- messing around -->
-  <v-sheet 
-  class="overflow-y-auto red "
-  max-height="600"
   
->
-<v-container  class="mt-16 pt-16" style="height: 1000px;">
-  <!-- Inventory Page -->
-  <div id="view-inventory" v-if="currentPage == 'Inventory'">
-    View inventory
-    <div v-for="card, index in cardList">
-      <h1>Name: </h1>{{ card.name }}
-      Condition: {{ card.condition }}
-      <button @click="editCard(card, index)">Update Card</button>
-        <div v-if="updatingCard == index">
-          <label for="condition">Condition:</label>
-          <select name="condition" v-model="cardConditionInput">
-            <option value="nm">nm</option>
-            <option value="lp">lp</option>
-            <option value="mp">mp</option>
-            <option value="hp">hp</option>
-          </select>
-          <button @click="updateCard(card._id)">Submit Update</button>
-        </div>
-    </div>
-  </div>
-
-  <!-- Add Card Page -->
-  <div id="add-card" v-if="currentPage == 'Add Card'">
-    <button @click="addCardSubPage = 'searchCard'" :disabled="addCardSubPage == 'searchCard'">search a card</button>
-    <button @click="addCardSubPage = 'addToPile'" :disabled="addCardSubPage == 'addToPile'">confirm add</button>
-    <button @click="addCardSubPage = 'pile'" :disabled="addCardSubPage == 'pile'">my pile</button>
-    <div class="search-card" v-if="addCardSubPage == 'searchCard'">
-      Search Card
-    </div>
-    <div class="add-to-pile" v-if="addCardSubPage == 'addToPile'">
-      Add To Pile
-    </div>
-    <div class="pile" v-if="addCardSubPage == 'pile'">
-      Pile
-      <!-- <div v-for="cards in pile">{{ cards }}</div> -->
-      Name: <input v-model="cardNameInput" type="text">
-      Price: $<input v-model="cardPriceInput" type="text">
-      <label for="condition">Condition:</label>
-      <select name="condition" v-model="cardConditionInput">
-        <option value="nm">nm</option>
-        <option value="lp">lp</option>
-        <option value="mp">mp</option>
-        <option value="hp">hp</option>
-      </select>
-      <button @click="newCard()">Add to Inventory</button>
-    </div>
-  </div>
-
-  <!--View Orders -->
-  <div id="view-orders" v-if="currentPage == 'View Orders'">
-    View Orders
-    <div v-for="order, index in orderList">
-        Order Number: {{ order.number }}
-        Price: ${{ order.price.$numberDecimal }}
-        <button @click="editOrder(order, index)">Update Order</button>
-        <div v-if="updatingOrder == index">
-          Order Number: <input placeholder="orderNumber" v-model="orderNumber">
-          <button @click="updateOrder(order._id)">Submit Update</button>
-        </div>
-    </div>
-  </div>
-
-  <!-- Add Order Page -->
-  <div id="add-orders" v-if="currentPage == 'Add Order'">
-    <button @click="addOrderSubPage = 'searchCard'" :disabled="addOrderSubPage == 'searchCard'">search an order</button>
-    <button @click="addOrderSubPage = 'addToPile'" :disabled="addOrderSubPage == 'addToPile'">confirm add</button>
-    <button @click="addOrderSubPage = 'pile'" :disabled="addOrderSubPage == 'pile'">my pile</button>
-    <div class="search-card" v-if="addOrderSubPage == 'searchCard'">
-      Search Card
-    </div>
-    <div class="add-to-pile" v-if="addOrderSubPage == 'addToPile'">
-      Add To Pile
-    </div>
-    <div class="pile" v-if="addOrderSubPage == 'pile'">
-      Pile
-      <!-- <div v-for="card in orders">{{ orderCard }}</div> --> -->
-      Order Number: <input v-model="orderNumber" type="text">
-      Total Price: $<input v-model="orderPrice" type="text">
-      Direct? <input type="checkbox" v-model="directStatus">
-      <button @click="newOrder()">Add to Inventory</button>
-    </div>
-  </div>
 
 
 </main>
-</v-container>
-</v-sheet>
+
   
         
       </v-app>
