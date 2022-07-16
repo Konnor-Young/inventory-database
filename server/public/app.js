@@ -147,6 +147,9 @@ var app = new Vue({
                 this.getOrders();
             }
         },
+        changePage: function(pageClicked) {
+            
+        }
     },
     created: function () {
         this.getCards();

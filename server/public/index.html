@@ -10,13 +10,14 @@
   <body>
     <div id="app">
       <v-app>
-        <v-main>
+        
         <!-- Nav & Menu bar with image -->
         <v-card class="overflow-auto">
 
             <v-app-bar absolute color="#6A76AB" dark shrink-on-scroll prominent
                         src="https://images.alphacoders.com/265/265693.png" fade-img-on-scroll
-                        scroll-target="#scrolling-techniques-3">
+                        scroll-target="#scrolling-techniques-3"
+                        app >
 
               <template v-slot:img="{ props }">
                 <v-img v-bind="props"
@@ -26,7 +27,7 @@
 
               <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-              <v-app-bar-title>{{ currentPage }}</v-app-bar-title>
+              <v-app-bar-title class="float-left pr-10" >{{ currentPage }}</v-app-bar-title>
 
               <v-spacer></v-spacer>
 
@@ -41,10 +42,11 @@
               <v-btn icon>
                 <v-icon>mdi-dots-vertical</v-icon>
               </v-btn>
-
+              <!-- <v-divider></v-divider> -->
               <template v-slot:extension>
-                <v-tabs v-for="tab in pages" align-with-title>
-                  <v-tab>{{ tab }}</v-tab>
+                <v-tabs v-for="tab in pages" align-with-title grow>
+                  
+                  <v-tab @Click="currentPage = tab">{{ tab }}</v-tab>
                 </v-tabs>
               </template>
 
@@ -52,13 +54,13 @@
           
             
       
-      
+        <main>
         <v-sheet
           id="scrolling-techniques-3"
-          class="overflow-y-auto"
+          class="overflow-y-auto mt-16 pt-16"
           max-height="600"
         >
-        <v-container class="mt-auto" style="height: 1000px;">
+        <v-container class="mt-16 pt-16" style="height: 1000px;">
           <!-- Inventory Page -->
           <div id="view-inventory" v-if="currentPage == 'Inventory'">
             View inventory
@@ -145,32 +147,103 @@
         
       </v-container>
     </v-sheet>
+    
   </v-card>
-  </v-main>
 
-              <ul>
-                <li>
-                  <div class="nav-button" :disabled="currentPage == 'Inventory'" @click="currentPage = 'Inventory'">
-                    Inventory
-                  </div>
-                </li>
-                <li>
-                  <div class="nav-button" :disabled="currentPage == 'Add Card'" @click="currentPage = 'Add Card'">
-                    Add Card
-                  </div>
-                </li>
-                <li>
-                  <div class="nav-button" :disabled="currentPage == 'View Orders'" @click="currentPage = 'View Orders'">
-                    View Orders
-                  </div>
-                </li>
-                <li>
-                  <div class="nav-button" :disabled="currentPage == 'Add Order'" @click="currentPage = 'Add Order'">
-                    Add Order
-                  </div>
-                </li>
-              </ul>
-            </nav>
+  <!-- messing around -->
+  <v-sheet 
+  class="overflow-y-auto red "
+  max-height="600"
+  
+>
+<v-container  class="mt-16 pt-16" style="height: 1000px;">
+  <!-- Inventory Page -->
+  <div id="view-inventory" v-if="currentPage == 'Inventory'">
+    View inventory
+    <div v-for="card, index in cardList">
+      <h1>Name: </h1>{{ card.name }}
+      Condition: {{ card.condition }}
+      <button @click="editCard(card, index)">Update Card</button>
+        <div v-if="updatingCard == index">
+          <label for="condition">Condition:</label>
+          <select name="condition" v-model="cardConditionInput">
+            <option value="nm">nm</option>
+            <option value="lp">lp</option>
+            <option value="mp">mp</option>
+            <option value="hp">hp</option>
+          </select>
+          <button @click="updateCard(card._id)">Submit Update</button>
+        </div>
+    </div>
+  </div>
+
+  <!-- Add Card Page -->
+  <div id="add-card" v-if="currentPage == 'Add Card'">
+    <button @click="addCardSubPage = 'searchCard'" :disabled="addCardSubPage == 'searchCard'">search a card</button>
+    <button @click="addCardSubPage = 'addToPile'" :disabled="addCardSubPage == 'addToPile'">confirm add</button>
+    <button @click="addCardSubPage = 'pile'" :disabled="addCardSubPage == 'pile'">my pile</button>
+    <div class="search-card" v-if="addCardSubPage == 'searchCard'">
+      Search Card
+    </div>
+    <div class="add-to-pile" v-if="addCardSubPage == 'addToPile'">
+      Add To Pile
+    </div>
+    <div class="pile" v-if="addCardSubPage == 'pile'">
+      Pile
+      <!-- <div v-for="cards in pile">{{ cards }}</div> -->
+      Name: <input v-model="cardNameInput" type="text">
+      Price: $<input v-model="cardPriceInput" type="text">
+      <label for="condition">Condition:</label>
+      <select name="condition" v-model="cardConditionInput">
+        <option value="nm">nm</option>
+        <option value="lp">lp</option>
+        <option value="mp">mp</option>
+        <option value="hp">hp</option>
+      </select>
+      <button @click="newCard()">Add to Inventory</button>
+    </div>
+  </div>
+
+  <!--View Orders -->
+  <div id="view-orders" v-if="currentPage == 'View Orders'">
+    View Orders
+    <div v-for="order, index in orderList">
+        Order Number: {{ order.number }}
+        Price: ${{ order.price.$numberDecimal }}
+        <button @click="editOrder(order, index)">Update Order</button>
+        <div v-if="updatingOrder == index">
+          Order Number: <input placeholder="orderNumber" v-model="orderNumber">
+          <button @click="updateOrder(order._id)">Submit Update</button>
+        </div>
+    </div>
+  </div>
+
+  <!-- Add Order Page -->
+  <div id="add-orders" v-if="currentPage == 'Add Order'">
+    <button @click="addOrderSubPage = 'searchCard'" :disabled="addOrderSubPage == 'searchCard'">search an order</button>
+    <button @click="addOrderSubPage = 'addToPile'" :disabled="addOrderSubPage == 'addToPile'">confirm add</button>
+    <button @click="addOrderSubPage = 'pile'" :disabled="addOrderSubPage == 'pile'">my pile</button>
+    <div class="search-card" v-if="addOrderSubPage == 'searchCard'">
+      Search Card
+    </div>
+    <div class="add-to-pile" v-if="addOrderSubPage == 'addToPile'">
+      Add To Pile
+    </div>
+    <div class="pile" v-if="addOrderSubPage == 'pile'">
+      Pile
+      <!-- <div v-for="card in orders">{{ orderCard }}</div> --> -->
+      Order Number: <input v-model="orderNumber" type="text">
+      Total Price: $<input v-model="orderPrice" type="text">
+      Direct? <input type="checkbox" v-model="directStatus">
+      <button @click="newOrder()">Add to Inventory</button>
+    </div>
+  </div>
+
+
+</main>
+</v-container>
+</v-sheet>
+  
         
       </v-app>
     </div>
