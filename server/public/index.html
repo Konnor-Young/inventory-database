@@ -69,15 +69,21 @@
             </div>
             <div class="add-to-pile" v-if="addCardSubPage == 'addToPile'">
               Add To Pile <br>
-              <div v-for="card in searchResults">
+              <div v-for="card, index in searchResults">
                 {{ card.name }}
                 <img :src='card.image_uris.small'>
+                <!-- <input type="checkbox" v-model="isFoil"> foil -->
+                <button @click="addToPile(card)">Add to Pile</button>
               </div>
             </div>
             <div class="pile" v-if="addCardSubPage == 'pile'">
               Pile
+              <div v-for="card, index in searchPile">
+                {{ card.name }}
+                <img :src='card.image_uris.small'>
+              </div>
               <!-- <div v-for="cards in pile">{{ cards }}</div> -->
-              Name: <input v-model="cardNameInput" type="text">
+              <!-- Name: <input v-model="cardNameInput" type="text">
               Price: $<input v-model="cardPriceInput" type="text">
               <label for="condition">Condition:</label>
               <select name="condition" v-model="cardConditionInput">
@@ -86,7 +92,7 @@
                 <option value="mp">mp</option>
                 <option value="hp">hp</option>
               </select>
-              <button @click="newCard()">Add to Inventory</button>
+              <button @click="newCard()">Add to Inventory</button> -->
             </div>
           </div>
 

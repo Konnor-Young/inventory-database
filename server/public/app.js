@@ -22,8 +22,10 @@ var app = new Vue({
         orderNumber: 0,
         orderPrice: '',
         directStatus: false,
+        isFoil: false,
         searchName: '',
         searchResults: [],
+        searchPile: [],
     },
     methods: {
         newCard: function () {
@@ -61,6 +63,15 @@ var app = new Vue({
               number: this.orderNumber,
             };
             this.patchOrder(updatedOrder, order_id);
+        },
+        addToPile: function (card) {
+            let newCard = {
+                name: card.name,
+                location: 'generated',
+                foil: this.isFoil
+            };
+            this.searchPile.push(newCard);
+            this.addCardSubPage = pile;
         },
         getSearch: async function () {
             let response = await fetch(`${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`);
