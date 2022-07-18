@@ -4,6 +4,7 @@ const SEARCH_PARAM = `+unique%3Aprints`
 
 // vuetify: new Vuetify(),
 var app = new Vue({
+    vuetify: new Vuetify(),
     el: '#app',
     data: {
         message: "HI WORLD",
@@ -23,7 +24,9 @@ var app = new Vue({
         orderPrice: '',
         directStatus: false,
         searchName: '',
-        searchResults: [],
+        pages: ["Inventory", "Add Card", "View Orders", "Add Order"],
+        addCardList: [],
+        pileList: [],
     },
     methods: {
         newCard: function () {
@@ -61,6 +64,24 @@ var app = new Vue({
               number: this.orderNumber,
             };
             this.patchOrder(updatedOrder, order_id);
+        },
+        addToPile: function (card) {
+            let newCard = {
+                name: card.name,
+                location: 'generated',
+                foil: this.isFoil
+            };
+            this.searchPile.push(newCard);
+            this.addCardSubPage = 'pile';
+        },
+        getRandomCard: async function () {
+            let response = await fetch(`https://api.scryfall.com/cards/random `, {
+                method: 'GET',
+            });
+            let data = await response.json();
+            this.addCardList.push(data)
+            console.log(response.status);
+            console.log(data);
         },
         getSearch: async function () {
             let response = await fetch(`${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`);
