@@ -27,6 +27,7 @@ var app = new Vue({
         pages: ["Inventory", "Add Card", "View Orders", "Add Order"],
         addCardList: [],
         pileList: [],
+        uniqueCards: []
     },
     methods: {
         newCard: function () {

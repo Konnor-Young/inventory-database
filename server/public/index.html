@@ -68,8 +68,10 @@
             <!-- height should adjust based on # of cards being displayed -->
             <v-container class="mt-16 pt-16" style="height: 2000px;">
               <!-- Inventory Page -->
-              <div id="view-inventory" v-if="currentPage == 'Inventory'">
-                View inventory
+
+
+              <!-- Old code Delete once finished -->
+              <!-- <div id="view-inventory" v-if="currentPage == 'Inventory'">
                 <div v-for="card, index in cardList">
                   <h1>Name: </h1>{{ card.name }}
                   Condition: {{ card.condition }}
@@ -84,7 +86,90 @@
                       </select>
                       <button @click="updateCard(card._id)">Submit Update</button>
                     </div>
-                </div>
+                </div> -->
+
+                <!-- Search Container for Invetory Search-->
+                <v-container fluid>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="8">
+                        <v-text-field outlined label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
+                      </v-col>
+                      <v-col cols="auto">
+                        <v-btn class="mt-2">Submit</v-btn>
+                      </v-col>
+                      <v-col>Search Price</v-col>
+                      <v-col># of Cards</v-col>
+                    </v-row>
+                  </v-container>
+                  <v-virtual-scroll height="500" item-height="250" :cards="addCardList">
+                    <template v-slot:default="{ card }">
+                      <v-list-item :key="card">
+                        
+                    </template>
+                  </v-virtual-scroll>
+
+                  <!-- Card template for inventory display-->
+                  <div v-show="editInventory">
+                    <v-overlay
+                      :z-index="zIndex"
+                      :value="overlay"
+                    >
+                      <v-btn
+                        class="white--text"
+                        color="teal"
+                        @click="overlay = false"
+                      >
+                        Hide Overlay
+                      </v-btn>
+                    </v-overlay>
+
+                  </div>
+                  <div v-for="card, index in uniqueCards">
+                  <v-card width="146" class="mx-4">
+                    <template slot="progress">
+                      <v-progress-linear
+                        color="deep-purple"
+                        height="10"
+                        indeterminate
+                      ></v-progress-linear>
+                    </template>
+                    <!-- Display card img in vuetify card -->
+                    <v-img
+                        height="204"
+                        src="card.image_uris.small"
+                    ></v-img>
+                    <!-- <v-card-text class="pt-1 pb-0">
+                      <v-chip-group
+                        v-model="condition"
+                        active-class="deep-purple accent-4 white--text"
+                        column
+                        class="px-auto">
+                        <v-chip>NM</v-chip>
+                        <v-chip>LP</v-chip>
+                        <v-chip>MP</v-chip>
+                        <v-chip>HP</v-chip>
+                      </v-chip-group>
+                    </v-card-text>
+                    <v-row class="mx-0">
+                    <v-col  cols="6" persistent-hint color="deep-purple lighten-1" class="pr-0 pl-1" >
+                      <v-text-field outlined dense hide-details label="Qty." placeholder="Qty." v-model="quantity" row-height="0"></v-text-field>
+                    </v-col>
+                      <v-card-actions class="pt-0 pl-1 pr-1">
+                        <v-btn
+                          color="deep-purple lighten-2"
+                          text
+                          @click="addToPile()"
+                          class="float-end"
+                        >
+                          Add
+                        </v-btn>
+                      </v-card-actions>
+                    </v-row> -->
+                  </v-card>
+                  </div>  
+
+                </v-container>
               </div>
 
               <!-- Vuetify Add Card Page -->
@@ -183,7 +268,7 @@
             </ul>
           </nav>
           <!-- Inventory Page -->
-          <div id="view-inventory" v-if="currentPage == 'Inventory'">
+          <!-- <div id="view-inventory" v-if="currentPage == 'Inventory'">
             View inventory
             <div v-for="card, index in cardList">
               <h1>Name: </h1>{{ card.name }}
