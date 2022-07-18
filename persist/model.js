@@ -50,6 +50,8 @@ Sku.art.set('full_art', 'false');
 Sku.art.set('promo', 'false');
 Sku.art.set('oversized', 'false');
 
+// ORDER Card Keys, Integer
+Order.card.set('tcg_id', 0);
 const Card = mongoose.model("Card", cardSchema);
 const Order = mongoose.model("Order", orderSchema);
 const Sku = mongoose.model("Sku", skuSchema);
