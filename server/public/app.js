@@ -71,7 +71,7 @@ var app = new Vue({
                 foil: this.isFoil
             };
             this.searchPile.push(newCard);
-            this.addCardSubPage = pile;
+            this.addCardSubPage = 'pile';
         },
         getSearch: async function () {
             let response = await fetch(`${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`);

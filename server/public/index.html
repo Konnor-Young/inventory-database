@@ -82,8 +82,8 @@
                 {{ card.name }}
                 <img :src='card.image_uris.small'>
               </div>
-              <!-- <div v-for="cards in pile">{{ cards }}</div> -->
-              <!-- Name: <input v-model="cardNameInput" type="text">
+              <!-- <div v-for="cards in pile">{{ cards }}</div> --> -->
+              Name: <input v-model="cardNameInput" type="text">
               Price: $<input v-model="cardPriceInput" type="text">
               <label for="condition">Condition:</label>
               <select name="condition" v-model="cardConditionInput">
@@ -92,11 +92,11 @@
                 <option value="mp">mp</option>
                 <option value="hp">hp</option>
               </select>
-              <button @click="newCard()">Add to Inventory</button> -->
+              <button @click="newCard()">Add to Inventory</button>
             </div>
           </div>
 
-          <!--View Orders -->
+          <!-- View Orders --->
           <div id="view-orders" v-if="currentPage == 'View Orders'">
             View Orders
             <div v-for="order, index in orderList">
