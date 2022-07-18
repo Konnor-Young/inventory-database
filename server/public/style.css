@@ -4,3 +4,10 @@
 .v-tab::before {
     border-radius: 5px 5px 0px 0px;
 }
+.v-chip-group--column .v-slide-group__content{
+    justify-content: center;
+    padding-left: 4px;
+}
+.v-chip-group--column .v-slide-group__content {
+    padding-bottom: 0px;
+}

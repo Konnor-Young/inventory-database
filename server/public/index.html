@@ -91,19 +91,19 @@
 
               <v-card v-if="currentPage == 'Add Card'" class="mx-1">
                 <v-tabs grow optional slider-color="deep-purple lighten-2" class="rounded-lg blue-grey lighten-1">
-                  <v-tab @Click="addCardSubPage = Search" class="rounded-lg pr-2"
+                  <v-tab @Click="addCardSubPage = Search" class="rounded-lg"
                   active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled"
                   >Search</v-tab>
                   <!-- <v-tab @Click="addCardSubPage = Deck" class="rounded-lg mx-2"
                   active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled"
                   >Deck</v-tab> -->
-                  <v-tab @Click="addCardSubPage = Pile" class="rounded-lg pl-2"
+                  <v-tab @Click="addCardSubPage = Pile" class="rounded-lg"
                   active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled"
                   >Pile</v-tab>
                 </v-tabs>
                 <!-- Search subPage v-if="addCardSubPage = Search"-->
 
-                <v-container fluid="true">
+                <v-container fluid>
                   <v-container>
                     <v-row>
                       <v-col cols="8">
@@ -113,13 +113,56 @@
                         <v-btn class="mt-2">Submit</v-btn>
                       </v-col>
                       <v-col cols="auto">
-                        <v-btn class="mt-2">Feeling Lucky</v-btn>
+                        <v-btn class="mt-2" @Click="getRandomCard()">Feeling Lucky</v-btn>
                       </v-col>
                     </v-row>
                   </v-container>
-                  <v-virtual-scroll height="450" item-height="250" :cards="cards" >
-
+                  <v-virtual-scroll height="500" item-height="250" :cards="addCardList">
+                    <template v-slot:default="{ card }">
+                      <v-list-item :key="card">
+                        
+                    </template>
                   </v-virtual-scroll>
+                  <v-card width="146" class="mx-4">
+                    <template slot="progress">
+                      <v-progress-linear
+                        color="deep-purple"
+                        height="10"
+                        indeterminate
+                      ></v-progress-linear>
+                    </template>
+                    <v-img
+                        height="204"
+                        src="https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418"
+                    ></v-img>
+                    <v-card-text class="pt-1 pb-0">
+                      <v-chip-group
+                        v-model="condition"
+                        active-class="deep-purple accent-4 white--text"
+                        column
+                        class="px-auto">
+                        <v-chip>NM</v-chip>
+                        <v-chip>LP</v-chip>
+                        <v-chip>MP</v-chip>
+                        <v-chip>HP</v-chip>
+                      </v-chip-group>
+                    </v-card-text>
+                    <v-row class="mx-0">
+                    <v-col  cols="6" persistent-hint color="deep-purple lighten-1" class="pr-0 pl-1" >
+                      <v-text-field outlined dense hide-details label="Qty." placeholder="Qty." v-model="quantity" row-height="0"></v-text-field>
+                    </v-col>
+                      <v-card-actions class="pt-0 pl-1 pr-1">
+                        <v-btn
+                          color="deep-purple lighten-2"
+                          text
+                          @click="addToPile()"
+                          class="float-end"
+                        >
+                          Add
+                        </v-btn>
+                      </v-card-actions>
+                    </v-row>
+                  </v-card>
 
 
                 </v-container>

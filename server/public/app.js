@@ -21,7 +21,9 @@ var app = new Vue({
         orderNumber: 0,
         orderPrice: '',
         directStatus: false,
-        pages: ["Inventory", "Add Card", "View Orders", "Add Order"]
+        pages: ["Inventory", "Add Card", "View Orders", "Add Order"],
+        addCardList: [],
+        pileList: []
     },
     methods: {
         newCard: function () {
@@ -147,9 +149,20 @@ var app = new Vue({
                 this.getOrders();
             }
         },
-        changePage: function(pageClicked) {
-            
-        }
+        addToPile: function () {
+            // pileList.push(card);
+            console.log("Card Added to Pile.");
+        },
+        getRandomCard: async function () {
+            let response = await fetch(`https://api.scryfall.com/cards/random `, {
+                method: 'GET',
+                // credentials: "include",
+            });
+            let data = await response.json();
+            this.addCardList.push(data)
+            console.log(response.status);
+            console.log(data);
+        },
     },
     created: function () {
         this.getCards();
