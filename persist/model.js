@@ -1,13 +1,16 @@
 const mongoose = require("mongoose");
 
 const cardSchema = mongoose.Schema({
-    name: { type: String },
     location: { type: String },
     foil: { type: String, enum: ['None', 'Foil'] },
+    condition: { type: String, enum:['nm', 'lp', 'mp', 'hp', 'dmg'] },
+    price: { type: String },
+    tcg_id: { type: String },
+    local_image: { type: String },
 });
 
 const skuSchema = mongoose.Schema({
-    tcgID: { type: String },
+    tcg_id: { type: String },
     name: { type: String },
     set: { type: String },
     imageUris: { type: Map, of: String },
