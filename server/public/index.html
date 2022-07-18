@@ -179,7 +179,6 @@
                 <div class="add-to-pile" v-if="addCardSubPage == 'addToPile'">
                   Add To Pile
                 </div>
-<<<<<<< HEAD
               </li>
             </ul>
           </nav>
@@ -192,13 +191,11 @@
               <button @click="editCard(card, index)">Update Card</button>
               <button @click="deleteCard(card._id)">Remove Card</button>
                 <div v-if="updatingCard == index">
-=======
                 <div class="pile" v-if="addCardSubPage == 'pile'">
                   Pile -->
                   <!-- <div v-for="cards in pile">{{ cards }}</div> -->
                   <!-- Name: <input v-model="cardNameInput" type="text">
                   Price: $<input v-model="cardPriceInput" type="text">
->>>>>>> origin/jpl-vuetify
                   <label for="condition">Condition:</label>
                   <select name="condition" v-model="cardConditionInput">
                     <option value="nm">nm</option>
@@ -208,7 +205,6 @@
                   </select>
                   <button @click="newCard()">Add to Inventory</button>
                 </div>
-<<<<<<< HEAD
             </div>
           </div>
 
@@ -261,7 +257,6 @@
                 <div v-if="updatingOrder == index">
                   Order Number: <input v-model="orderNumber">
                   <button @click="updateOrder(order._id)">Submit Update</button>
-=======
               </div> -->
 
               <!--View Orders -->
@@ -275,7 +270,6 @@
                       Order Number: <input placeholder="orderNumber" v-model="orderNumber">
                       <button @click="updateOrder(order._id)">Submit Update</button>
                     </div>
->>>>>>> origin/jpl-vuetify
                 </div>
               </div>
 
