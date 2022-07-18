@@ -1,19 +1,22 @@
 const mongoose = require("mongoose");
 
 const cardSchema = mongoose.Schema({
-      name: { type: String },
-      location: { type: String },
-      foil: { type:String, enum: ['None', 'Foil']},     
+    name: { type: String },
+    location: { type: String },
+    foil: { type: String, enum: ['None', 'Foil'] },
 });
 
 const skuSchema = mongoose.Schema({
     tcgID: { type: String },
-    image: { type: String },
-    locations: { type: [String] },
-    quantity: { type: Map, of: Number },
     name: { type: String },
-    cards: {type: [cardSchema] },
-    price: { type: String }
+    set: { type: String },
+    imageUris: { type: Map, of: String },
+    price: { type: Map, of: String },
+    quantity: { type: Map, of: Number },
+    locations: { type: [String] },
+    cards: { type: [cardSchema] },
+    // store: { type: String },
+    art: { type: Map, of: Boolean }
 });
 
 const orderSchema = mongoose.Schema({
@@ -22,6 +25,30 @@ const orderSchema = mongoose.Schema({
     card: { type: Map, of: Number },
     status: { type: String, enum: ['standing', 'pulling', 'shipped'] },
 });
+
+// SKU Image URI Keys, Strings
+Sku.image_uris.set('small', '');
+Sku.image_uris.set('normal', '');
+Sku.image_uris.set('large', '');
+Sku.imge_uris.set('png', '');
+Sku.image_uris.set('boarder_crop', '');
+
+// SKU Price Keys, Strings
+Sku.price.set('usd', '');
+Sku.price.set('usd_foil', '');
+
+// SKU Quantity Keys, Integer
+Sku.quantity.set('available', 0);
+Sku.quantity.set('reserved', 0);
+Sku.quantity.set('physical', 0);
+
+// SKU Art Keys, Boolean
+Sku.art.set('borderless', 'false');
+Sku.art.set('textless', 'false');
+Sku.art.set('etched', 'false');
+Sku.art.set('full_art', 'false');
+Sku.art.set('promo', 'false');
+Sku.art.set('oversized', 'false');
 
 const Card = mongoose.model("Card", cardSchema);
 const Order = mongoose.model("Order", orderSchema);
