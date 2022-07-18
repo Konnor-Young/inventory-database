@@ -156,7 +156,6 @@ var app = new Vue({
         getRandomCard: async function () {
             let response = await fetch(`https://api.scryfall.com/cards/random `, {
                 method: 'GET',
-                // credentials: "include",
             });
             let data = await response.json();
             this.addCardList.push(data)
