@@ -1,32 +1,13 @@
-body {
-    display: inline;
+.v-app-bar-title__content{
+    overflow: visible !important;
 }
-.nav-button{
-
-    cursor: pointer;
+.v-tab::before {
+    border-radius: 5px 5px 0px 0px;
 }
-.nav-button:hover{
-    background-color: rgba(2, 133, 194);
-    color: white;
-}
-li {
-    float: center;
-    align-items: center;
-    background-color: rgba(80,80,80,.5);
-}
-li div {
-    text-decoration: none;
-    margin: 5px 10px;
-    padding: 10px;
-}
-ul{
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    display: flex;
+.v-chip-group--column .v-slide-group__content{
     justify-content: center;
+    padding-left: 4px;
 }
-h1 {
-    border: solid;
+.v-chip-group--column .v-slide-group__content {
+    padding-bottom: 0px;
 }
