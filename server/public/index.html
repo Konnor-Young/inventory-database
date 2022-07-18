@@ -7,16 +7,14 @@
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"/>
   </head>
-  <!-- <style>
-    
-    </style> -->
+
   <body>
     <div id="app">
       <v-app>
         
-        <!-- Page Card -->
+        <!--========= Page Card ==============-->
         <v-card class="overflow-auto">
-            <!-- Nav & Menu bar with image -->
+            <!--===== Nav & Menu bar with image =====-->
             <v-app-bar absolute color="#6A76AB" dark shrink-on-scroll prominent
                         src="https://images.alphacoders.com/265/265693.png" fade-img-on-scroll
                         scroll-target="#scrolling-techniques-3"
@@ -46,7 +44,7 @@
               <v-btn icon>
                 <v-icon>mdi-dots-vertical</v-icon>
               </v-btn>
-              <!-- <v-divider></v-divider> -->
+
               <template v-slot:extension>
                 <!-- For loop going through pages (list of pages) and into tab -->
                 <v-tabs v-for="tab in pages" align-with-title grow hide-slider>
@@ -57,9 +55,10 @@
                   </v-tab>
                 </v-tabs>
               </template>
+
             </v-app-bar>
-        <!-- Main page content in main card component -->
-        <main>
+          <!--====== Main page content in main card component ======-->
+          <main>
           <!-- Change max-height to auto to disable scroll header and remove 2nd scroll -->
           <v-sheet
             id="scrolling-techniques-3"
@@ -67,7 +66,7 @@
             max-height="650">
             <!-- height should adjust based on # of cards being displayed -->
             <v-container class="mt-16 pt-16" style="height: 2000px;">
-              <!-- Inventory Page -->
+              <!--======= Inventory Page =======-->
 
 
               <!-- Old code Delete once finished -->
@@ -89,88 +88,94 @@
                 </div> -->
 
                 <!-- Search Container for Invetory Search-->
-                <v-container fluid>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="8">
-                        <v-text-field outlined label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
-                      </v-col>
-                      <v-col cols="auto">
-                        <v-btn class="mt-2">Submit</v-btn>
-                      </v-col>
-                      <v-col>Search Price</v-col>
-                      <v-col># of Cards</v-col>
-                    </v-row>
-                  </v-container>
-                  <v-virtual-scroll height="500" item-height="250" :cards="addCardList">
-                    <template v-slot:default="{ card }">
+              <v-container fluid v-if="currentPage == 'Inventory'">
+                <v-container>
+                  <v-row>
+                    <v-col cols="8">
+                      <v-text-field outlined label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
+                    </v-col>
+                    <v-col cols="auto">
+                      <v-btn class="mt-2">Submit</v-btn>
+                    </v-col>
+                    <v-col>Search Price</v-col>
+                    <v-col># of Cards</v-col>
+                  </v-row>
+                </v-container>
+                <v-virtual-scroll height="500" item-height="250" :cards="addCardList">
+                    <!-- <template v-slot:default="{ card }">
                       <v-list-item :key="card">
                         
-                    </template>
-                  </v-virtual-scroll>
+                    </template> -->
 
-                  <!-- Card template for inventory display-->
-                  <div v-show="editInventory">
-                    <v-overlay
-                      :z-index="zIndex"
-                      :value="overlay"
-                    >
-                      <v-btn
-                        class="white--text"
-                        color="teal"
-                        @click="overlay = false"
-                      >
-                        Hide Overlay
-                      </v-btn>
-                    </v-overlay>
+                    <!-- Card template for inventory display-->
 
-                  </div>
-                  <div v-for="card, index in uniqueCards">
-                  <v-card width="146" class="mx-4">
-                    <template slot="progress">
-                      <v-progress-linear
-                        color="deep-purple"
-                        height="10"
-                        indeterminate
-                      ></v-progress-linear>
-                    </template>
-                    <!-- Display card img in vuetify card -->
-                    <v-img
-                        height="204"
-                        src="card.image_uris.small"
-                    ></v-img>
-                    <!-- <v-card-text class="pt-1 pb-0">
-                      <v-chip-group
-                        v-model="condition"
-                        active-class="deep-purple accent-4 white--text"
-                        column
-                        class="px-auto">
-                        <v-chip>NM</v-chip>
-                        <v-chip>LP</v-chip>
-                        <v-chip>MP</v-chip>
-                        <v-chip>HP</v-chip>
-                      </v-chip-group>
-                    </v-card-text>
-                    <v-row class="mx-0">
-                    <v-col  cols="6" persistent-hint color="deep-purple lighten-1" class="pr-0 pl-1" >
-                      <v-text-field outlined dense hide-details label="Qty." placeholder="Qty." v-model="quantity" row-height="0"></v-text-field>
-                    </v-col>
-                      <v-card-actions class="pt-0 pl-1 pr-1">
-                        <v-btn
-                          color="deep-purple lighten-2"
-                          text
-                          @click="addToPile()"
-                          class="float-end"
-                        >
-                          Add
-                        </v-btn>
-                      </v-card-actions>
-                    </v-row> -->
-                  </v-card>
+                  <!-- Overlay when card is selected -->
+                  <!-- <div v-show="editInventory">
+                    <div class="overlay-wrapper">
+                       <v-btn
+                         class="white--text"
+                         color="teal"
+                         @click="overlay = false"
+                       >
+                         Hide Overlay
+                       </v-btn>
+                    </div>
+                  </div> -->
+
+                  <div v-for="(card, index) in uniqueCards">
+                   <v-card width="146" class="mx-4">
+                     <template slot="progress">
+                       <v-progress-linear
+                         color="deep-purple"
+                         height="10"
+                         indeterminate
+                       ></v-progress-linear>
+                     </template>
+                     <!-- Display card img in vuetify card -->
+                      <!--card.image_uris.small</v-img>  -->
+                     <v-img
+                         height="204"
+                         src="card"
+                        
+                     ></v-img>
+                     <!-- <v-card-text class="pt-1 pb-0">
+                       <v-chip-group
+                         v-model="condition"
+                         active-class="deep-purple accent-4 white--text"
+                         column
+                         class="px-auto">
+                         <v-chip>NM</v-chip>
+                         <v-chip>LP</v-chip>
+                         <v-chip>MP</v-chip>
+                         <v-chip>HP</v-chip>
+                       </v-chip-group>
+                     </v-card-text>
+                     <v-row class="mx-0">
+                     <v-col  cols="6" persistent-hint color="deep-purple lighten-1" class="pr-0 pl-1" >
+                       <v-text-field outlined dense hide-details label="Qty." placeholder="Qty." v-model="quantity" row-height="0"></v-text-field>
+                     </v-col>
+                       <v-card-actions class="pt-0 pl-1 pr-1">
+                         <v-btn
+                           color="deep-purple lighten-2"
+                           text
+                           @click="addToPile()"
+                           class="float-end"
+                         >
+                           Add
+                         </v-btn>
+                       </v-card-actions>
+                     </v-row> -->
+                   </v-card>
                   </div>  
+                
+                </v-virtual-scroll>
+              </v-container>
+               
 
-                </v-container>
-              </div>
+
+                  
+
+                  
 
               <!-- Vuetify Add Card Page -->
 
@@ -267,7 +272,7 @@
               </li>
             </ul>
           </nav>
-          <!-- Inventory Page -->
+            Inventory Page -->
           <!-- <div id="view-inventory" v-if="currentPage == 'Inventory'">
             View inventory
             <div v-for="card, index in cardList">
@@ -291,11 +296,11 @@
                   <button @click="newCard()">Add to Inventory</button>
                 </div>
             </div>
-          </div>
+          </div> -->
 
           <!-- Add Card Page -->
           <div id="add-card" v-if="currentPage == 'Add Card'">
-            <button @click="addCardSubPage = 'searchCard'" :disabled="addCardSubPage == 'searchCard'">search a card            </button>
+            <button @click="addCardSubPage = 'searchCard'" :disabled="addCardSubPage == 'searchCard'">search a card</button>
             <button @click="addCardSubPage = 'addToPile'" :disabled="addCardSubPage == 'addToPile'">confirm add</button>
             <button @click="addCardSubPage = 'pile'" :disabled="addCardSubPage == 'pile'">my pile</button>
             <div class="search-card" v-if="addCardSubPage == 'searchCard'">
@@ -318,7 +323,7 @@
                 {{ card.name }}
                 <img :src='card.image_uris.small'>
               </div>
-              <!-- <div v-for="cards in pile">{{ cards }}</div> --> -->
+              <!-- <div v-for="cards in pile">{{ cards }}</div> -->
               Name: <input v-model="cardNameInput" type="text">
               Price: $<input v-model="cardPriceInput" type="text">
               <label for="condition">Condition:</label>
@@ -342,7 +347,7 @@
                 <div v-if="updatingOrder == index">
                   Order Number: <input v-model="orderNumber">
                   <button @click="updateOrder(order._id)">Submit Update</button>
-              </div> -->
+              </div> 
 
               <!--View Orders -->
               <div id="view-orders" v-if="currentPage == 'View Orders'">
@@ -371,7 +376,7 @@
                 </div>
                 <div class="pile" v-if="addOrderSubPage == 'pile'">
                   Pile
-                  <!-- <div v-for="card in orders">{{ orderCard }}</div> --> -->
+                  <!-- <div v-for="card in orders">{{ orderCard }}</div> --> 
                   Order Number: <input v-model="orderNumber" type="text">
                   Total Price: $<input v-model="orderPrice" type="text">
                   Direct? <input type="checkbox" v-model="directStatus">
