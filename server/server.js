@@ -13,7 +13,7 @@ app.use(express.static(`${__dirname}/public/`));
 app.get("/cards", async (req, res)=>{
     let uniqueCards;
     try {
-        cardList = await Sku.find({});
+        uniqueCards = await Sku.find({});
     } catch (err) {
         console.log('could not find card list', err);
         res.status(500).json({message: 'cards not found', err: err});
@@ -51,19 +51,19 @@ app.post("/cards", async (req, res)=>{
             tcgid: req.body.tcg_id,
         });
         if (!sku) {
-            sku = Sku.create({
+            sku = await Sku.create({
                 tcgid: req.body.tcg_id,
                 name: req.body.name,
                 set: req.body.set,
                 locations: ['here'],
             });
-            set_sku_uris(sku, req.body[image_uris][small], req.body[image_uris][normal], req.body[image_uris][large], req.body[image_uris][png], req.body[image_uris][boader_crop]);
+            set_sku_uris(sku, req.body.image_uris.small, req.body.image_uris.normal, req.body.image_uris.large, req.body.image_uris.png, req.body.image_uris.boader_crop);
             set_sku_prices(sku, req.body.usd, req.body.usd_foil);
             set_sku_quantity(sku);
             set_sku_art(sku);
         }
         sku = await Sku.findByIdAndUpdate(
-            req.body.tcg_id,
+            sku._id,
             {
                 $push: {
                     cards: {
@@ -82,6 +82,7 @@ app.post("/cards", async (req, res)=>{
         console.log(`could not create`, err);
         res.status(500).json({message: `could not create`, err: err});
     }
+    res.status(200).json(sku);
 });
 app.post("/orders", async (req, res)=>{
     try {

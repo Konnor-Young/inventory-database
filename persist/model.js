@@ -18,7 +18,6 @@ const skuSchema = mongoose.Schema({
     quantity: { type: Map, of: Number },
     locations: { type: [String] },
     cards: { type: [cardSchema] },
-    // store: { type: String },
     art: { type: Map, of: Boolean }
 });
 
@@ -42,7 +41,6 @@ function set_sku_prices (Sku, usd, usd_foil) {
     Sku.price.set('usd', usd);
     Sku.price.set('usd_foil', usd_foil);
 };
-
 // SKU Quantity Keys, Integer
 function set_sku_quantity (Sku) {
     Sku.quantity.set('available', 1);
