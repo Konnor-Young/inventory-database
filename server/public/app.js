@@ -17,31 +17,44 @@ var app = new Vue({
         currentCard: {},
         cardList: [],
         orderList: [],
-        cardNameInput: "",
-        cardPriceInput: "",
-        cardConditionInput: "",
-        orderNumber: 0,
-        orderPrice: '',
+        cardFoil: false,
+        cardCondition: false,
+        cardLocationInput: '',
+        orderNumber: '',
         directStatus: false,
+        cardOrderObject: {},
+        orderStatus: '',
         searchName: '',
         pages: ["Inventory", "Add Card", "View Orders", "Add Order"],
         addCardList: [],
         pileList: [],
+        uniqueCards: ["https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418","https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418","https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418",
+        "https://c1.scryfall.com/file/scryfall-cards/small/front/f/6/f6b5c765-619c-4db9-b509-91892fb65e8f.jpg?1562944692","https://c1.scryfall.com/file/scryfall-cards/small/front/f/6/f6b5c765-619c-4db9-b509-91892fb65e8f.jpg?1562944692",
+        "https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418","https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418","https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418",
+        "https://c1.scryfall.com/file/scryfall-cards/small/front/f/6/f6b5c765-619c-4db9-b509-91892fb65e8f.jpg?1562944692","https://c1.scryfall.com/file/scryfall-cards/small/front/f/6/f6b5c765-619c-4db9-b509-91892fb65e8f.jpg?1562944692"]
     },
     methods: {
-        newCard: function () {
+        newCard: function (cardObject) {
+            let id; 
+            if (cardObject.tcgplayer_id){
+                id = cardObject.tcgplayer_id;
+            }else{ id = cardObject.tcgplayer_etched_id; }
             let newCard = {
-                name: this.cardNameInput,
-                condition: this.cardConditionInput,
-                price: this.cardPriceInput
+                tcg_id: id,
+                name: cardObject.name,
+                set: cardObject.set_name,
+                image_uris: cardObject.image_uris,
+                prices: cardObject.prices,
+                condition: this.cardCondition,
+                foil: this.cardFoil
             };
             this.postCards(newCard);
         },
         newOrder: function () {
             let newOrder = {
                 number: this.orderNumber,
-                price: this.orderPrice,
                 direct: this.directStatus,
+                card: this.cardOrderObject,
             };
             this.postOrder(newOrder);
         },
@@ -53,15 +66,16 @@ var app = new Vue({
             this.updatingCard = card_index;
             this.currentCard = card;
         },
-        updateCard: function (card_id) {
+        //todo
+        updateCard: function (card_id, sku_id) {
             let updatedCard = {
-                condition: this.cardConditionInput
+                location: this.cardLocationInput
             };
-            this.patchCard(updatedCard, card_id);
+            this.patchCard(updatedCard, card_id, sku_id);
         },
         updateOrder: function (order_id) {
             let updatedOrder = {
-              number: this.orderNumber,
+              status: this.orderStatus,
             };
             this.patchOrder(updatedOrder, order_id);
         },
@@ -144,8 +158,8 @@ var app = new Vue({
                 this.getCards();
             }
         },
-        patchCard: async function (update, card_id) {
-            let response = await fetch(`${URL}/cards/${card_id}`, {
+        patchCard: async function (update, card_id, sku_id) {
+            let response = await fetch(`${URL}/cards/${card_id}/${sku_id}`, {
                 method: "PATCH",
                 body: JSON.stringify(update),
                 headers: {
@@ -176,8 +190,8 @@ var app = new Vue({
                 this.getOrders();
             }
         },
-        deleteCard: async function (card_id) {
-            let response = await fetch(`${URL}/cards/${card_id}`, {
+        deleteCard: async function (card_id, sku_id) {
+            let response = await fetch(`${URL}/cards/${card_id}/${sku_id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -186,6 +200,18 @@ var app = new Vue({
             console.log(data);
             if (response.status == 200) {
                 this.getCards();
+            }
+        },
+        deleteCard: async function (order_id) {
+            let response = await fetch(`${URL}/orders/${order_id}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+            let data = await response.json();
+            console.log(response.status);
+            console.log(data);
+            if (response.status == 200) {
+                this.getOrders();
             }
         },
     },

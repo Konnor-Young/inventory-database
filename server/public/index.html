@@ -5,303 +5,259 @@
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="style.css">
+    <title>Inventory App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"/>
   </head>
-  <!-- <style>
-    
-    </style> -->
+
   <body>
     <div id="app">
       <v-app>
-        
-        <!-- Page Card -->
+        <!--========= Page Card ==============-->
         <v-card class="overflow-auto">
-            <!-- Nav & Menu bar with image -->
+            <!--===== Nav & Menu bar with image =====-->
             <v-app-bar absolute color="#6A76AB" dark shrink-on-scroll prominent
                         src="https://images.alphacoders.com/265/265693.png" fade-img-on-scroll
                         scroll-target="#scrolling-techniques-3"
                         app>
-
+              <!-- Gradient Template -->
               <template v-slot:img="{ props }">
                 <v-img v-bind="props"
                 gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)">
                 </v-img>
               </template>
 
-              <v-app-bar-nav-icon></v-app-bar-nav-icon>
+              <!-- PlaceHolder for future expansion menu -->
+              <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
 
               <!-- Current Page title -->
               <v-app-bar-title class="float-left pr-10 ml-2 font-weight-black">{{ currentPage }}</v-app-bar-title>
               
               <v-spacer></v-spacer>
 
-              <v-btn icon>
-                <v-icon>mdi-magnify</v-icon>
+              <v-btn href="mailto:d00439987@dmail.dixie.edu" icon>
+                <v-icon >mdi-face-agent</v-icon>
               </v-btn>
         
               <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
+                <v-icon>mdi-account-box </v-icon>
               </v-btn>
-        
+
               <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
+                <v-icon>mdi-logout</v-icon>
               </v-btn>
-              <!-- <v-divider></v-divider> -->
+
+              <!--=== Template for tabs ===-->
               <template v-slot:extension>
+
                 <!-- For loop going through pages (list of pages) and into tab -->
                 <v-tabs v-for="tab in pages" align-with-title grow hide-slider>
                   <!-- Display component of each tab with on click and highlight after selection -->
                   <v-tab @Click="currentPage = tab" class="rounded-lg rounded-b-0"
-                  v-bind:class="{ 'blue-grey lighten-4 deep-purple--text lighten-3 disabled' : currentPage === tab}"
-                  >{{ tab }}
+                    v-bind:class="{ 'blue-grey lighten-4 deep-purple--text lighten-3 disabled' : currentPage === tab}">
+                    <v-badge
+                      color="green"
+                      content="6">
+                    {{ tab }}
+                    </v-badge>
                   </v-tab>
                 </v-tabs>
+
               </template>
+
             </v-app-bar>
-        <!-- Main page content in main card component -->
-        <main>
+
+          <!--====== Main page content in main card component ======-->
+          <main>
           <!-- Change max-height to auto to disable scroll header and remove 2nd scroll -->
-          <v-sheet
-            id="scrolling-techniques-3"
-            class="overflow-y-auto mt-16 pt-16"
-            max-height="650">
-            <!-- height should adjust based on # of cards being displayed -->
-            <v-container class="mt-16 pt-16" style="height: 2000px;">
-              <!-- Inventory Page -->
-              <div id="view-inventory" v-if="currentPage == 'Inventory'">
-                View inventory
-                <div v-for="card, index in cardList">
-                  <h1>Name: </h1>{{ card.name }}
-                  Condition: {{ card.condition }}
-                  <button @click="editCard(card, index)">Update Card</button>
-                    <div v-if="updatingCard == index">
-                      <label for="condition">Condition:</label>
-                      <select name="condition" v-model="cardConditionInput">
-                        <option value="nm">nm</option>
-                        <option value="lp">lp</option>
-                        <option value="mp">mp</option>
-                        <option value="hp">hp</option>
-                      </select>
-                      <button @click="updateCard(card._id)">Submit Update</button>
-                    </div>
-                </div>
-              </div>
+            <v-sheet
+              id="scrolling-techniques-3"
+              class="overflow-y-auto mt-16 pt-16"
+              max-height="650">
+              <!-- height should adjust based on # of cards being displayed -->
+              <v-container class="mt-16 pt-16" style="height: 650px;">
 
-              <!-- Vuetify Add Card Page -->
+                <!--======= Inventory Page =======-->
 
-              <v-card v-if="currentPage == 'Add Card'" class="mx-1">
-                <v-tabs grow optional slider-color="deep-purple lighten-2" class="rounded-lg blue-grey lighten-1">
-                  <v-tab @Click="addCardSubPage = Search" class="rounded-lg"
-                  active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled"
-                  >Search</v-tab>
-                  <!-- <v-tab @Click="addCardSubPage = Deck" class="rounded-lg mx-2"
-                  active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled"
-                  >Deck</v-tab> -->
-                  <v-tab @Click="addCardSubPage = Pile" class="rounded-lg"
-                  active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled"
-                  >Pile</v-tab>
-                </v-tabs>
-                <!-- Search subPage v-if="addCardSubPage = Search"-->
-
-                <v-container fluid>
+                <!-- Search Container for Invetory Page-->
+                <v-container v-if="currentPage == 'Inventory'">
+                  <!-- Container for Inventory Search Area -->
                   <v-container>
                     <v-row>
-                      <v-col cols="8">
-                        <v-text-field outlined label="Search for a Card" placeholder="Magic the Gathering Cards Only"></v-text-field>
+                      <v-col>
+                        <!-- Search Inventory Text Input field -->
+                        <v-text-field outlined  hide-details label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
                       </v-col>
-                      <v-col cols="auto">
+                      <v-col>
+                        <!-- Submit Inventory Search Button-->
                         <v-btn class="mt-2">Submit</v-btn>
                       </v-col>
-                      <v-col cols="auto">
-                        <v-btn class="mt-2" @Click="getRandomCard()">Feeling Lucky</v-btn>
+                      <!-- Fun Data to Display -->
+                      <v-col>
+                        <v-icon>
+                          mdi-currency-usd
+                        </v-icon>
+                      </v-col>
+                      <v-col>
+                        <v-icon>
+                          mdi-cards-outline
+                        </v-icon>
+                        <h2>5</h2>
                       </v-col>
                     </v-row>
                   </v-container>
-                  <v-virtual-scroll height="500" item-height="250" :cards="addCardList">
-                    <template v-slot:default="{ card }">
-                      <v-list-item :key="card">
-                        
-                    </template>
-                  </v-virtual-scroll>
-                  <v-card width="146" class="mx-4">
-                    <template slot="progress">
-                      <v-progress-linear
-                        color="deep-purple"
-                        height="10"
-                        indeterminate
-                      ></v-progress-linear>
-                    </template>
-                    <v-img
-                        height="204"
-                        src="https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418"
-                    ></v-img>
-                    <v-card-text class="pt-1 pb-0">
-                      <v-chip-group
-                        v-model="condition"
-                        active-class="deep-purple accent-4 white--text"
-                        column
-                        class="px-auto">
-                        <v-chip>NM</v-chip>
-                        <v-chip>LP</v-chip>
-                        <v-chip>MP</v-chip>
-                        <v-chip>HP</v-chip>
-                      </v-chip-group>
-                    </v-card-text>
-                    <v-row class="mx-0">
-                    <v-col  cols="6" persistent-hint color="deep-purple lighten-1" class="pr-0 pl-1" >
-                      <v-text-field outlined dense hide-details label="Qty." placeholder="Qty." v-model="quantity" row-height="0"></v-text-field>
+                  <!-- Search Results displayed using small image uri from scryfall -->
+                  <v-row>
+                    <v-col class="pr-0 pl-3" cols="auto" align-self v-for="item, index in this.uniqueCards">                      
+                      <v-card min-width="146" class="mx-4">
+                        <!-- Display card img in vuetify card -->
+                          <!--card.image_uris.small</v-img>  -->
+                        <v-img
+                            height="204"
+                            :src="item"
+                            contain>
+                        </v-img>
+                
+                      </v-card>
                     </v-col>
-                      <v-card-actions class="pt-0 pl-1 pr-1">
-                        <v-btn
-                          color="deep-purple lighten-2"
-                          text
-                          @click="addToPile()"
-                          class="float-end"
-                        >
-                          Add
-                        </v-btn>
-                      </v-card-actions>
-                    </v-row>
-                  </v-card>
-
-
+                  </v-row>  
                 </v-container>
-              </v-card>
 
-              <!-- Add Card Page -->
-              <!-- <div id="add-card" v-if="currentPage == 'Add Card'">
-                <button @click="addCardSubPage = 'searchCard'" :disabled="addCardSubPage == 'searchCard'">search a card</button>
-                <button @click="addCardSubPage = 'addToPile'" :disabled="addCardSubPage == 'addToPile'">confirm add</button>
-                <button @click="addCardSubPage = 'pile'" :disabled="addCardSubPage == 'pile'">my pile</button>
-                <div class="search-card" v-if="addCardSubPage == 'searchCard'">
-                  Search Card
-                </div>
-                <div class="add-to-pile" v-if="addCardSubPage == 'addToPile'">
-                  Add To Pile
-                </div>
-<<<<<<< HEAD
-              </li>
-            </ul>
-          </nav>
-          <!-- Inventory Page -->
-          <div id="view-inventory" v-if="currentPage == 'Inventory'">
-            View inventory
-            <div v-for="card, index in cardList">
-              <h1>Name: </h1>{{ card.name }}
-              Condition: {{ card.condition }}
-              <button @click="editCard(card, index)">Update Card</button>
-              <button @click="deleteCard(card._id)">Remove Card</button>
-                <div v-if="updatingCard == index">
-=======
-                <div class="pile" v-if="addCardSubPage == 'pile'">
-                  Pile -->
-                  <!-- <div v-for="cards in pile">{{ cards }}</div> -->
-                  <!-- Name: <input v-model="cardNameInput" type="text">
-                  Price: $<input v-model="cardPriceInput" type="text">
->>>>>>> origin/jpl-vuetify
-                  <label for="condition">Condition:</label>
-                  <select name="condition" v-model="cardConditionInput">
-                    <option value="nm">nm</option>
-                    <option value="lp">lp</option>
-                    <option value="mp">mp</option>
-                    <option value="hp">hp</option>
-                  </select>
-                  <button @click="newCard()">Add to Inventory</button>
-                </div>
-<<<<<<< HEAD
-            </div>
-          </div>
+                <!--===== Vuetify Add Card Page =====-->
 
-          <!-- Add Card Page -->
-          <div id="add-card" v-if="currentPage == 'Add Card'">
-            <button @click="addCardSubPage = 'searchCard'" :disabled="addCardSubPage == 'searchCard'">search a card            </button>
-            <button @click="addCardSubPage = 'addToPile'" :disabled="addCardSubPage == 'addToPile'">confirm add</button>
-            <button @click="addCardSubPage = 'pile'" :disabled="addCardSubPage == 'pile'">my pile</button>
-            <div class="search-card" v-if="addCardSubPage == 'searchCard'">
-              Search Card <br>
-              Name: <input v-model="searchName" type="text">
-              <button @click="getSearch">Search</button>
-            </div>
-            <div class="add-to-pile" v-if="addCardSubPage == 'addToPile'">
-              Add To Pile <br>
-              <div v-for="card, index in searchResults">
-                {{ card.name }}
-                <img :src='card.image_uris.small'>
-                <!-- <input type="checkbox" v-model="isFoil"> foil -->
-                <button @click="addToPile(card)">Add to Pile</button>
-              </div>
-            </div>
-            <div class="pile" v-if="addCardSubPage == 'pile'">
-              Pile
-              <div v-for="card, index in searchPile">
-                {{ card.name }}
-                <img :src='card.image_uris.small'>
-              </div>
-              <!-- <div v-for="cards in pile">{{ cards }}</div> --> -->
-              Name: <input v-model="cardNameInput" type="text">
-              Price: $<input v-model="cardPriceInput" type="text">
-              <label for="condition">Condition:</label>
-              <select name="condition" v-model="cardConditionInput">
-                <option value="nm">nm</option>
-                <option value="lp">lp</option>
-                <option value="mp">mp</option>
-                <option value="hp">hp</option>
-              </select>
-              <button @click="newCard()">Add to Inventory</button>
-            </div>
-          </div>
+                <!--=== Add Card Page Vuetify Card ===-->
+                <v-card v-if="currentPage == 'Add Card'" class="mx-1">
+                  <!--= Sub Menu with Search/*Deck/Pile-Cart -->
+                  <v-tabs grow optional slider-color="deep-purple lighten-2" class="rounded-lg blue-grey lighten-1">
 
-          <!-- View Orders --->
-          <div id="view-orders" v-if="currentPage == 'View Orders'">
-            View Orders
-            <div v-for="order, index in orderList">
-                Order Number: {{ order.number }}
-                Price: ${{ order.price.$numberDecimal }}
-                <button @click="editOrder(order, index)">Update Order</button>
-                <div v-if="updatingOrder == index">
-                  Order Number: <input v-model="orderNumber">
-                  <button @click="updateOrder(order._id)">Submit Update</button>
-=======
-              </div> -->
+                    <v-tab @Click="addCardSubPage = Search" class="rounded-lg"
+                      active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
+                      Search
+                    </v-tab>
 
-              <!--View Orders -->
-              <div id="view-orders" v-if="currentPage == 'View Orders'">
-                View Orders
+                    <!-- <v-tab @Click="addCardSubPage = Deck" class="rounded-lg mx-2"
+                      active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
+                      Deck
+                      </v-tab> -->
+
+                    <v-tab @Click="addCardSubPage = Pile" class="rounded-lg"
+                      active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
+                      Pile
+                    </v-tab>
+
+                  </v-tabs>
+                  <!--= Search subPage  =-->
+                  <v-container v-if="addCardSubPage == Search">
+                    <!-- Search field container -->
+                    <v-container>
+                      <v-row>
+                        <v-col cols="6">
+                          <v-text-field outlined label="Search for a Card" placeholder="Magic the Gathering Cards Only"></v-text-field>
+                        </v-col>
+                        <v-col cols="auto">
+                          <v-btn class="mt-2">Submit</v-btn>
+                        </v-col>
+                        <v-col cols="auto">
+                          <v-btn class="mt-2" @Click="getRandomCard()">Feeling Lucky</v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                    <!-- Area to display search results for add card -->
+                    <v-row>
+                      <!--****** the v-for of the search results list will go here -->
+                      <v-col>
+                        <!--****** Card template that will be displayed by v-for -->
+                        <v-card width="146" class="mx-4">
+
+                          <template slot="progress">
+                            <v-progress-linear
+                              color="deep-purple"
+                              height="10"
+                              indeterminate
+                            ></v-progress-linear>
+                          </template>
+
+                          <v-img
+                              height="204"
+                              src="https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418">
+                          </v-img>
+
+                          <v-card-text class="pt-1 pb-0">
+                            <v-chip-group
+                              v-model="condition"
+                              active-class="deep-purple accent-4 white--text"
+                              column
+                              class="px-auto">
+                              <v-chip>NM</v-chip>
+                              <v-chip>LP</v-chip>
+                              <v-chip>MP</v-chip>
+                              <v-chip>HP</v-chip>
+                            </v-chip-group>
+                          </v-card-text>
+
+                          <v-row class="mx-0">
+                            <v-col  cols="6" persistent-hint color="deep-purple lighten-1" class="pr-0 pl-1" >
+                              <v-text-field 
+                                outlined 
+                                dense 
+                                hide-details 
+                                label="Qty." 
+                                placeholder="Qty." 
+                                v-model="quantity" 
+                                row-height="0">
+                              </v-text-field>
+                            </v-col>
+
+                            <v-card-actions class="pt-0 pl-1 pr-1">
+                              <v-btn
+                                color="deep-purple lighten-2"
+                                text
+                                @click="addToPile()"
+                                class="float-end">
+                                Add
+                              </v-btn>
+                            </v-card-actions>
+                          </v-row>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card>
+
+                <!--=== View Orders ===--->
+                <div id="view-orders" v-if="currentPage == 'View Orders'">
+                  View Orders
                 <div v-for="order, index in orderList">
-                    Order Number: {{ order.number }}
-                    Price: ${{ order.price.$numberDecimal }}
-                    <button @click="editOrder(order, index)">Update Order</button>
-                    <div v-if="updatingOrder == index">
-                      Order Number: <input placeholder="orderNumber" v-model="orderNumber">
-                      <button @click="updateOrder(order._id)">Submit Update</button>
-                    </div>
->>>>>>> origin/jpl-vuetify
-                </div>
-              </div>
+                  Order Number: {{ order.number }}
+                  Price: ${{ order.price.$numberDecimal }}
+                  <button @click="editOrder(order, index)">Update Order</button>
+                  <div v-if="updatingOrder == index">
+                    Order Number: <input v-model="orderNumber">
+                    <button @click="updateOrder(order._id)">Submit Update</button>
+                </div> 
 
-              <!-- Add Order Page -->
-              <div id="add-orders" v-if="currentPage == 'Add Order'">
-                <button @click="addOrderSubPage = 'searchCard'" :disabled="addOrderSubPage == 'searchCard'">search an order</button>
-                <button @click="addOrderSubPage = 'addToPile'" :disabled="addOrderSubPage == 'addToPile'">confirm add</button>
-                <button @click="addOrderSubPage = 'pile'" :disabled="addOrderSubPage == 'pile'">my pile</button>
-                <div class="search-card" v-if="addOrderSubPage == 'searchCard'">
-                  Search Card
+                <!--=== Add Order Page ===-->
+                <div id="add-orders" v-if="currentPage == 'Add Order'">
+                  <button @click="addOrderSubPage = 'searchCard'" :disabled="addOrderSubPage == 'searchCard'">search an order</button>
+                  <button @click="addOrderSubPage = 'addToPile'" :disabled="addOrderSubPage == 'addToPile'">confirm add</button>
+                  <button @click="addOrderSubPage = 'pile'" :disabled="addOrderSubPage == 'pile'">my pile</button>
+                  <div class="search-card" v-if="addOrderSubPage == 'searchCard'">
+                    Search Card
+                  </div>
+                  <div class="add-to-pile" v-if="addOrderSubPage == 'addToPile'">
+                    Add To Pile
+                  </div>
+                  <div class="pile" v-if="addOrderSubPage == 'pile'">
+                    Pile
+                    <!-- <div v-for="card in orders">{{ orderCard }}</div> --> 
+                    Order Number: <input v-model="orderNumber" type="text">
+                    Total Price: $<input v-model="orderPrice" type="text">
+                    Direct? <input type="checkbox" v-model="directStatus">
+                    <button @click="newOrder()">Add to Inventory</button>
+                  </div>
                 </div>
-                <div class="add-to-pile" v-if="addOrderSubPage == 'addToPile'">
-                  Add To Pile
-                </div>
-                <div class="pile" v-if="addOrderSubPage == 'pile'">
-                  Pile
-                  <!-- <div v-for="card in orders">{{ orderCard }}</div> --> -->
-                  Order Number: <input v-model="orderNumber" type="text">
-                  Total Price: $<input v-model="orderPrice" type="text">
-                  Direct? <input type="checkbox" v-model="directStatus">
-                  <button @click="newOrder()">Add to Inventory</button>
-                </div>
-              </div>
-            </v-container>
-          </v-sheet>
-        </main>
+              </v-container>
+            </v-sheet>
+          </main>
         </v-card>
       </v-app>
     </div>
