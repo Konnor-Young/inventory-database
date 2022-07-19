@@ -24,7 +24,7 @@ const skuSchema = mongoose.Schema({
 const orderSchema = mongoose.Schema({
     number: { type: String },
     direct: { type: Boolean },
-    card: { type: Map, of: Number },
+    card: { type: Map },
     status: { type: String, enum: ['standing', 'pulling', 'shipped'] },
 });
 

@@ -82,7 +82,7 @@ app.post("/orders", async (req, res) => {
             number: req.body.number,
             direct: req.body.direct,
             card: req.body.order,
-            status: standing,
+            status: 'standing',
         });
         res.status(201).json(order);
     } catch (err) {

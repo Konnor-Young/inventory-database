@@ -159,7 +159,7 @@ var app = new Vue({
             }
         },
         patchCard: async function (update, card_id, sku_id) {
-            let response = await fetch(`${URL}/cards/${card_id}/${sku_id}`, {
+            let response = await fetch(`${URL}/skus/${sku_id}/cards/${card_id}`, {
                 method: "PATCH",
                 body: JSON.stringify(update),
                 headers: {
@@ -191,7 +191,7 @@ var app = new Vue({
             }
         },
         deleteCard: async function (card_id, sku_id) {
-            let response = await fetch(`${URL}/cards/${card_id}/${sku_id}`, {
+            let response = await fetch(`${URL}/skus/${sku_id}/cards/${card_id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
