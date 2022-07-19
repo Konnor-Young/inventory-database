@@ -5,12 +5,12 @@ const cardSchema = mongoose.Schema({
     foil: { type: String, enum: ['None', 'Foil'] },
     condition: { type: String, enum:['nm', 'lp', 'mp', 'hp', 'dmg'] },
     price: { type: String },
-    tcgid: { type: String },
+    tcg_id: { type: String },
     local_image: { type: String },
 });
 
 const skuSchema = mongoose.Schema({
-    tcgid: { type: String },
+    tcg_id: { type: String },
     name: { type: String },
     set: { type: String },
     image_uris: { type: Map, of: String },

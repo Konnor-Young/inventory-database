@@ -17,9 +17,8 @@ var app = new Vue({
         currentCard: {},
         cardList: [],
         orderList: [],
-        cardNameInput: "",
-        cardPriceInput: "",
-        cardConditionInput: "",
+        cardFoil: false,
+        cardCondition: false,
         orderNumber: 0,
         orderPrice: '',
         directStatus: false,
@@ -33,14 +32,23 @@ var app = new Vue({
         "https://c1.scryfall.com/file/scryfall-cards/small/front/f/6/f6b5c765-619c-4db9-b509-91892fb65e8f.jpg?1562944692","https://c1.scryfall.com/file/scryfall-cards/small/front/f/6/f6b5c765-619c-4db9-b509-91892fb65e8f.jpg?1562944692"]
     },
     methods: {
-        newCard: function () {
+        newCard: function (cardObject) {
+            let id; 
+            if (cardObject.tcgplayer_id){
+                id = cardObject.tcgplayer_id;
+            }else{ id = cardObject.tcgplayer_etched_id; }
             let newCard = {
-                name: this.cardNameInput,
-                condition: this.cardConditionInput,
-                price: this.cardPriceInput
+                tcg_id: id,
+                name: cardObject.name,
+                set: cardObject.set_name,
+                image_uris: cardObject.image_uris,
+                prices: cardObject.prices,
+                condition: this.cardCondition,
+                foil: this.cardFoil
             };
             this.postCards(newCard);
         },
+        //todo
         newOrder: function () {
             let newOrder = {
                 number: this.orderNumber,
@@ -57,12 +65,14 @@ var app = new Vue({
             this.updatingCard = card_index;
             this.currentCard = card;
         },
+        //todo
         updateCard: function (card_id) {
             let updatedCard = {
                 condition: this.cardConditionInput
             };
             this.patchCard(updatedCard, card_id);
         },
+        //todo
         updateOrder: function (order_id) {
             let updatedOrder = {
               number: this.orderNumber,
@@ -148,6 +158,7 @@ var app = new Vue({
                 this.getCards();
             }
         },
+        //todo
         patchCard: async function (update, card_id) {
             let response = await fetch(`${URL}/cards/${card_id}`, {
                 method: "PATCH",
@@ -180,6 +191,7 @@ var app = new Vue({
                 this.getOrders();
             }
         },
+        //todo
         deleteCard: async function (card_id) {
             let response = await fetch(`${URL}/cards/${card_id}`, {
                 method: 'DELETE',
@@ -190,6 +202,18 @@ var app = new Vue({
             console.log(data);
             if (response.status == 200) {
                 this.getCards();
+            }
+        },
+        deleteCard: async function (order_id) {
+            let response = await fetch(`${URL}/orders/${order_id}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+            let data = await response.json();
+            console.log(response.status);
+            console.log(data);
+            if (response.status == 200) {
+                this.getOrders();
             }
         },
     },
