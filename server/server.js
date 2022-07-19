@@ -1,20 +1,20 @@
 const express = require(`express`);
 const app = express();
 const cors = require(`cors`);
-const { Card, Order } = require(`../persist/model`);
+const { Card, Order, Sku, } = require(`../persist/model`);
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public/`));
 
 app.get("/cards", async (req, res)=>{
-    let cardList;
+    let uniqueCards;
     try {
-        cardList = await Card.find({});
+        uniqueCards = await Sku.find({});
     } catch (err) {
         console.log('could not find card list', err);
         res.status(500).json({message: 'cards not found', err: err});
     }
-    res.status(200).json(cardList);
+    res.status(200).json(uniqueCards);
 });
 app.get("/orders", async (req, res)=>{
     let orderList;
@@ -27,18 +27,61 @@ app.get("/orders", async (req, res)=>{
     res.status(200).json(orderList);
 });
 
+// app.post("/cards", async (req, res)=>{
+//     try {
+//         let card = Card.create({
+//             name: req.body.name,
+//             condition: req.body.condition,
+//             price: req.body.price
+//         });
+//         res.status(201).json(card);
+//     } catch (err) {
+//         console.log(`could not create`, err);
+//         res.status(500).json({message: `could not create`, err: err});
+//     }
+// });
 app.post("/cards", async (req, res)=>{
+    let sku;
     try {
-        let card = Card.create({
-            name: req.body.name,
-            condition: req.body.condition,
-            price: req.body.price
+        sku = await Sku.findOne({
+            tcgid: req.body.tcg_id,
         });
-        res.status(201).json(card);
+        if (!sku) {
+            sku = await Sku.create({
+                tcgid: req.body.tcg_id,
+                name: req.body.name,
+                set: req.body.set,
+                locations: ['here'],
+                image_uris: { small: req.body.image_uris.small, normal: req.body.image_uris.normal,
+                    large: req.body.image_uris.large, png: req.body.image_uris.png, 
+                    border_crop: req.body.image_uris.border_crop },
+                price: { usd: req.body.prices.usd, usd_foil: req.body.prices.usd_foil },
+                quantity: { available: 1, reserved: 0, physical: 1 },
+                art: { borderless: false, textless: false, etched: false, full_art: false,
+                    promo: false, oversized: false }
+            });
+        }
+        sku = await Sku.findByIdAndUpdate(
+            sku._id,
+            {
+                $push: {
+                    cards: {
+                        location: 'here',
+                        foil: false,
+                        condition: req.body.condition,
+                        price: 'price',
+                        tcgid: req.body.tcg_id,
+                        local_image: req.body.image_uris.large,
+                    },
+                },
+            },
+            {new: true,}
+        );
     } catch (err) {
         console.log(`could not create`, err);
         res.status(500).json({message: `could not create`, err: err});
     }
+    res.status(200).json(sku);
 });
 app.post("/orders", async (req, res)=>{
     try {
@@ -53,23 +96,23 @@ app.post("/orders", async (req, res)=>{
         res.status(500).json({message: `could not create`, err: err});
     }
 });
-app.patch("/cards/:id", async (req, res)=>{
-    let card;
-    try {
-        card = await Card.findByIdAndUpdate(req.params.id, req.body, {new: true});
-        if (!card) {
-            res.status(404).json({
-              message: "Card Not Found!",
-            });
-            return;
-        } else {
-            res.status(201).json(card);
-        }
-    } catch (err) {
-        console.log(`could not find`, err);
-        res.status(500).json({message: `could not create`, err: err});
-    }
-});
+// app.patch("/cards/:id", async (req, res)=>{
+//     let card;
+//     try {
+//         card = await Card.findByIdAndUpdate(req.params.id, req.body, {new: true});
+//         if (!card) {
+//             res.status(404).json({
+//               message: "Card Not Found!",
+//             });
+//             return;
+//         } else {
+//             res.status(201).json(card);
+//         }
+//     } catch (err) {
+//         console.log(`could not find`, err);
+//         res.status(500).json({message: `could not create`, err: err});
+//     }
+// });
 app.patch("/orders/:id", async (req, res)=>{
     let order;
     try {
@@ -90,7 +133,7 @@ app.patch("/orders/:id", async (req, res)=>{
 app.delete(`/cards/:id`, async (req, res)=>{
     let card;
     try{
-        card = await Card.findByIdAndDelete(req.params.id);
+        card = await Sku.findByIdAndDelete(req.params.id);
         if(!card){
             res.status(404).json({message: `card not found`});
             return;
