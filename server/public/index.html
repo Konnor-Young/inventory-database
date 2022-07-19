@@ -107,13 +107,12 @@
                   </v-container>
                   <!-- Search Results displayed using small image uri from scryfall -->
                   <v-row>
-                    <v-col class="pr-0 pl-3" cols="auto" align-self v-for="item, index in this.uniqueCards">                      
+                    <v-col class="pr-0 pl-3" cols="auto" v-for="item, index in cardList">                      
                       <v-card min-width="146" class="mx-4">
-                        <!-- Display card img in vuetify card -->
-                          <!--card.image_uris.small</v-img>  -->
+
                         <v-img
                             height="204"
-                            :src="item"
+                            :src="item.image_uris.small"
                             contain>
                         </v-img>
                 
@@ -129,7 +128,7 @@
                   <!--= Sub Menu with Search/*Deck/Pile-Cart -->
                   <v-tabs grow optional slider-color="deep-purple lighten-2" class="rounded-lg blue-grey lighten-1">
 
-                    <v-tab @Click="addCardSubPage = Search" class="rounded-lg"
+                    <v-tab @Click="addCardSubPage = 'Search'" class="rounded-lg"
                       active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
                       Search
                     </v-tab>
@@ -139,22 +138,23 @@
                       Deck
                       </v-tab> -->
 
-                    <v-tab @Click="addCardSubPage = Pile" class="rounded-lg"
+                    <v-tab @Click="addCardSubPage = 'Pile'" class="rounded-lg"
                       active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
                       Pile
                     </v-tab>
 
                   </v-tabs>
                   <!--= Search subPage  =-->
-                  <v-container v-if="addCardSubPage == Search">
+                  <v-container v-if="addCardSubPage == 'Search'">
                     <!-- Search field container -->
                     <v-container>
                       <v-row>
                         <v-col cols="6">
-                          <v-text-field outlined label="Search for a Card" placeholder="Magic the Gathering Cards Only"></v-text-field>
+                          <v-text-field outlined label="Search for a Card" placeholder="Magic the Gathering Cards Only"
+                          v-model="searchName"></v-text-field>
                         </v-col>
                         <v-col cols="auto">
-                          <v-btn class="mt-2">Submit</v-btn>
+                          <v-btn class="mt-2" @Click="getSearch()">Submit</v-btn>
                         </v-col>
                         <v-col cols="auto">
                           <v-btn class="mt-2" @Click="getRandomCard()">Feeling Lucky</v-btn>
@@ -164,7 +164,7 @@
                     <!-- Area to display search results for add card -->
                     <v-row>
                       <!--****** the v-for of the search results list will go here -->
-                      <v-col>
+                      <v-col v-for="result in searchResults">
                         <!--****** Card template that will be displayed by v-for -->
                         <v-card width="146" class="mx-4">
 
@@ -178,7 +178,7 @@
 
                           <v-img
                               height="204"
-                              src="https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418">
+                              :src="result.image_uris.small">
                           </v-img>
 
                           <v-card-text class="pt-1 pb-0">
