@@ -54,7 +54,11 @@
                   <!-- Display component of each tab with on click and highlight after selection -->
                   <v-tab @Click="currentPage = tab" class="rounded-lg rounded-b-0"
                     v-bind:class="{ 'blue-grey lighten-4 deep-purple--text lighten-3 disabled' : currentPage === tab}">
+                    <v-badge
+                      color="green"
+                      content="6">
                     {{ tab }}
+                    </v-badge>
                   </v-tab>
                 </v-tabs>
 
@@ -88,7 +92,11 @@
                         <v-btn class="mt-2">Submit</v-btn>
                       </v-col>
                       <!-- Fun Data to Display -->
-                      <v-col>Search Price</v-col>
+                      <v-col>
+                        <v-icon>
+                          mdi-currency-usd
+                        </v-icon>
+                      </v-col>
                       <v-col>
                         <v-icon>
                           mdi-cards-outline
@@ -215,7 +223,7 @@
                   </v-container>
                 </v-card>
 
-                <!--===== View Orders =====--->
+                <!--=== View Orders ===--->
                 <div id="view-orders" v-if="currentPage == 'View Orders'">
                   View Orders
                 <div v-for="order, index in orderList">
@@ -227,7 +235,7 @@
                     <button @click="updateOrder(order._id)">Submit Update</button>
                 </div> 
 
-                <!-- Add Order Page -->
+                <!--=== Add Order Page ===-->
                 <div id="add-orders" v-if="currentPage == 'Add Order'">
                   <button @click="addOrderSubPage = 'searchCard'" :disabled="addOrderSubPage == 'searchCard'">search an order</button>
                   <button @click="addOrderSubPage = 'addToPile'" :disabled="addOrderSubPage == 'addToPile'">confirm add</button>
