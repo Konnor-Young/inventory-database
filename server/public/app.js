@@ -19,9 +19,11 @@ var app = new Vue({
         orderList: [],
         cardFoil: false,
         cardCondition: false,
-        orderNumber: 0,
-        orderPrice: '',
+        cardLocationInput: '',
+        orderNumber: '',
         directStatus: false,
+        cardOrderObject: {},
+        orderStatus: '',
         searchName: '',
         pages: ["Inventory", "Add Card", "View Orders", "Add Order"],
         addCardList: [],
@@ -48,12 +50,11 @@ var app = new Vue({
             };
             this.postCards(newCard);
         },
-        //todo
         newOrder: function () {
             let newOrder = {
                 number: this.orderNumber,
-                price: this.orderPrice,
                 direct: this.directStatus,
+                card: this.cardOrderObject,
             };
             this.postOrder(newOrder);
         },
@@ -66,16 +67,15 @@ var app = new Vue({
             this.currentCard = card;
         },
         //todo
-        updateCard: function (card_id) {
+        updateCard: function (card_id, sku_id) {
             let updatedCard = {
-                condition: this.cardConditionInput
+                location: this.cardLocationInput
             };
-            this.patchCard(updatedCard, card_id);
+            this.patchCard(updatedCard, card_id, sku_id);
         },
-        //todo
         updateOrder: function (order_id) {
             let updatedOrder = {
-              number: this.orderNumber,
+              status: this.orderStatus,
             };
             this.patchOrder(updatedOrder, order_id);
         },
@@ -158,9 +158,8 @@ var app = new Vue({
                 this.getCards();
             }
         },
-        //todo
-        patchCard: async function (update, card_id) {
-            let response = await fetch(`${URL}/cards/${card_id}`, {
+        patchCard: async function (update, card_id, sku_id) {
+            let response = await fetch(`${URL}/cards/${card_id}/${sku_id}`, {
                 method: "PATCH",
                 body: JSON.stringify(update),
                 headers: {
@@ -191,9 +190,8 @@ var app = new Vue({
                 this.getOrders();
             }
         },
-        //todo
-        deleteCard: async function (card_id) {
-            let response = await fetch(`${URL}/cards/${card_id}`, {
+        deleteCard: async function (card_id, sku_id) {
+            let response = await fetch(`${URL}/cards/${card_id}/${sku_id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
