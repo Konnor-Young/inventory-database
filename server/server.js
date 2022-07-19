@@ -129,6 +129,7 @@ app.patch("/orders/:id", async (req, res) => {
 app.delete(`/skus/:sku_id/cards/:card_id`, async (req, res) => {
     // let card;
     let sku;
+    let check;
     // try {
     //     sku = await Sku.findOne({
     //         _id: req.params.sku_id,
@@ -155,7 +156,11 @@ app.delete(`/skus/:sku_id/cards/:card_id`, async (req, res) => {
             },
         },
     });
-
+    check = await Sku.findById(req.params.sku_id);
+    if (check.cards.length == 0) {
+        sku = await Sku.findByIdAndDelete(req.params.sku_id);
+    }
+    // check = await Sku.findById(req.params.sku_id)
     // if (!sku.cards) {
     //     sku = await Sku.findByIdAndDelete(req.params.id);
     // }
@@ -169,14 +174,14 @@ app.delete(`/skus/:sku_id/cards/:card_id`, async (req, res) => {
 });
 
 app.delete(`/orders/:id`, async (req, res) => {
-    let card;
+    let order;
     try {
         order = await Order.findByIdAndDelete(req.params.id);
         if (!order) {
             res.status(404).json({ message: `order not found` });
             return;
         }
-        res.status(200).json(card);
+        res.status(200).json(order);
     } catch (err) {
         console.log(`could not delete`, err);
         res.status(500).json({ message: `could not delete`, err: err });
