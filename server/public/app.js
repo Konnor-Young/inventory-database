@@ -27,6 +27,10 @@ var app = new Vue({
         pages: ["Inventory", "Add Card", "View Orders", "Add Order"],
         addCardList: [],
         pileList: [],
+        uniqueCards: ["https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418","https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418","https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418",
+        "https://c1.scryfall.com/file/scryfall-cards/small/front/f/6/f6b5c765-619c-4db9-b509-91892fb65e8f.jpg?1562944692","https://c1.scryfall.com/file/scryfall-cards/small/front/f/6/f6b5c765-619c-4db9-b509-91892fb65e8f.jpg?1562944692",
+        "https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418","https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418","https://c1.scryfall.com/file/scryfall-cards/small/front/2/e/2eb1a9f7-32ba-48fd-a7f7-788b0ec052c6.jpg?1562784418",
+        "https://c1.scryfall.com/file/scryfall-cards/small/front/f/6/f6b5c765-619c-4db9-b509-91892fb65e8f.jpg?1562944692","https://c1.scryfall.com/file/scryfall-cards/small/front/f/6/f6b5c765-619c-4db9-b509-91892fb65e8f.jpg?1562944692"]
     },
     methods: {
         newCard: function () {
