@@ -1,11 +1,7 @@
 const express = require(`express`);
 const app = express();
 const cors = require(`cors`);
-const { Card, Order, Sku, 
-    set_sku_uris, 
-    set_sku_prices,
-    set_sku_quantity,
-    set_sku_art, } = require(`../persist/model`);
+const { Card, Order, Sku, } = require(`../persist/model`);
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public/`));
@@ -56,11 +52,14 @@ app.post("/cards", async (req, res)=>{
                 name: req.body.name,
                 set: req.body.set,
                 locations: ['here'],
+                image_uris: { small: req.body.image_uris.small, normal: req.body.image_uris.normal,
+                    large: req.body.image_uris.large, png: req.body.image_uris.png, 
+                    border_crop: req.body.image_uris.border_crop },
+                price: { usd: req.body.prices.usd, usd_foil: req.body.prices.usd_foil },
+                quantity: { available: 1, reserved: 0, physical: 1 },
+                art: { borderless: false, textless: false, etched: false, full_art: false,
+                    promo: false, oversized: false }
             });
-            set_sku_uris(sku, req.body.image_uris.small, req.body.image_uris.normal, req.body.image_uris.large, req.body.image_uris.png, req.body.image_uris.boader_crop);
-            set_sku_prices(sku, req.body.usd, req.body.usd_foil);
-            set_sku_quantity(sku);
-            set_sku_art(sku);
         }
         sku = await Sku.findByIdAndUpdate(
             sku._id,
@@ -134,7 +133,7 @@ app.patch("/orders/:id", async (req, res)=>{
 app.delete(`/cards/:id`, async (req, res)=>{
     let card;
     try{
-        card = await Card.findByIdAndDelete(req.params.id);
+        card = await Sku.findByIdAndDelete(req.params.id);
         if(!card){
             res.status(404).json({message: `card not found`});
             return;
