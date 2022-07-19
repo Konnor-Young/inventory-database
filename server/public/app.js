@@ -24,7 +24,6 @@ var app = new Vue({
         directStatus: false,
         searchName: '',
         pages: ["Inventory", "Add Card", "View Orders", "Add Order"],
-        addCardList: [],
         pileList: [],
         searchResults: []
     },
@@ -76,12 +75,13 @@ var app = new Vue({
             };
             this.patchOrder(updatedOrder, order_id);
         },
-        addToPile: function (card) {
-            let newCard = {
-                name: card.name,
-                location: 'generated',
-                foil: this.isFoil
-            };
+        addToPile: function (item, qty, condition, ) {
+            item.quantity = 0,
+            item.foil = false
+            // {
+            //     condition: "" ,
+            //     foil: this.isFoil
+            // };
             this.searchPile.push(newCard);
             this.addCardSubPage = 'pile';
         },
@@ -90,7 +90,7 @@ var app = new Vue({
                 method: 'GET',
             });
             let data = await response.json();
-            this.addCardList.push(data)
+            this.searchResults.push(data)
             console.log(response.status);
             console.log(data);
         },
@@ -213,6 +213,9 @@ var app = new Vue({
             if (response.status == 200) {
                 this.getOrders();
             }
+        },
+        resetAddCardSearch:  function () {
+            this.searchResults = [];
         },
     },
     created: function () {
