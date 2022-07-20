@@ -164,47 +164,6 @@ app.delete(`/skus/:unique_id/cards/:card_id`, async (req, res) => {
         console.log(`error while deleting card ${err}`);
         res.status(500).json({message: `error while deleting card`, err: err});
     }
-    // let card;
-    // let unique;
-    // let check;
-    // try {
-    //     unique = await unique.findOne({
-    //         _id: req.params.unique_id,
-    //         // "card_id": req.params.id
-    //     });
-    //     // console.log(unique);
-    //     // card = await unique.findByIdAndDelete(unique.cards.card_id);
-
-    //     if (!unique) {
-    //         res.status(404).json({ message: `unique not found` });
-    //         return;
-    //     }
-    //     // res.status(200).json(card);
-    // } catch (err) {
-    //     console.log(`could not delete`, err);
-    //     res.status(500).json({ message: `could not delete`, err: err });
-    //     return;
-    // }
-    // unique = await unique.findByIdAndUpdate(req.params.unique_id, {
-    //     $pull: {
-    //         cards: req.params.card_id,
-    //     },
-    // });
-    // check = await unique.findById(req.params.unique_id);
-    // if (check.cards.length == 0) {
-    //     unique = await unique.findByIdAndDelete(req.params.unique_id);
-    // }
-    // check = await unique.findById(req.params.unique_id)
-    // if (!unique.cards) {
-    //     unique = await unique.findByIdAndDelete(req.params.id);
-    // }
-    // } catch (err) {
-    //     res.status(500).json({
-    //         message: "error deleting card",
-    //         error: err
-    //     });
-    // }
-    // res.status(200).json(unique);
 });
 
 app.delete(`/orders/:id`, async (req, res) => {
