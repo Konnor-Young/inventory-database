@@ -75,9 +75,12 @@ var app = new Vue({
             };
             this.patchOrder(updatedOrder, order_id);
         },
-        addToPile: function (item, qty, condition, ) {
-            item.quantity = 0,
-            item.foil = false
+        addToPile: function (item, qty, foil, condition) {
+            item.quantity = qty;
+            item.foil = foil;
+            item.condition = condition;
+
+
             // {
             //     condition: "" ,
             //     foil: this.isFoil
@@ -91,15 +94,23 @@ var app = new Vue({
             });
             let data = await response.json();
             this.searchResults.push(data)
-            console.log(response.status);
-            console.log(data);
         },
         getSearch: async function () {
             let response = await fetch(`${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`);
             let data = await response.json();
+            console.log(data.data)
+            // if (data.image_uris.small == 'null'){
+            //     data.image_uris.small = "https://upload.wikimedia.org/wikipedia/en/3/3b/Pokemon_Trading_Card_Game_cardback.jpg"
+            // }
             this.searchResults = data.data;
+            
+        },
+        getSmallImgURI: function (cardObject) {
+            if (cardObject.layout == 'normal'){
+                // Normal small image uri
+            } else {
 
-            // this.addCardSubPage = 'addToPile';
+            }
         },
         getOrders: async function () {
             let response = await fetch(`${URL}/orders`, {
