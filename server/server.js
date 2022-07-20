@@ -1,7 +1,7 @@
 const express = require(`express`);
 const app = express();
 const cors = require(`cors`);
-const { Card, Order, Sku, } = require(`../persist/model`);
+const { Card, Order, Unique } = require(`../persist/model`);
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public/`));
@@ -9,12 +9,23 @@ app.use(express.static(`${__dirname}/public/`));
 app.get("/cards", async (req, res) => {
     let uniqueCards;
     try {
-        uniqueCards = await Sku.find({});
+        uniqueCards = await Unique.find({});
     } catch (err) {
         console.log('could not find card list', err);
         res.status(500).json({ message: 'cards not found', err: err });
     }
     res.status(200).json(uniqueCards);
+});
+
+app.get("/cards/:id", async (req, res) => {
+    let card;
+    try {
+        card = await Card.findById(req.params.id);
+    } catch (err) {
+        console.log('could not find card', err);
+        res.status(500).json({ message: 'card not found', err: err });
+    }
+    res.status(200).json(card);
 });
 
 app.get("/orders", async (req, res) => {
@@ -29,17 +40,26 @@ app.get("/orders", async (req, res) => {
 });
 
 app.post("/cards", async (req, res) => {
-    let sku;
+    let unique;
+    let card;
     try {
-        sku = await Sku.findOne({
+        card = await Card.create({
+            location: 'here',
+            foil: false,
+            condition: req.body.condition,
+            price: 'price',
+            tcg_id: req.body.tcg_id,
+            local_image: req.body.image_uris.small
+        });
+        console.log(card._id);
+        unique = await Unique.findOne({
             tcg_id: req.body.tcg_id,
         });
-        if (!sku) {
-            sku = await Sku.create({
+        if (!unique) {
+            unique = await Unique.create({
                 tcg_id: req.body.tcg_id,
                 name: req.body.name,
                 set: req.body.set,
-                locations: ['here'],
                 image_uris: {
                     small: req.body.image_uris.small, normal: req.body.image_uris.normal,
                     large: req.body.image_uris.large, png: req.body.image_uris.png,
@@ -53,27 +73,22 @@ app.post("/cards", async (req, res) => {
                 }
             });
         }
-        sku = await Sku.findByIdAndUpdate(
-            sku._id,
+        console.log(unique._id);
+        unique = await Unique.findByIdAndUpdate(
+            unique._id,
             {
                 $push: {
-                    cards: {
-                        location: 'here',
-                        foil: false,
-                        condition: req.body.condition,
-                        price: 'price',
-                        tcg_id: req.body.tcg_id,
-                        local_image: req.body.image_uris.large,
-                    },
-                },
-            },
-            { new: true, }
-        );
+                    cards: card._id,
+                    locations: {location: 'here', card: card._id, price: card.price},
+                }
+            });
+        console.log(unique.cards);
     } catch (err) {
         console.log(`could not create`, err);
         res.status(500).json({ message: `could not create`, err: err });
+        return;
     }
-    res.status(200).json(sku);
+    res.status(200).json(unique);
 });
 
 app.post("/orders", async (req, res) => {
@@ -126,20 +141,42 @@ app.patch("/orders/:id", async (req, res) => {
         res.status(500).json({ message: `could not create`, err: err });
     }
 });
-app.delete(`/skus/:sku_id/cards/:card_id`, async (req, res) => {
+app.delete(`/skus/:unique_id/cards/:card_id`, async (req, res) => {
+    let card;
+    let unique;
+    try{
+        card = await Card.findByIdAndDelete(req.params.card_id);
+        console.log(`card ${card}`);
+        unique = await Unique.findByIdAndUpdate(req.params.unique_id, {
+                $pull: {
+                    cards: card._id,
+                    locations: {card: card._id}
+                },
+            });
+        unique = await Unique.findById(req.params.unique_id);
+        console.log(`unique ${unique}`)
+        if(unique.cards.length === 0){
+            unique = await Unique.findByIdAndDelete(req.params.unique_id);
+            res.status(200).json({message: `unique deleted`});
+        }
+        res.status(200).json({card: card, message: `card deleted`});
+    } catch (err) {
+        console.log(`error while deleting card ${err}`);
+        res.status(500).json({message: `error while deleting card`, err: err});
+    }
     // let card;
-    let sku;
-    let check;
+    // let unique;
+    // let check;
     // try {
-    //     sku = await Sku.findOne({
-    //         _id: req.params.sku_id,
+    //     unique = await unique.findOne({
+    //         _id: req.params.unique_id,
     //         // "card_id": req.params.id
     //     });
-    //     // console.log(sku);
-    //     // card = await Sku.findByIdAndDelete(sku.cards.card_id);
+    //     // console.log(unique);
+    //     // card = await unique.findByIdAndDelete(unique.cards.card_id);
 
-    //     if (!sku) {
-    //         res.status(404).json({ message: `sku not found` });
+    //     if (!unique) {
+    //         res.status(404).json({ message: `unique not found` });
     //         return;
     //     }
     //     // res.status(200).json(card);
@@ -148,21 +185,18 @@ app.delete(`/skus/:sku_id/cards/:card_id`, async (req, res) => {
     //     res.status(500).json({ message: `could not delete`, err: err });
     //     return;
     // }
-
-    sku = await Sku.findByIdAndUpdate(req.params.sku_id, {
-        $pull: {
-            cards: {
-                _id: req.params.card_id
-            },
-        },
-    });
-    check = await Sku.findById(req.params.sku_id);
-    if (check.cards.length == 0) {
-        sku = await Sku.findByIdAndDelete(req.params.sku_id);
-    }
-    // check = await Sku.findById(req.params.sku_id)
-    // if (!sku.cards) {
-    //     sku = await Sku.findByIdAndDelete(req.params.id);
+    // unique = await unique.findByIdAndUpdate(req.params.unique_id, {
+    //     $pull: {
+    //         cards: req.params.card_id,
+    //     },
+    // });
+    // check = await unique.findById(req.params.unique_id);
+    // if (check.cards.length == 0) {
+    //     unique = await unique.findByIdAndDelete(req.params.unique_id);
+    // }
+    // check = await unique.findById(req.params.unique_id)
+    // if (!unique.cards) {
+    //     unique = await unique.findByIdAndDelete(req.params.id);
     // }
     // } catch (err) {
     //     res.status(500).json({
@@ -170,7 +204,7 @@ app.delete(`/skus/:sku_id/cards/:card_id`, async (req, res) => {
     //         error: err
     //     });
     // }
-    res.status(200).json(sku);
+    // res.status(200).json(unique);
 });
 
 app.delete(`/orders/:id`, async (req, res) => {
