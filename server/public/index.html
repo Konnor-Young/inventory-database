@@ -35,7 +35,7 @@
               <v-spacer></v-spacer>
 
               <v-btn href="mailto:d00439987@dmail.dixie.edu" icon>
-                <v-icon >mdi-face-agent</v-icon>
+                <v-icon >mdi-email</v-icon>
               </v-btn>
         
               <v-btn icon>
@@ -181,20 +181,25 @@
 
                           <v-img
                               height="204"
-                              :src="result.image_uris.small">
+                              :src="getSmallImgURI(result)">
                           </v-img>
 
                           <v-card-text class="pt-1 pb-0">
-                            <v-chip-group
-                              v-model="condition"
-                              active-class="deep-purple accent-4 white--text"
-                              column
-                              class="px-auto">
-                              <v-chip>NM</v-chip>
-                              <v-chip>LP</v-chip>
-                              <v-chip>MP</v-chip>
-                              <v-chip>HP</v-chip>
-                            </v-chip-group>
+
+                              
+                              <v-row>
+                                <v-col>
+                                  <v-btn class="px-n4">NM</v-btn>
+                                  <v-btn>LP</v-btn>
+                                </v-col>
+                              </v-row>
+                              
+                              <v-row>
+                                <v-col>
+                                  <v-btn>MP</v-btn>
+                                  <v-btn>HP</v-btn>
+                                </v-col>
+                              </v-row>
                           </v-card-text>
 
                           <v-row class="mx-0">
@@ -205,7 +210,6 @@
                                 hide-details 
                                 label="Qty." 
                                 placeholder="Qty." 
-                                v-model="quantity" 
                                 row-height="0">
                               </v-text-field>
                             </v-col>
@@ -215,62 +219,6 @@
                                 color="deep-purple lighten-2"
                                 text
                                 @click="addToPile()"
-                                class="float-end">
-                                Add
-                              </v-btn>
-                            </v-card-actions>
-                          </v-row>
-                        </v-card>
-                      </v-col>
-                      <!--****** the v-for to display Random Cards -->
-                      <v-col v-for="result in addCardList">
-                        <!--****** Card template that will be displayed by v-for -->
-                        <v-card width="146" class="mx-4">
-
-                          <template slot="progress">
-                            <v-progress-linear
-                              color="deep-purple"
-                              height="10"
-                              indeterminate
-                            ></v-progress-linear>
-                          </template>
-
-                          <v-img
-                              height="204"
-                              :src="result.image_uris.small">
-                          </v-img>
-
-                          <v-card-text class="pt-1 pb-0">
-                            <v-chip-group
-                              v-model="condition"
-                              active-class="deep-purple accent-4 white--text"
-                              column
-                              class="px-auto">
-                              <v-chip>NM</v-chip>
-                              <v-chip>LP</v-chip>
-                              <v-chip>MP</v-chip>
-                              <v-chip>HP</v-chip>
-                            </v-chip-group>
-                          </v-card-text>
-
-                          <v-row class="mx-0">
-                            <v-col  cols="6" persistent-hint color="deep-purple lighten-1" class="pr-0 pl-1" >
-                              <v-text-field 
-                                outlined 
-                                dense 
-                                hide-details 
-                                label="Qty." 
-                                placeholder="Qty." 
-                                v-model="quantity" 
-                                row-height="0">
-                              </v-text-field>
-                            </v-col>
-
-                            <v-card-actions class="pt-0 pl-1 pr-1">
-                              <v-btn
-                                color="deep-purple lighten-2"
-                                text
-                                @click="addToPile(item)"
                                 class="float-end">
                                 Add
                               </v-btn>
