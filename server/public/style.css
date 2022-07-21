@@ -21,3 +21,10 @@
 #xOut {
   color: red;
 }
+
+.logIn {
+  background: url('https://images.alphacoders.com/265/265693.png') no-repeat
+    center center fixed !important;
+  background-size: cover;
+  opacity: 0.8;
+}
