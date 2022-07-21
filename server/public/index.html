@@ -10,7 +10,7 @@
   </head>
 
   <body>
-    <div id="app">
+    <div id="app" v-cloak>
       <v-app>
         <!--========= Page Card ==============-->
         <v-card class="overflow-auto">
@@ -225,15 +225,39 @@
 
                 <!--=== View Orders ===--->
                 <div id="view-orders" v-if="currentPage == 'View Orders'">
-                  View Orders
-                <div v-for="order, index in orderList">
-                  Order Number: {{ order.number }}
-                  Price: ${{ order.price.$numberDecimal }}
-                  <button @click="editOrder(order, index)">Update Order</button>
-                  <div v-if="updatingOrder == index">
-                    Order Number: <input v-model="orderNumber">
-                    <button @click="updateOrder(order._id)">Submit Update</button>
-                </div> 
+
+                  <template>
+                    <v-simple-table>
+                      <template v-slot:default>
+                        <thead>
+                          <tr>
+                            <th class="text-left">
+                              Order Number
+                            </th>
+                            <th class="text-left">
+                              Direct
+                            </th>
+                            <th class="text-left">
+                              Status
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="order, index in orderList"
+                            :key="order.name"
+                            :class="{'blue':order.direct}"
+                            
+                          >
+                            <td>{{ order.number }}</td>
+                            <td> <v-icon v-if="order.direct" id="checkMark"> mdi-check-bold </v-icon> <v-icon v-else id="xOut">mdi-close-circle</v-icon> </td>
+                            <td>{{ order.status }}</td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </template>
+
 
                 <!--=== Add Order Page ===-->
                 <div id="add-orders" v-if="currentPage == 'Add Order'">

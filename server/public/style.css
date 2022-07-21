@@ -1,13 +1,23 @@
-.v-app-bar-title__content{
-    overflow: visible !important;
+[v-cloak] {
+  display: none;
+}
+
+.v-app-bar-title__content {
+  overflow: visible !important;
 }
 .v-tab::before {
-    border-radius: 5px 5px 0px 0px;
-}
-.v-chip-group--column .v-slide-group__content{
-    justify-content: center;
-    padding-left: 4px;
+  border-radius: 5px 5px 0px 0px;
 }
 .v-chip-group--column .v-slide-group__content {
-    padding-bottom: 0px;
+  justify-content: center;
+  padding-left: 4px;
+}
+.v-chip-group--column .v-slide-group__content {
+  padding-bottom: 0px;
+}
+#checkMark {
+  color: green;
+}
+#xOut {
+  color: red;
 }
