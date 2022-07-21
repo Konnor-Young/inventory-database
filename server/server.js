@@ -109,7 +109,6 @@ app.post("/orders", async (req, res) => {
 app.patch("/cards/:id", async (req, res) => {
     let card;
     let unique;
-    let cardLocal;
     let update;
     try {
         card = await Card.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -129,17 +128,12 @@ app.patch("/cards/:id", async (req, res) => {
             console.log(unique.locations[i]);
             console.log(i);
             console.log(unique.locations[i].card)
-            if(unique.locations[i].card === req.params.id){
+            if(unique.locations[i].card == req.params.id){
                 unique.locations[i] = update;
-                await unique.save();
+                unique.save();
             }
         }
-        // console.log(cardLocal);
         console.log(unique.locations);
-        // console.log(unique.locations[cardLocal]);
-        // unique.locations[cardLocal] = update; //location = req.body.location;
-        // await unique.save();
-        unique = await Unique.findOneAndUpdate({tcg_id: card.tcg_id}, { locations: { $elemMatch: { card: { $eq: req.params.id } } } },{});
     } catch (err) {
         console.log(`could not find`, err);
         res.status(500).json({ message: `could not edit`, err: err });
