@@ -1,3 +1,4 @@
+//work?
 const express = require(`express`);
 const app = express();
 const cors = require(`cors`);
@@ -79,7 +80,7 @@ app.post("/cards", async (req, res) => {
             {
                 $push: {
                     cards: card._id,
-                    locations: {location: 'here', card: card._id, price: card.price},
+                    locations: { location: 'here', card: card._id, price: card.price },
                 }
             });
         console.log(unique.cards);
@@ -144,25 +145,25 @@ app.patch("/orders/:id", async (req, res) => {
 app.delete(`/skus/:unique_id/cards/:card_id`, async (req, res) => {
     let card;
     let unique;
-    try{
+    try {
         card = await Card.findByIdAndDelete(req.params.card_id);
         console.log(`card ${card}`);
         unique = await Unique.findByIdAndUpdate(req.params.unique_id, {
-                $pull: {
-                    cards: card._id,
-                    locations: {card: card._id}
-                },
-            });
+            $pull: {
+                cards: card._id,
+                locations: { card: card._id }
+            },
+        });
         unique = await Unique.findById(req.params.unique_id);
         console.log(`unique ${unique}`)
-        if(unique.cards.length === 0){
+        if (unique.cards.length === 0) {
             unique = await Unique.findByIdAndDelete(req.params.unique_id);
-            res.status(200).json({message: `unique deleted`});
+            res.status(200).json({ message: `unique deleted` });
         }
-        res.status(200).json({card: card, message: `card deleted`});
+        res.status(200).json({ card: card, message: `card deleted` });
     } catch (err) {
         console.log(`error while deleting card ${err}`);
-        res.status(500).json({message: `error while deleting card`, err: err});
+        res.status(500).json({ message: `error while deleting card`, err: err });
     }
 });
 
