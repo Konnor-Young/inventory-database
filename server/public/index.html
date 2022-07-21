@@ -13,8 +13,44 @@
     <div id="app" v-cloak>
       <v-app>
         <!--========= Page Card ==============-->
-        <v-card class="overflow-auto">
+        <v-card v-bind:class="{'logIn': !loggedIn}"  class="overflow-auto">
+
+          <!-- ==============login page============= -->
+          <v-container fluid v-if="!loggedIn">
+            <v-row align="center" justify="center" style="height: 100vh" >
+              <v-col class="fill-height d-flex flex-column justify-center align-center" cols="auto">
+            <v-card class="mx-auto my-auto" width="500px">
+              <!-- <v-row > -->
+              <h1 class="py-6 px-5 deep-purple lighten-2 text-center">Login</h1>
+            <!-- </v-row> -->
+              <v-row class="px-8 mt-4 mb-2">
+                <v-icon class="mr-2"> mdi-account-box</v-icon>
+              <v-text-field type="text" placeholder="Username">
+              </v-row>
+              <v-row class="px-8 mb-2">
+                <v-icon class="mr-2">
+                  mdi-lock
+                </v-icon>
+              <v-text-field type="password" placeholder="Password">
+              </v-row>
+              <v-row>
+              <v-btn class="mx-16 mb-8" @click="loginUser()">Login</button>
+              </v-row>
+            </v-card>
+            
+            <v-btn href="mailto:d00439987@dmail.dixie.edu" class="grey white--text"><h3>Contact Us</h3></v-btn>
+          
+          </v-col>
+          </v-row>
+
+
+
+
+
+          </v-container>
+
             <!--===== Nav & Menu bar with image =====-->
+            <v-container v-show="loggedIn">
             <v-app-bar absolute color="#6A76AB" dark shrink-on-scroll prominent
                         src="https://images.alphacoders.com/265/265693.png" fade-img-on-scroll
                         scroll-target="#scrolling-techniques-3"
@@ -28,7 +64,7 @@
 
               <!-- PlaceHolder for future expansion menu -->
               <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
-
+            
               <!-- Current Page title -->
               <v-app-bar-title class="float-left pr-10 ml-2 font-weight-black">{{ currentPage }}</v-app-bar-title>
               
@@ -78,7 +114,7 @@
 
                 <!--======= Inventory Page =======-->
 
-                <!-- Search Container for Invetory Page-->
+                <!-- Search Container for Inventory Page-->
                 <v-container v-if="currentPage == 'Inventory'">
                   <!-- Container for Inventory Search Area -->
                   <v-container>
@@ -290,6 +326,7 @@
             </v-sheet>
           </main>
         </v-card>
+      </v-container>
       </v-app>
     </div>
 
