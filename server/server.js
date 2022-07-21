@@ -108,6 +108,9 @@ app.post("/orders", async (req, res) => {
 
 app.patch("/cards/:id", async (req, res) => {
     let card;
+    let unique;
+    let cardLocal;
+    let update;
     try {
         card = await Card.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!card) {
@@ -115,13 +118,34 @@ app.patch("/cards/:id", async (req, res) => {
                 message: "Card Not Found!",
             });
             return;
-        } else {
-            res.status(201).json(card);
         }
+        update = { location: req.body.location, card: req.params.id, price: card.price };
+        unique = await Unique.findOne({tcg_id: card.tcg_id});
+        if(!unique){
+            res.status(404).json({message: `bug found card does but sku does not exist`});
+            return;
+        }
+        for (let i in unique.locations){
+            console.log(unique.locations[i]);
+            console.log(i);
+            console.log(unique.locations[i].card)
+            if(unique.locations[i].card === req.params.id){
+                unique.locations[i] = update;
+                await unique.save();
+            }
+        }
+        // console.log(cardLocal);
+        console.log(unique.locations);
+        // console.log(unique.locations[cardLocal]);
+        // unique.locations[cardLocal] = update; //location = req.body.location;
+        // await unique.save();
+        unique = await Unique.findOneAndUpdate({}, {});
     } catch (err) {
         console.log(`could not find`, err);
-        res.status(500).json({ message: `could not create`, err: err });
+        res.status(500).json({ message: `could not edit`, err: err });
+        return;
     }
+    res.status(201).json(card);
 });
 
 app.patch("/orders/:id", async (req, res) => {
@@ -133,13 +157,13 @@ app.patch("/orders/:id", async (req, res) => {
                 message: "Order Not Found!",
             });
             return;
-        } else {
-            res.status(201).json(order);
         }
     } catch (err) {
         console.log(`could not find`, err);
         res.status(500).json({ message: `could not create`, err: err });
+        return;
     }
+    res.status(201).json(order);
 });
 app.delete(`/skus/:unique_id/cards/:card_id`, async (req, res) => {
     let card;
