@@ -108,9 +108,23 @@ var app = new Vue({
         getSmallImgURI: function (cardObject) {
             if (cardObject.layout == 'normal'){
                 // Normal small image uri
+                if (cardObject.image_uris.small == 'null') {
+                    return "https://upload.wikimedia.org/wikipedia/en/3/3b/Pokemon_Trading_Card_Game_cardback.jpg"
+                } else {
+                    return cardObject.image_uris.small
+                }
+            } else if (cardObject.layout == 'modal_dfc') {
+                // If modal_dfc
+                return cardObject.card_faces[0].image_uris.small
+            } else if (cardObject.layout == 'transform'){
+                // If transfrom
+                return "https://upload.wikimedia.org/wikipedia/en/3/3b/Pokemon_Trading_Card_Game_cardback.jpg"
+            } else if (cardObject.layout == 'meld') {
+                return "https://upload.wikimedia.org/wikipedia/en/3/3b/Pokemon_Trading_Card_Game_cardback.jpg"
             } else {
-
+                return "https://upload.wikimedia.org/wikipedia/en/3/3b/Pokemon_Trading_Card_Game_cardback.jpg"
             }
+             
         },
         getOrders: async function () {
             let response = await fetch(`${URL}/orders`, {
