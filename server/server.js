@@ -148,27 +148,33 @@ app.patch("/orders/:id", async (req, res) => {
     let order;
     try {
         order = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        console.log(order);
         if (!order) {
             res.status(404).json({
                 message: "Order Not Found!",
             });
             return;
         }
-        for (let i; order.cards.length; i++) {
-            // console.log(order.cards[i]);
+        for (let i = 0; i < order.cards.length; i++) {
+            // console.log(order.cards[i].quantity);
             let unique = await Unique.findOne({ tcg_id: order.cards[i].card });
-            console.log(unique);
-            if (unique.quantity.available < order.cards[i].quantity) {
-                console.log('cards not available: ', "Available: ", unique.quantity.available, "Requested: ", order.cards[i].quantity);
+
+
+            if (unique.quantity.get("available") < order.cards[i].quantity) {
+                console.log('cards not available: ', "Available: ", unique.quantity.get("available"), "Requested: ", order.cards[i].quantity);
                 return;
             }
             //subtract the quantity of the card in the order with the available quantity in the sku
-            unique.quantity.available = unique.quantity.available - order.cards[i].quantity
+            unique.quantity.set('available', unique.quantity.get("available") - order.cards[i].quantity);
+            await unique.save();
+
 
             //add the quantity to reserved
-            unique.quantity.reserved = unique.quantity.reserved + order.cards[i].quantity
-            // allocateLocations(order.cards[i])
+            unique.quantity.set('reserved', unique.quantity.get("reserved") + order.cards[i].quantity);
+            await unique.save();
+
+            console.log(unique.quantity.get("available"));
+            console.log(unique.quantity.get("reserved"));
+
         }
     } catch (err) {
         console.log(`could not find`, err);
