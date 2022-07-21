@@ -79,7 +79,7 @@ app.post("/cards", async (req, res) => {
             {
                 $push: {
                     cards: card._id,
-                    locations: {location: 'here', card: card._id, price: card.price},
+                    locations: { location: 'here', card: card._id, price: card.price },
                 }
             });
         console.log(unique.cards);
@@ -96,9 +96,11 @@ app.post("/orders", async (req, res) => {
         let order = Order.create({
             number: req.body.number,
             direct: req.body.direct,
-            card: req.body.order,
+            cards: req.body.cards,
             status: 'standing',
         });
+
+
         res.status(201).json(order);
     } catch (err) {
         console.log(`could not create`, err);
@@ -119,16 +121,16 @@ app.patch("/cards/:id", async (req, res) => {
             return;
         }
         update = { location: req.body.location, card: req.params.id, price: card.price };
-        unique = await Unique.findOne({tcg_id: card.tcg_id});
-        if(!unique){
-            res.status(404).json({message: `bug found card does but sku does not exist`});
+        unique = await Unique.findOne({ tcg_id: card.tcg_id });
+        if (!unique) {
+            res.status(404).json({ message: `bug found card does but sku does not exist` });
             return;
         }
-        for (let i in unique.locations){
+        for (let i in unique.locations) {
             console.log(unique.locations[i]);
             console.log(i);
             console.log(unique.locations[i].card)
-            if(unique.locations[i].card == req.params.id){
+            if (unique.locations[i].card == req.params.id) {
                 unique.locations[i] = update;
                 unique.save();
             }
@@ -146,11 +148,27 @@ app.patch("/orders/:id", async (req, res) => {
     let order;
     try {
         order = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        console.log(order);
         if (!order) {
             res.status(404).json({
                 message: "Order Not Found!",
             });
             return;
+        }
+        for (let i; order.cards.length; i++) {
+            // console.log(order.cards[i]);
+            let unique = await Unique.findOne({ tcg_id: order.cards[i].card });
+            console.log(unique);
+            if (unique.quantity.available < order.cards[i].quantity) {
+                console.log('cards not available: ', "Available: ", unique.quantity.available, "Requested: ", order.cards[i].quantity);
+                return;
+            }
+            //subtract the quantity of the card in the order with the available quantity in the sku
+            unique.quantity.available = unique.quantity.available - order.cards[i].quantity
+
+            //add the quantity to reserved
+            unique.quantity.reserved = unique.quantity.reserved + order.cards[i].quantity
+            // allocateLocations(order.cards[i])
         }
     } catch (err) {
         console.log(`could not find`, err);
@@ -162,25 +180,25 @@ app.patch("/orders/:id", async (req, res) => {
 app.delete(`/skus/:unique_id/cards/:card_id`, async (req, res) => {
     let card;
     let unique;
-    try{
+    try {
         card = await Card.findByIdAndDelete(req.params.card_id);
         console.log(`card ${card}`);
         unique = await Unique.findByIdAndUpdate(req.params.unique_id, {
-                $pull: {
-                    cards: card._id,
-                    locations: {card: card._id}
-                },
-            });
+            $pull: {
+                cards: card._id,
+                locations: { card: card._id }
+            },
+        });
         unique = await Unique.findById(req.params.unique_id);
         console.log(`unique ${unique}`)
-        if(unique.cards.length === 0){
+        if (unique.cards.length === 0) {
             unique = await Unique.findByIdAndDelete(req.params.unique_id);
-            res.status(200).json({message: `unique deleted`});
+            res.status(200).json({ message: `unique deleted` });
         }
-        res.status(200).json({card: card, message: `card deleted`});
+        res.status(200).json({ card: card, message: `card deleted` });
     } catch (err) {
         console.log(`error while deleting card ${err}`);
-        res.status(500).json({message: `error while deleting card`, err: err});
+        res.status(500).json({ message: `error while deleting card`, err: err });
     }
 });
 

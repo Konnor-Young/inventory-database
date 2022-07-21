@@ -24,8 +24,9 @@ const uniqueSchema = mongoose.Schema({
 const orderSchema = mongoose.Schema({
     number: { type: String },
     direct: { type: Boolean },
-    card: { type: Map },
+    cards: { type: [] },
     status: { type: String, enum: ['standing', 'pulling', 'shipped'] },
+    locations: { type: [] },
 });
 
 
