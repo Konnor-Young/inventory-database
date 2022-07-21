@@ -28,7 +28,7 @@ var app = new Vue({
     pages: ['Inventory', 'Add Card', 'View Orders', 'Add Order'],
     pileList: [],
     searchResults: [],
-    loggedIn: false,
+    loggedIn: true,
   },
   methods: {
     newCard: function (cardObject) {
