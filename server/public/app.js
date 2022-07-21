@@ -99,9 +99,20 @@ var app = new Vue({
             let response = await fetch(`${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`);
             let data = await response.json();
             console.log(data.data)
-            // if (data.image_uris.small == 'null'){
-            //     data.image_uris.small = "https://upload.wikimedia.org/wikipedia/en/3/3b/Pokemon_Trading_Card_Game_cardback.jpg"
-            // }
+            data.data.forEach((item) => {
+                item.totalConditions = {
+                    NM: 0,
+                    LP: 0,
+                    MP: 0,
+                    HP: 0,
+                    DMG: 0
+                };
+                item.totalCards = 0;
+
+            })
+
+
+
             this.searchResults = data.data;
             
         },
@@ -124,7 +135,47 @@ var app = new Vue({
             } else {
                 return "https://upload.wikimedia.org/wikipedia/en/3/3b/Pokemon_Trading_Card_Game_cardback.jpg"
             }
-             
+        },
+        // Counter Functions for AddtoPile
+        addLPtoObject: function (cardObject) {
+            cardObject.totalConditions.LP ++;
+            console.log(cardObject.totalConditions.LP)
+        },
+        addNMtoObject: function (cardObject) {
+            cardObject.totalConditions.NM ++;
+            console.log(cardObject.totalConditions.NM)
+        },
+        addMPtoObject: function (cardObject) {
+            cardObject.totalConditions.MP ++;
+            console.log(cardObject.totalConditions.MP)
+        },
+        addHPtoObject: function (cardObject) {
+            cardObject.totalConditions.HP ++;
+            console.log(cardObject.totalConditions.HP)
+        },
+        addDMGtoObject: function (cardObject) {
+            cardObject.totalConditions.DMG ++;
+            console.log(cardObject.totalConditions.DMG)
+        },
+        removeLPtoObject: function (cardObject) {
+            cardObject.totalConditions.LP -= 2;
+            console.log(cardObject.totalConditions.LP)
+        },
+        removeNMtoObject: function (cardObject) {
+            cardObject.totalConditions.NM -= 2;
+            console.log(cardObject.totalConditions.NM)
+        },
+        removeMPtoObject: function (cardObject) {
+            cardObject.totalConditions.MP -= 2;
+            console.log(cardObject.totalConditions.MP)
+        },
+        removeHPtoObject: function (cardObject) {
+            cardObject.totalConditions.HP -= 2
+            console.log(cardObject.totalConditions.HP)
+        },
+        removeDMGtoObject: function (cardObject) {
+            cardObject.totalConditions.DMG -= 2;
+            console.log(cardObject.totalConditions.DMG)
         },
         getOrders: async function () {
             let response = await fetch(`${URL}/orders`, {
