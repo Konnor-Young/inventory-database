@@ -126,16 +126,8 @@ app.patch("/cards/:id", async (req, res) => {
             res.status(404).json({ message: `bug found card does but sku does not exist` });
             return;
         }
-<<<<<<< HEAD
         for (let i in unique.locations){
             if(unique.locations[i].card == req.params.id){
-=======
-        for (let i in unique.locations) {
-            console.log(unique.locations[i]);
-            console.log(i);
-            console.log(unique.locations[i].card)
-            if (unique.locations[i].card == req.params.id) {
->>>>>>> 4d669ce40898eec8287def0aa7eb0932136645b9
                 unique.locations[i] = update;
                 unique.save();
             }

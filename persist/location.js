@@ -1,3 +1,4 @@
+const e = require("express");
 const { Card, Order, Unique, Storage } = require(`./model`);
 
 async function initializeStorage(shelves, drawers, boxes) {
@@ -45,28 +46,50 @@ async function updateAllPrices() { //Cards.find => cards.forEach getPrice(card)
         getPrice(card);
     });
 };
-async function getOpenLocations(){ //Locations.findOne(store id) for ([key, value] of Object.entries(storage.locationMap)) 
-    var openingList = [];
+async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) for ([key, value] of Object.entries(storage.locationMap)) 
+    var openingList = {};
     let storage = await Storage.find({shelves: 1});
-    console.log(storage);
     var map1 = storage[0].get('locationMap');
-    console.log(map1);
-    var shelfList = map1.values();
-    // console.log(shelfList)
-    for(var shelf of shelfList){
-        console.log(`shelf`, shelf);
-        var drawerList = shelf.values();
-        // console.log(`shelves`, shelves);
-        for(drawer of drawerList){
-            console.log(`drawer`, drawer);
-            var boxList = drawer.values();
-            // console.log(`drawers`, drawers);
-            for(box of boxList){
-                console.log(`box`, box);
-                // console.log(`boxes`, boxes);
+    var shelfContents = map1.values();
+    var b = 1;
+    var d = 1;
+    var s = 1;
+    for(var shelf of shelfContents){
+        if(s > storage[0].shelves){s = 1;}
+        // console.log(`shelf`, shelf);
+        for(var [key, value] of Object.entries(shelf)) {
+            if(d > storage[0].drawers){d = 1;}
+            var drawer = value;
+            // console.log(drawer);
+            for(var [key, value] of Object.entries(drawer)){
+                if(b > storage[0].boxes){b = 1;}
+                let open = 150 - value;
+                // console.log(open);
+                if(open >= 20){
+                    openingList[`${s}${d}${b}`] = open;
+                }
+                b++;
+            }
+            d++;
+        }
+        s++;
+    }
+    // console.log(openingList);
+    for(var [key, value] of Object.entries(openingList)){
+        if(value >= numberOfCards){
+            let thisNumber = parseInt(key);
+            var min = (thisNumber*1000)+(150-numberOfCards);
+            var max = min+numberOfCards;
+            // pushForward(key);
+            var returnList = [];
+            for(min; min<=max; min++){
+                returnList.push(min);
             }
         }
     }
+    console.log(returnList);
+    // return returnList;
+    // iterate through openingList and find a # of openings pushForward(key) return parseInt(key)*1000+(150-#)->parseInt(key)*1000+150
 };
 async function pushForward(box){ // first three numbers in location ie 123--- Card.find({location})
     let i = parseInt(box);
@@ -78,10 +101,80 @@ async function pushForward(box){ // first three numbers in location ie 123--- Ca
     });
     for(let j=1; j<=cardsInBox.length(); j++){
         cardsInBox[j].location = (j+min);
+        await cardsInBox[j].save();
     }
 };
 
 module.exports = {
     initializeStorage,
     getOpenLocations
+}
+
+
+
+
+for(var [key, value] of Object.entries(openingList)){
+    var open = 0;
+    var eqList = [];
+    var gtList = [];
+    var ltList = [];
+    var eq = false;
+    var gt = false;
+    var lt = false;
+    if(value = numberOfCards){
+        eq = true; 
+        eqList.push(key);
+    }else if(value > numberOfCards){
+        gt = true;
+        gtList.push(key);
+    }
+    else if(value < numberOfCards){
+        if(!lt){
+            ltList.push(key);
+            open += value;
+            if(open >= numberOfCards){
+                lt = true;
+            }
+        }
+    }
+}
+var locate_list = [];
+var open_key;
+var open_value;
+var min;
+var max;
+if(eq){
+    open_key = eqList[0];
+    open_value = openingList.open_key;
+    let i = parseInt(open_key);
+    min = (i*1000)+(150-open_value);
+    // pushForward(key);
+    for(let j=1; j<=numberOfCards; j++){
+        min++;
+        locate_list[j] = min;
+    }
+    return locate_list;
+}else if(gt){
+    open_key = gtList[0];
+    open_value = openingList.open_key;
+    let i = parseInt(open_key);
+    min = (i*1000)+(150-open_value);
+    // pushForward(key);
+    for(let j=1; j<=numberOfCards; j++){
+        min++;
+        locate_list[j] = min;
+    }
+    return locate_list;
+}else if(lt){
+    for(let x = 0; x < ltList.length; x++){
+        open_key = ltList[x];
+        open_value = openingList.open_key;
+        let i = parseInt(open_key);
+        min = (i*1000)+(150-open_value);
+        max = (i*1000)+150;
+        for(let j = min; j<=max; j++){
+            min++;
+            locate_list.push(min);
+        }
+    }
 }

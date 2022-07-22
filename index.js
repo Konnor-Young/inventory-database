@@ -7,8 +7,8 @@ config.dotenv.config();
 onConnect(()=>{
     app.server.listen(config.http_port, () => {
         console.log(`listening on port ${config.http_port}`);
-        // initializeStorage(1, 2, 2);
-        getOpenLocations();
+        // initializeStorage(3, 3, 3);
+        getOpenLocations(30);
     });
 });
 
