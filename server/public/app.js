@@ -8,7 +8,7 @@ var app = new Vue({
   el: '#app',
   data: {
     message: 'HI WORLD',
-    currentPage: 'Inventory',
+    currentPage: 'View Orders',
     addCardSubPage: 'searchCard',
     addOrderSubPage: 'searchCard',
     updatingOrder: -1,
@@ -29,6 +29,8 @@ var app = new Vue({
     pileList: [],
     searchResults: [],
     loggedIn: true,
+    tableFilters: ['active', 'standing', 'pulling', 'shipped'],
+    currentTable: 'active',
   },
   methods: {
     newCard: function (cardObject) {
@@ -242,7 +244,25 @@ var app = new Vue({
     resetAddCardSearch: function () {
       this.searchResults = [];
     },
+
+    // ====order filter====
+
+    checkOrder: function (order) {
+      if (order.status == this.currentTable) {
+        return true;
+      } else if (this.currentTable == 'active') {
+        if (order.status == 'standing') {
+          return true;
+        }
+        if (order.status == 'pulling') {
+          return true;
+        }
+      }
+
+      return false;
+    },
   },
+
   created: function () {
     this.getCards();
     this.getOrders();
