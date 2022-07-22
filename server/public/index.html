@@ -164,7 +164,7 @@
                   <!--= Sub Menu with Search/*Deck/Pile-Cart -->
                   <v-tabs grow optional slider-color="deep-purple lighten-2" class="rounded-lg blue-grey lighten-1">
 
-                    <v-tab @Click="addCardSubPage = 'Search'" class="rounded-lg"
+                    <v-tab class="rounded-lg" @Click="addCardSubPage = 'Search'"
                       active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
                       Search
                     </v-tab>
@@ -187,10 +187,12 @@
                       <v-row>
                         <v-col cols="6">
                           <v-text-field outlined label="Search for a Card" placeholder="Magic the Gathering Cards Only"
-                          v-model="searchName"></v-text-field>
+                          v-model="searchName" @keypress.enter="getSearch()" 
+                          ref="searchInput"
+                          autofocus ></v-text-field>
                         </v-col>
                         <v-col cols="auto">
-                          <v-btn class="mt-2" @Click="getSearch()">Submit</v-btn>
+                          <v-btn class="mt-2" @Click="getSearch()" >Submit</v-btn>
                         </v-col>
                         <v-col cols="auto">
                           <v-btn class="mt-2" @Click="getRandomCard()">Feeling Lucky</v-btn>
@@ -219,27 +221,98 @@
                               height="204"
                               :src="getSmallImgURI(result)">
                           </v-img>
-
+                          
                           <v-card-text class="pt-1 pb-0">
 
                               
-                              <v-row>
-                                <v-col>
-                                  <v-btn class="px-n4">NM</v-btn>
-                                  <v-btn>LP</v-btn>
-                                </v-col>
-                              </v-row>
                               
+                                
+                                  <!-- NM button on Add Card Search -->
                               <v-row>
-                                <v-col>
-                                  <v-btn>MP</v-btn>
-                                  <v-btn>HP</v-btn>
+                                <v-col class="pl-0" style="min-width: 30px; max-width: 48px;">
+                                  <v-badge
+                                    color="deep-purple lighten-2"
+                                    :content="result.totalConditions.NM"
+                                    :value="result.totalConditions.NM > 0"
+                                    class="pl-0"
+                                    offset-x="15"
+                                    offset-y="12"
+                                    left>
+                                    <v-btn small rounded min-width="10" max-width="35" @click="addNMtoObject(result)" @click.ctrl="removeNMtoObject(result)">NM</v-btn>
+                                  </v-badge>
+                                </v-col>
+                                <v-col style="min-width: 30px; max-width: 48px;">
+                                  <v-badge
+                                    color="deep-purple lighten-2"
+                                    :content="result.totalConditions.LP"
+                                    :value="result.totalConditions.LP > 0"
+                                    class="pl-0"
+                                    offset-x="15"
+                                    offset-y="12"
+                                    left>
+                                    <v-btn small rounded min-width="10" max-width="35" @click="addLPtoObject(result)" @click.ctrl="removeLPtoObject(result)">LP</v-btn>
+                                  </v-badge>
+                                </v-col>
+                                  
+                                
+                            
+                                  
+                                  
+                                <v-col style="min-width: 30px; max-width: 48px;">
+                                  <v-badge
+                                    color="deep-purple lighten-2"
+                                    :content="result.totalConditions.MP"
+                                    :value="result.totalConditions.MP > 0"
+                                    class="pl-0"
+                                    offset-x="15"
+                                    offset-y="12"
+                                    left
+                                    >
+                                    <v-btn small rounded min-width="10" max-width="35" @click="addMPtoObject(result)" @click.ctrl="removeMPtoObject(result)">MP</v-btn>
+                                  </v-badge>
                                 </v-col>
                               </v-row>
+                              <v-row>
+                                <v-col class="pt-1" style="min-width: 30px; max-width: 70px;">
+                                  <v-badge
+                                    color="deep-purple lighten-2"
+                                    :content="result.totalConditions.HP"
+                                    :value="result.totalConditions.HP > 0"
+                                    class="pl-0"
+                                    offset-x="15"
+                                    offset-y="12"
+                                    left>
+                                    <v-btn small rounded min-width="10" max-width="50" @click="addHPtoObject(result)" @click.ctrl="removeHPtoObject(result)">HP</v-btn>
+                                  </v-badge>
+                                </v-col>
+                                <v-col class="pt-1" style="min-width: 30px; max-width: 70px;">
+                                  <v-badge
+                                    color="deep-purple lighten-2"
+                                    :content="result.totalConditions.DMG"
+                                    :value="result.totalConditions.DMG > 0"
+                                    class="pl-0"
+                                    offset-x="15"
+                                    offset-y="12"
+                                    left>
+                                    <v-btn small rounded min-width="10" max-width="50" @click="addDMGtoObject(result)" @click.ctrl="removeDMGtoObject(result)">DMG</v-btn>
+                                  </v-badge>
+                                </v-col>
+                              </v-row>
+                              <v-row>
+                                <v-checkbox
+                                class="deep-purple--text lighten-2"
+                                label="Foil?"
+                                color="deep-purple lighten-2"
+                                value="foil"
+                                hide-details
+                                
+                              ></v-checkbox>
+                              </v-row>
+
                           </v-card-text>
 
-                          <v-row class="mx-0">
-                            <v-col  cols="6" persistent-hint color="deep-purple lighten-1" class="pr-0 pl-1" >
+                          <v-row class="mx-1">
+                            <!-- <v-col  cols="6" persistent-hint color="deep-purple lighten-1" class="pr-0 pl-1" >
                               <v-text-field 
                                 outlined 
                                 dense 
@@ -248,18 +321,29 @@
                                 placeholder="Qty." 
                                 row-height="0">
                               </v-text-field>
-                            </v-col>
+                            </v-col> -->
+
 
                             <v-card-actions class="pt-0 pl-1 pr-1">
                               <v-btn
                                 color="deep-purple lighten-2"
                                 text
-                                @click="addToPile()"
+                                @click="addToPile(result)"
                                 class="float-end">
                                 Add
                               </v-btn>
                             </v-card-actions>
                           </v-row>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                  <!-- Pile/Cart Page -->
+                  <v-container v-if="addCardSubPage == 'Pile'">
+                    <v-row v-for="card in pileList">
+                      <v-col>
+                        <v-card>
+                          
                         </v-card>
                       </v-col>
                     </v-row>
