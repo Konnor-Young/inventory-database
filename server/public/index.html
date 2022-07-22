@@ -352,33 +352,43 @@
 
                 <!--=== View Orders ===--->
                 <div id="view-orders" v-if="currentPage == 'View Orders'">
+                  <v-row> 
+                    <v-col v-for="btn in tableFilters"><v-chip x-large @click="currentTable = btn" class="px-16 py-6 grey lighten-1 white--text">{{ btn.toUpperCase() }}</v-chip></v-col> 
+                  </v-row>
 
                   <template>
-                    <v-simple-table>
+                    <v-simple-table class="mt-6">
                       <template v-slot:default>
                         <thead>
                           <tr>
-                            <th class="text-left">
+                            <th width="300px" class="text-left">
                               Order Number
                             </th>
-                            <th class="text-left">
+                            <th width="300px" class="text-left">
                               Direct
                             </th>
-                            <th class="text-left">
+                            <th width="300px" class="text-left">
                               Status
                             </th>
+                            <th width="50px" class="text-left"></th>
                           </tr>
                         </thead>
                         <tbody>
+                          
                           <tr
+                          
                             v-for="order, index in orderList"
                             :key="order.name"
                             :class="{'blue':order.direct}"
                             
                           >
-                            <td>{{ order.number }}</td>
-                            <td> <v-icon v-if="order.direct" id="checkMark"> mdi-check-bold </v-icon> <v-icon v-else id="xOut">mdi-close-circle</v-icon> </td>
-                            <td>{{ order.status }}</td>
+                          <!-- <div v-if="order.status == currentTable"> -->
+                          
+                            <td v-if="checkOrder(order)">{{ order.number }}</td>
+                            <td v-if="checkOrder(order)"> <v-icon v-if="order.direct" id="checkMark"> mdi-check-bold </v-icon> <v-icon v-else id="xOut">mdi-close-circle</v-icon> </td>
+                            <td v-if="checkOrder(order)">{{ order.status }}</td>
+                            <td v-if="checkOrder(order)"><v-checkbox></v-checkbox></td>
+                          <!-- </div> -->
                           </tr>
                         </tbody>
                       </template>
