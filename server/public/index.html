@@ -190,8 +190,8 @@
                               
                                 
                                   <!-- NM button on Add Card Search -->
-                            <v-row>
-                              <v-col>
+                              <v-row>
+                                <v-col class="pl-0" style="min-width: 30px; max-width: 48px;">
                                   <v-badge
                                     color="deep-purple lighten-2"
                                     :content="result.totalConditions.NM"
@@ -200,8 +200,10 @@
                                     offset-x="15"
                                     offset-y="12"
                                     left>
-                                    <v-btn rounded min-width="10" max-width="30" @click="addNMtoObject(result)" @click.ctrl="removeNMtoObject(result)">NM</v-btn>
+                                    <v-btn small rounded min-width="10" max-width="35" @click="addNMtoObject(result)" @click.ctrl="removeNMtoObject(result)">NM</v-btn>
                                   </v-badge>
+                                </v-col>
+                                <v-col style="min-width: 30px; max-width: 48px;">
                                   <v-badge
                                     color="deep-purple lighten-2"
                                     :content="result.totalConditions.LP"
@@ -210,14 +212,15 @@
                                     offset-x="15"
                                     offset-y="12"
                                     left>
-                                    <v-btn rounded min-width="10" max-width="30" @click="addLPtoObject(result)" @click.ctrl="removeLPtoObject(result)">LP</v-btn>
+                                    <v-btn small rounded min-width="10" max-width="35" @click="addLPtoObject(result)" @click.ctrl="removeLPtoObject(result)">LP</v-btn>
                                   </v-badge>
+                                </v-col>
                                   
                                 
                             
                                   
                                   
-                       
+                                <v-col style="min-width: 30px; max-width: 48px;">
                                   <v-badge
                                     color="deep-purple lighten-2"
                                     :content="result.totalConditions.MP"
@@ -227,10 +230,12 @@
                                     offset-y="12"
                                     left
                                     >
-                                    <v-btn rounded min-width="10" max-width="30" @click="addMPtoObject(result)" @click.ctrl="removeMPtoObject(result)">MP</v-btn>
+                                    <v-btn small rounded min-width="10" max-width="35" @click="addMPtoObject(result)" @click.ctrl="removeMPtoObject(result)">MP</v-btn>
                                   </v-badge>
-
-
+                                </v-col>
+                              </v-row>
+                              <v-row>
+                                <v-col class="pt-1" style="min-width: 30px; max-width: 70px;">
                                   <v-badge
                                     color="deep-purple lighten-2"
                                     :content="result.totalConditions.HP"
@@ -239,9 +244,10 @@
                                     offset-x="15"
                                     offset-y="12"
                                     left>
-                                    <v-btn rounded min-width="10" max-width="30" @click="addHPtoObject(result)" @click.ctrl="removeHPtoObject(result)">HP</v-btn>
+                                    <v-btn small rounded min-width="10" max-width="50" @click="addHPtoObject(result)" @click.ctrl="removeHPtoObject(result)">HP</v-btn>
                                   </v-badge>
-
+                                </v-col>
+                                <v-col class="pt-1" style="min-width: 30px; max-width: 70px;">
                                   <v-badge
                                     color="deep-purple lighten-2"
                                     :content="result.totalConditions.DMG"
@@ -250,15 +256,25 @@
                                     offset-x="15"
                                     offset-y="12"
                                     left>
-                                  <v-btn rounded min-width="10" max-width="30" @click="addDMGtoObject(result)" @click.ctrl="removeDMGtoObject(result)">DMG</v-btn>
-                                </v-badge>
-                              </v-col>
-                            </v-row>
+                                    <v-btn small rounded min-width="10" max-width="50" @click="addDMGtoObject(result)" @click.ctrl="removeDMGtoObject(result)">DMG</v-btn>
+                                  </v-badge>
+                                </v-col>
+                              </v-row>
+                              <v-row>
+                                <v-checkbox
+                                class="deep-purple--text lighten-2"
+                                label="Foil?"
+                                color="deep-purple lighten-2"
+                                value="foil"
+                                hide-details
+                                v-model="foil"
+                              ></v-checkbox>
+                              </v-row>
 
                           </v-card-text>
 
-                          <v-row class="mx-0">
-                            <v-col  cols="6" persistent-hint color="deep-purple lighten-1" class="pr-0 pl-1" >
+                          <v-row class="mx-1">
+                            <!-- <v-col  cols="6" persistent-hint color="deep-purple lighten-1" class="pr-0 pl-1" >
                               <v-text-field 
                                 outlined 
                                 dense 
@@ -267,13 +283,14 @@
                                 placeholder="Qty." 
                                 row-height="0">
                               </v-text-field>
-                            </v-col>
+                            </v-col> -->
+
 
                             <v-card-actions class="pt-0 pl-1 pr-1">
                               <v-btn
                                 color="deep-purple lighten-2"
                                 text
-                                @click="addToPile()"
+                                @click="addToPile(result)"
                                 class="float-end">
                                 Add
                               </v-btn>

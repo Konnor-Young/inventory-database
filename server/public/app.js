@@ -75,18 +75,47 @@ var app = new Vue({
             };
             this.patchOrder(updatedOrder, order_id);
         },
-        addToPile: function (item, qty, foil, condition) {
-            item.quantity = qty;
-            item.foil = foil;
-            item.condition = condition;
+        createCardForPile: function (card, condition) {
+                card.condition = condition;
+                return card
+            
+        },
+        addToPile: function (item) {
+            // item.foil = foil;
+            var conditions = [ "NM", "LP", "MP", "HP", "DMG"];
+            // var cards = this.createCardForPile(item, "DMG", item.totalConditions.DMG);
+            // console.log(cards);
+            // this.pileList.push(cards)
+
+            for (let i in conditions) {
+                let condition = conditions[i]
+                
+                
+                
+                if (item.totalConditions[condition] > 0){
+                var card = this.createCardForPile(item, condition);
+                var qty = item.totalConditions[condition];
+                for (let j = 0; j < qty; j++){
+                    this.pileList.push(card);
+                    }
+                }
+            }
+            item.totalConditions = {
+                NM: 0,
+                LP: 0,
+                MP: 0,
+                HP: 0,
+                DMG: 0
+            }
+
 
 
             // {
             //     condition: "" ,
             //     foil: this.isFoil
             // };
-            this.searchPile.push(newCard);
-            this.addCardSubPage = 'pile';
+            // this.searchPile.push(newCard);
+            // this.addCardSubPage = 'pile';
         },
         getRandomCard: async function () {
             let response = await fetch(`https://api.scryfall.com/cards/random `, {
@@ -137,45 +166,47 @@ var app = new Vue({
             }
         },
         // Counter Functions for AddtoPile
+        //---- Adding to the Condition total + the totalCards
         addLPtoObject: function (cardObject) {
             cardObject.totalConditions.LP ++;
-            console.log(cardObject.totalConditions.LP)
+            cardObject.totalCards ++;
         },
         addNMtoObject: function (cardObject) {
             cardObject.totalConditions.NM ++;
-            console.log(cardObject.totalConditions.NM)
+            cardObject.totalCards ++;
         },
         addMPtoObject: function (cardObject) {
             cardObject.totalConditions.MP ++;
-            console.log(cardObject.totalConditions.MP)
+            cardObject.totalCards ++;
         },
         addHPtoObject: function (cardObject) {
             cardObject.totalConditions.HP ++;
-            console.log(cardObject.totalConditions.HP)
+            cardObject.totalCards ++;
         },
         addDMGtoObject: function (cardObject) {
             cardObject.totalConditions.DMG ++;
-            console.log(cardObject.totalConditions.DMG)
+            cardObject.totalCards ++;
         },
+        // ==== Subtracting 2 on ctrl + click (work around for intial click also adding 1)
         removeLPtoObject: function (cardObject) {
             cardObject.totalConditions.LP -= 2;
-            console.log(cardObject.totalConditions.LP)
+            cardObject.totalCards -= 2;
         },
         removeNMtoObject: function (cardObject) {
             cardObject.totalConditions.NM -= 2;
-            console.log(cardObject.totalConditions.NM)
+            cardObject.totalCards -= 2;
         },
         removeMPtoObject: function (cardObject) {
             cardObject.totalConditions.MP -= 2;
-            console.log(cardObject.totalConditions.MP)
+            cardObject.totalCards -= 2;
         },
         removeHPtoObject: function (cardObject) {
             cardObject.totalConditions.HP -= 2
-            console.log(cardObject.totalConditions.HP)
+            cardObject.totalCards -= 2;
         },
         removeDMGtoObject: function (cardObject) {
             cardObject.totalConditions.DMG -= 2;
-            console.log(cardObject.totalConditions.DMG)
+            cardObject.totalCards -= 2;
         },
         getOrders: async function () {
             let response = await fetch(`${URL}/orders`, {
