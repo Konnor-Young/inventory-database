@@ -128,6 +128,8 @@ var app = new Vue({
             let response = await fetch(`${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`);
             let data = await response.json();
             console.log(data.data)
+            data.data.splice(24) 
+            console.log(data.data)
             data.data.forEach((item) => {
                 item.totalConditions = {
                     NM: 0,
@@ -322,6 +324,13 @@ var app = new Vue({
         resetAddCardSearch:  function () {
             this.searchResults = [];
         },
+        focusOntoSearch: function () {
+           ;
+            console.log(this.$refs.searchInput)
+            const searchButtonRef = this.$refs.searchInput;
+            searchButtonRef.focus();
+            
+        }
     },
     created: function () {
         this.getCards();

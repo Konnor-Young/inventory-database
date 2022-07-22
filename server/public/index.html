@@ -128,7 +128,7 @@
                   <!--= Sub Menu with Search/*Deck/Pile-Cart -->
                   <v-tabs grow optional slider-color="deep-purple lighten-2" class="rounded-lg blue-grey lighten-1">
 
-                    <v-tab @Click="addCardSubPage = 'Search'" class="rounded-lg"
+                    <v-tab class="rounded-lg" @Click="addCardSubPage = 'Search'"
                       active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
                       Search
                     </v-tab>
@@ -151,7 +151,9 @@
                       <v-row>
                         <v-col cols="6">
                           <v-text-field outlined label="Search for a Card" placeholder="Magic the Gathering Cards Only"
-                          v-model="searchName" @keypress.enter="getSearch()"></v-text-field>
+                          v-model="searchName" @keypress.enter="getSearch()" 
+                          ref="searchInput"
+                          autofocus ></v-text-field>
                         </v-col>
                         <v-col cols="auto">
                           <v-btn class="mt-2" @Click="getSearch()" >Submit</v-btn>
@@ -183,7 +185,7 @@
                               height="204"
                               :src="getSmallImgURI(result)">
                           </v-img>
-
+                          
                           <v-card-text class="pt-1 pb-0">
 
                               
@@ -267,7 +269,7 @@
                                 color="deep-purple lighten-2"
                                 value="foil"
                                 hide-details
-                                v-model="foil"
+                                
                               ></v-checkbox>
                               </v-row>
 
@@ -296,6 +298,16 @@
                               </v-btn>
                             </v-card-actions>
                           </v-row>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                  <!-- Pile/Cart Page -->
+                  <v-container v-if="addCardSubPage == 'Pile'">
+                    <v-row v-for="card in pileList">
+                      <v-col>
+                        <v-card>
+                          
                         </v-card>
                       </v-col>
                     </v-row>
