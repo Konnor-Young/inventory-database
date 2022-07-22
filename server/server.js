@@ -1,7 +1,7 @@
 const express = require(`express`);
 const app = express();
 const cors = require(`cors`);
-const { Card, Order, Unique } = require(`../persist/model`);
+const { Card, Order, Unique, Storage } = require(`../persist/model`);
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public/`));
@@ -125,9 +125,6 @@ app.patch("/cards/:id", async (req, res) => {
             return;
         }
         for (let i in unique.locations){
-            console.log(unique.locations[i]);
-            console.log(i);
-            console.log(unique.locations[i].card)
             if(unique.locations[i].card == req.params.id){
                 unique.locations[i] = update;
                 unique.save();
@@ -159,6 +156,7 @@ app.patch("/orders/:id", async (req, res) => {
     }
     res.status(201).json(order);
 });
+
 app.delete(`/skus/:unique_id/cards/:card_id`, async (req, res) => {
     let card;
     let unique;
