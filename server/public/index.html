@@ -61,21 +61,25 @@
 
               <!-- PlaceHolder for future expansion menu -->
               <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
-            
+
+              <v-btn icon>
+                <v-icon>mdi-cards</v-icon>
+              </v-btn>
+
               <!-- Current Page title -->
               <v-app-bar-title class="float-left pr-10 ml-2 font-weight-black">{{ currentPage }}</v-app-bar-title>
               
               <v-spacer></v-spacer>
 
               <v-btn href="mailto:d00439987@dmail.dixie.edu" icon>
-                <v-icon >mdi-email</v-icon>
+                <v-icon>mdi-email</v-icon>
               </v-btn>
         
               <v-btn icon>
                 <v-icon>mdi-account-box </v-icon>
               </v-btn>
 
-              <v-btn icon>
+              <v-btn icon @Click="loggedIn = false">
                 <v-icon>mdi-logout</v-icon>
               </v-btn>
 
