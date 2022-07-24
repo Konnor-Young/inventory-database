@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const cardSchema = mongoose.Schema({
     location: { type: String },
     foil: { type: Boolean },
-    condition: { type: String, enum: ['nm', 'lp', 'mp', 'hp', 'dmg'] },
+    condition: { type: String, enum: ['NM', 'LP', 'MP', 'HP', 'DMG'] },
     price: { type: String },
     tcg_id: { type: String },
     local_image: { type: String },

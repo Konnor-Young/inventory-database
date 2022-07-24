@@ -35,22 +35,25 @@ var app = new Vue({
   },
   methods: {
     newCard: function (cardObject) {
-      let id;
-      if (cardObject.tcgplayer_id) {
-        id = cardObject.tcgplayer_id;
-      } else {
-        id = cardObject.tcgplayer_etched_id;
-      }
-      let newCard = {
-        tcg_id: id,
-        name: cardObject.name,
-        set: cardObject.set_name,
-        image_uris: cardObject.image_uris,
-        prices: cardObject.prices,
-        condition: this.cardCondition,
-        foil: this.cardFoil,
-      };
-      this.postCards(newCard);
+        cardObject.forEach((card) => {
+            let id;
+            if (card.tcgplayer_id) {
+                id = card.tcgplayer_id;
+            } else {
+                id = card.tcgplayer_etched_id;
+            }
+            let newCard = {
+                tcg_id: id,
+                name: card.name,
+                set: card.set_name,
+                image_uris: card.image_uris,
+                prices: card.prices,
+                condition: card.condition,
+                foil: card.foil,
+            };
+            this.postCards(newCard);
+        })
+        this.pileList = [];
     },
     newOrder: function () {
       let newOrder = {
@@ -260,7 +263,7 @@ var app = new Vue({
       let data = await response.json();
       console.log(response.status);
       console.log(data);
-      if (response.status == 201) {
+      if (response.status == 200) {
         this.getCards();
       } else {
         console.log("Error posting Cards:", response.status);
