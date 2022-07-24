@@ -9,7 +9,7 @@ var app = new Vue({
   data: {
     message: 'HI WORLD',
     currentPage: 'Inventory',
-    addCardSubPage: 'searchCard',
+    addCardSubPage: 'Search',
     addOrderSubPage: 'searchCard',
     updatingOrder: -1,
     updatingCard: -1,
@@ -31,25 +31,29 @@ var app = new Vue({
     loggedIn: true,
     tableFilters: ['active', 'standing', 'pulling', 'shipped'],
     currentTable: 'active',
+    fab: false,
   },
   methods: {
     newCard: function (cardObject) {
-      let id;
-      if (cardObject.tcgplayer_id) {
-        id = cardObject.tcgplayer_id;
-      } else {
-        id = cardObject.tcgplayer_etched_id;
-      }
-      let newCard = {
-        tcg_id: id,
-        name: cardObject.name,
-        set: cardObject.set_name,
-        image_uris: cardObject.image_uris,
-        prices: cardObject.prices,
-        condition: this.cardCondition,
-        foil: this.cardFoil,
-      };
-      this.postCards(newCard);
+        cardObject.forEach((card) => {
+            let id;
+            if (card.tcgplayer_id) {
+                id = card.tcgplayer_id;
+            } else {
+                id = card.tcgplayer_etched_id;
+            }
+            let newCard = {
+                tcg_id: id,
+                name: card.name,
+                set: card.set_name,
+                image_uris: card.image_uris,
+                prices: card.prices,
+                condition: card.condition,
+                foil: card.foil,
+            };
+            this.postCards(newCard);
+        })
+        this.pileList = [];
     },
     newOrder: function () {
       let newOrder = {
@@ -259,8 +263,10 @@ var app = new Vue({
       let data = await response.json();
       console.log(response.status);
       console.log(data);
-      if (response.status == 201) {
+      if (response.status == 200) {
         this.getCards();
+      } else {
+        console.log("Error posting Cards:", response.status);
       }
     },
     patchCard: async function (update, card_id, sku_id) {
@@ -332,6 +338,30 @@ var app = new Vue({
 
       return false;
     },
+
+
+
+
+    // ==== Testing floating button on bottom
+    onScroll (e) {
+        if (typeof window === 'undefined') return
+        const top = window.pageYOffset ||   e.target.scrollTop || 0
+        this.fab = top > 20
+      },
+      toTop () {
+        this.$vuetify.goTo(0)
+    },
+    
+    // ===== Function to go through list of cards and return single cards
+    cardsToCard: function (listOfCards) {
+        listOfCards.forEach((card) => {
+            // console.log(card)
+            return card
+        }) 
+    },
+    totalActiveOrders: function () {
+        return this.orderList.length
+    }
   },
 
   created: function () {

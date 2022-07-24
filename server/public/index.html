@@ -91,11 +91,15 @@
                   <!-- Display component of each tab with on click and highlight after selection -->
                   <v-tab @Click="currentPage = tab" class="rounded-lg rounded-b-0"
                         v-bind:class="{ 'blue-grey lighten-4 deep-purple--text lighten-3 disabled' : currentPage === tab}">
-                    <v-badge
-                          color="green"
-                          content="6">
-                    {{ tab }}
+                    <v-badge v-if="tab == 'View Orders'"
+                          color="deep-purple lighten-2"
+                          :content="orderList.length">
+                          {{ tab }}
                     </v-badge>
+                    <v-badge v-else color="rgba(255, 0, 0, 0.0)">
+                          {{ tab }}
+                    </v-badge>
+                    
                   </v-tab>
                 </v-tabs>
               </template>
@@ -107,7 +111,7 @@
               <v-sheet
                     id="scrolling-techniques-3"
                     class="overflow-y-auto mt-16 pt-16"
-                    max-height="650">
+                    max-height="auto">
                 
                 <v-container class="mt-16 pt-16" style="height: 650px;">
 
@@ -136,7 +140,7 @@
                           <v-icon>
                             mdi-cards-outline
                           </v-icon>
-                          <h2>5</h2>
+                          <h2>{{ cardList.length }}</h2>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -161,7 +165,7 @@
                   <!--=== Add Card Page Vuetify Card ===-->
                   <v-card v-if="currentPage == 'Add Card'" class="mx-1">
                     <!--= Sub Menu with Search/*Deck/Pile-Cart -->
-                    <v-tabs grow optional slider-color="deep-purple lighten-2" class="rounded-lg blue-grey lighten-1">
+                    <v-tabs grow slider-color="deep-purple lighten-2" class="rounded-lg blue-grey lighten-1">
 
                       <v-tab class="rounded-lg" @Click="addCardSubPage = 'Search'"
                         active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
@@ -317,15 +321,52 @@
                         </v-col>
                       </v-row>
                     </v-container>
-                    <!-- Pile/Cart Page -->
+                    <!--===== Pile/Cart Page =====-->
                     <v-container v-if="addCardSubPage == 'Pile'">
-                      <v-row v-for="card in pileList">
-                        <v-col>
-                          <v-card>
+                      <!-- trying floating button -->
+                      <v-btn
+                            v-scroll="onScroll"
+                            v-show="fab"
+                            fab
+                            dark
+                            fixed
+                            bottom
+                            right
+                            color="primary"
+                            @click="toTop">
+                        <v-icon>keyboard_arrow_up</v-icon>
+                      </v-btn>
+                      <v-container v-if="pileList.length == 0">
+                        <h3 align-content="center">No Cards Added to Pile</h3>
+                      </v-container>
+                      <v-container v-if="pileList.length > 0">
+                        <v-row >
+                          <v-col>
+                            <v-card class="float-right mx-3">
                             
-                          </v-card>
-                        </v-col>
-                      </v-row>
+                            <v-btn>Get Locations</v-btn>
+                            <v-btn @Click="newCard(pileList)">Add to Inventory</v-btn>
+                            
+                            </v-card>
+                          </v-col>
+                        </v-row>
+                      
+                        <v-row v-for="pileCard in pileList">
+                          <v-col>
+                            <v-card>
+                              <v-card width="146" class="mx-4">
+    
+                                <v-img
+                                    height="204"
+                                    :src="getSmallImgURI(pileCard)">
+                                </v-img>
+
+
+                              </v-card>
+                            </v-card>
+                          </v-col>
+                        </v-row>
+                      </v-container>
                     </v-container>
                   </v-card>
 
