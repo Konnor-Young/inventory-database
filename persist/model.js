@@ -25,7 +25,7 @@ const orderSchema = mongoose.Schema({
     number: { type: String },
     direct: { type: Boolean },
     cards: { type: [] },
-    status: { type: String, enum: ['standing', 'pulling', 'shipped'] },
+    status: { type: String, enum: ['standing', 'pulling', 'shipped', 'error'] },
     locations: { type: [] },
 });
 

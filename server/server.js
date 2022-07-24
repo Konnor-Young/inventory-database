@@ -2,6 +2,7 @@ const express = require(`express`);
 const app = express();
 const cors = require(`cors`);
 const { Card, Order, Unique, Storage } = require(`../persist/model`);
+const logic = require(`../persist/location`);
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public/`));
@@ -21,6 +22,8 @@ app.get("/cards/:id", async (req, res) => {
     let card;
     try {
         card = await Card.findById(req.params.id);
+        logic.getPrice(card);
+        await card.save();
     } catch (err) {
         console.log('could not find card', err);
         res.status(500).json({ message: 'card not found', err: err });
@@ -42,16 +45,17 @@ app.get("/orders", async (req, res) => {
 app.post("/cards", async (req, res) => {
     let unique;
     let card;
+    let storage;
     try {
         card = await Card.create({
-            location: 'here',
+            location: req.body.location,
             foil: false,
             condition: req.body.condition,
             price: 'price',
             tcg_id: req.body.tcg_id,
             local_image: req.body.image_uris.small
         });
-        console.log(card._id);
+        // console.log(card._id);
         unique = await Unique.findOne({
             tcg_id: req.body.tcg_id,
         });
@@ -73,13 +77,45 @@ app.post("/cards", async (req, res) => {
                 }
             });
         }
-        console.log(unique._id);
+        logic.getPrice(card);
+        await card.save();
+        // let number = card.location;
+        // const sentence = number.toString();
+        // console.log(`number ${number}, sentence ${sentence}`)
+        // const index = 0;
+        // const shelf = 's'+sentence.charAt(index);
+        // const drawer = 'd'+sentence.charAt(index+1);
+        // const box = 'b'+sentence.charAt(index+2);
+        // storage = await Storage.findOneAndUpdate({shelves: 3}, {$inc: {"s1.d1.b1": 1}});
+        // db.storage.update({shelves: 3}, { $inc: {"s1.d1.b1": 1}});
+        // console.log(`storage ${storage}`);
+        // if(!storage){
+        //     console.log(`inventory location ${number} not found`);
+        // }
+        // console.log(storage.locationMap.get(`${shelf}.${drawer}.${box}`));
+        // let currentThere = storage.locationMap.get(`${shelf}.${drawer}.${box}`);
+        // let update = currentThere + 1;
+        // console.log(update);
+        // storage.locationMap.set(`${shelf}[${drawer}][${box}]`, update);
+        // await storage.save();
+        // console.log(storage.locationMap.get(`${shelf}.${drawer}.${box}`));
+        // storage.set('locationMap.s1.d1.b1', valueThere );
+        // // await storage.save();
+        // console.log(storage.get('locationMap.s1.d1.b1'), `new`);
+        // console.log(`storeShelf ${storeShelf}`);
+        // console.log(`drawer ${drawer}`);
+        // console.log(`box ${box}`);
+        // console.log(`box ${storeShelf[drawer][box]}`);
+        // storeShelf.drawer.box += 1;
+        // await storage.save()
+        // find storage if storage getlocationMap shelf.drawer.box $inc 1
+        // console.log(unique._id);
         unique = await Unique.findByIdAndUpdate(
             unique._id,
             {
                 $push: {
                     cards: card._id,
-                    locations: { location: 'here', card: card._id, price: card.price },
+                    locations: { location: card.location, card: card._id, price: card.price },
                 }
             });
         console.log(unique.cards);
