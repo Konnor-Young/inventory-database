@@ -24,18 +24,27 @@ const uniqueSchema = mongoose.Schema({
 const orderSchema = mongoose.Schema({
     number: { type: String },
     direct: { type: Boolean },
-    card: { type: Map },
-    status: { type: String, enum: ['standing', 'pulling', 'shipped'] },
+    cards: { type: [] },
+    status: { type: String, enum: ['standing', 'pulling', 'shipped', 'error'] },
+    locations: { type: [] },
 });
 
+const storageSchema = mongoose.Schema({
+    locationMap: { type: Map },
+    shelves: { type: Number },
+    drawers: { type: Number },
+    boxes: { type: Number }
+});
 
 // ORDER Card Keys, Integer
 const Card = mongoose.model("Card", cardSchema);
 const Order = mongoose.model("Order", orderSchema);
 const Unique = mongoose.model("Unique", uniqueSchema);
+const Storage = mongoose.model("Storage", storageSchema);
 
 module.exports = {
     Card,
     Order,
-    Unique
+    Unique,
+    Storage
 }
