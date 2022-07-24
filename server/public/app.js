@@ -355,6 +355,9 @@ var app = new Vue({
             // console.log(card)
             return card
         }) 
+    },
+    totalActiveOrders: function () {
+        return this.orderList.length
     }
   },
 

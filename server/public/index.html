@@ -91,11 +91,15 @@
                   <!-- Display component of each tab with on click and highlight after selection -->
                   <v-tab @Click="currentPage = tab" class="rounded-lg rounded-b-0"
                         v-bind:class="{ 'blue-grey lighten-4 deep-purple--text lighten-3 disabled' : currentPage === tab}">
-                    <v-badge
-                          color="green"
-                          content="6">
-                    {{ tab }}
+                    <v-badge v-if="tab == 'View Orders'"
+                          color="deep-purple lighten-2"
+                          :content="orderList.length">
+                          {{ tab }}
                     </v-badge>
+                    <v-badge v-else color="rgba(255, 0, 0, 0.0)">
+                          {{ tab }}
+                    </v-badge>
+                    
                   </v-tab>
                 </v-tabs>
               </template>
@@ -136,7 +140,7 @@
                           <v-icon>
                             mdi-cards-outline
                           </v-icon>
-                          <h2>5</h2>
+                          <h2>{{ cardList.length }}</h2>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -341,7 +345,7 @@
                             <v-card class="float-right mx-3">
                             
                             <v-btn>Get Locations</v-btn>
-                            <v-btn @Click="postCards(cardsToCard(pileList))">Add to Inventory</v-btn>
+                            <v-btn @Click="newCard(cardsToCard(pileList))">Add to Inventory</v-btn>
                             
                             </v-card>
                           </v-col>
