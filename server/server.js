@@ -42,14 +42,31 @@ app.get("/orders", async (req, res) => {
     res.status(200).json(orderList);
 });
 
+app.post("/locations", async (req, res) => {
+    let list
+    try{
+        list = await logic.getOpenLocations(req.body.number);
+        console.log(list);
+    }catch(err){
+        console.log(list);
+        console.log(err);
+        res.status(500).json({message: `something went wrong. found no location`, err: err});        
+    }
+    res.status(200).json(list);
+});
+
 app.post("/cards", async (req, res) => {
     let unique;
     let card;
     let storage;
+    let isFoil;
+    if(req.body.foil == 'Non-Foil'){
+        isFoil = false
+    }else{ isFoil = true }
     try {
         card = await Card.create({
             location: req.body.location,
-            foil: false,
+            foil: isFoil,
             condition: req.body.condition,
             price: 'price',
             tcg_id: req.body.tcg_id,
@@ -70,10 +87,6 @@ app.post("/cards", async (req, res) => {
                 },
                 price: { usd: req.body.prices.usd, usd_foil: req.body.prices.usd_foil },
                 quantity: { available: 1, reserved: 0, physical: 1 },
-                art: {
-                    borderless: false, textless: false, etched: false, full_art: false,
-                    promo: false, oversized: false
-                }
             });
         }
         logic.getPrice(card);

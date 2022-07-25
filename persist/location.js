@@ -46,19 +46,20 @@ async function updateAllPrices() { //Cards.find => cards.forEach getPrice(card)
 };
 async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) for ([key, value] of Object.entries(storage.locationMap)) 
     var openingList = {};
-    let storage = await Storage.find({shelves: 1});
-    var map1 = storage[0].get('locationMap');
+    let storage = await Storage.findOne();
+    console.log(storage);
+    var map1 = storage.get('locationMap');
     var shelfContents = map1.values();
     var b = 1;
     var d = 1;
     var s = 1;
     for(var shelf of shelfContents){
-        if(s > storage[0].shelves){s = 1;}
+        if(s > storage.shelves){s = 1;}
         for(var [key, value] of Object.entries(shelf)) {
-            if(d > storage[0].drawers){d = 1;}
+            if(d > storage.drawers){d = 1;}
             var drawer = value;
             for(var [key, value] of Object.entries(drawer)){
-                if(b > storage[0].boxes){b = 1;}
+                if(b > storage.boxes){b = 1;}
                 let open = 150 - value;
                 if(open >= 20){
                     openingList[`${s}${d}${b}`] = open;
@@ -69,14 +70,15 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
         }
         s++;
     }
+    console.log(openingList);
+    var eq = false;
+    var gt = false;
+    var lt = false;
     for(var [key, value] of Object.entries(openingList)){
         var open = 0;
         var eqList = [];
         var gtList = [];
         var ltList = [];
-        var eq = false;
-        var gt = false;
-        var lt = false;
         if(value == numberOfCards){
             eq = true; 
             eqList.push(key);
@@ -105,22 +107,24 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
         let i = parseInt(open_key);
         min = (i*1000)+(150-open_value);
         pushForward(key);
-        for(let j=1; j<=numberOfCards; j++){
+        for(let j=0; j<numberOfCards; j++){
             min++;
             locate_list[j] = min;
         }
-        return locate_list;
     }else if(gt){
         open_key = gtList[0];
-        open_value = openingList.open_key;
+        // console.log(open_key, `key`);
+        open_value = openingList[open_key];
+        // console.log(open_value, `value`);
         let i = parseInt(open_key);
+        // console.log(i, `i`);
         min = (i*1000)+(150-open_value);
+        // console.log(min, `min`);
         pushForward(key);
-        for(let j=1; j<=numberOfCards; j++){
+        for(let j=0; j<numberOfCards; j++){
             min++;
             locate_list[j] = min;
         }
-        return locate_list;
     }else if(lt){
         var allocate = 0;
         for(let x = 0; x < ltList.length; x++){
@@ -140,7 +144,8 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
             }
         }
     }
-    console.log(returnList);
+    console.log(locate_list);
+    return locate_list;
     // iterate through openingList and find a # of openings pushForward(key) return parseInt(key)*1000+(150-#)->parseInt(key)*1000+150
 };
 async function pushForward(box){ // first three numbers in location ie 123--- Card.find({location})
