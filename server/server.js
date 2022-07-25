@@ -79,20 +79,41 @@ app.post("/cards", async (req, res) => {
         }
         logic.getPrice(card);
         await card.save();
+        storage = await Storage.findOne({});
+        console.log(storage);
+        await logic.updateLocation(card);
         // let number = card.location;
         // const sentence = number.toString();
-        // console.log(`number ${number}, sentence ${sentence}`)
+        // // console.log(`number ${number}, sentence ${sentence}`)
         // const index = 0;
         // const shelf = 's'+sentence.charAt(index);
         // const drawer = 'd'+sentence.charAt(index+1);
         // const box = 'b'+sentence.charAt(index+2);
-        // storage = await Storage.findOneAndUpdate({shelves: 3}, {$inc: {"s1.d1.b1": 1}});
-        // db.storage.update({shelves: 3}, { $inc: {"s1.d1.b1": 1}});
-        // console.log(`storage ${storage}`);
+        // storage = await Storage.findOne({shelves: 2});
+        // // db.storage.update({shelves: 3}, { $inc: {"s1.d1.b1": 1}});
+        // // console.log(`storage ${storage}`);
         // if(!storage){
         //     console.log(`inventory location ${number} not found`);
         // }
-        // console.log(storage.locationMap.get(`${shelf}.${drawer}.${box}`));
+        // console.log(storage, `storage`);
+        // console.log(storage.locationMap.get(shelf));
+        // console.log(storage.locationMap.get(shelf)[drawer]);
+        // console.log(storage.locationMap.get(shelf)[drawer][box]);
+        // let current = storage.locationMap.get(shelf);
+        // current[drawer][box] = current[drawer][box] + 1;
+        // console.log(current);
+        // console.log(current[drawer][box]);
+        // // storage.locationMap.set(`${shelf}`, current);
+        // storage.set(`locationMap.${shelf}`, current);
+        // await storage.save();
+        // // console.log('set');
+        // console.log(storage.locationMap.get(shelf));
+        // console.log(storage.locationMap.get(shelf)[drawer][box]);
+        // console.log(storage.locationMap.get(`${shelf}`), `.map.get`);
+        // console.log(storage.get.locationMap[shelf], `.get.map`);
+        // console.log(storage.locationMap.get(shelf), '.map.get(shelf)');
+        // console.log(storage.get('locationMap'.shelf.drawer.box));
+        // console.log(storage.locationMap.get(shelf.drawer.box), '.map.get(shelf)');
         // let currentThere = storage.locationMap.get(`${shelf}.${drawer}.${box}`);
         // let update = currentThere + 1;
         // console.log(update);

@@ -156,12 +156,28 @@ async function pushForward(box){ // first three numbers in location ie 123--- Ca
         await cardsInBox[j].save();
     }
 };
+async function updateLocation(card){
+        let number = card.location;
+        const sentence = number.toString();
+        const index = 0;
+        const shelf = 's'+sentence.charAt(index);
+        const drawer = 'd'+sentence.charAt(index+1);
+        const box = 'b'+sentence.charAt(index+2);
+        let storage = await Storage.findOne({});
+        let current = storage.locationMap.get(shelf);
+        current[drawer][box] = current[drawer][box] + 1;
+        console.log(storage.locationMap.get(shelf), `shelf`);
+        console.log(current, `current`);
+        storage.set(`locationMap.${shelf}`, current);
+        await storage.save();
+};
 
 module.exports = {
     initializeStorage,
     getOpenLocations,
     getPrice,
     updateAllPrices,
+    updateLocation,
 }
 
 
