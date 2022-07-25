@@ -55,7 +55,6 @@ app.post("/cards", async (req, res) => {
             tcg_id: req.body.tcg_id,
             local_image: req.body.image_uris.small
         });
-        // console.log(card._id);
         unique = await Unique.findOne({
             tcg_id: req.body.tcg_id,
         });
@@ -79,67 +78,31 @@ app.post("/cards", async (req, res) => {
         }
         logic.getPrice(card);
         await card.save();
-        storage = await Storage.findOne({});
-        console.log(storage);
-        await logic.updateLocation(card);
-        // let number = card.location;
-        // const sentence = number.toString();
-        // // console.log(`number ${number}, sentence ${sentence}`)
-        // const index = 0;
-        // const shelf = 's'+sentence.charAt(index);
-        // const drawer = 'd'+sentence.charAt(index+1);
-        // const box = 'b'+sentence.charAt(index+2);
-        // storage = await Storage.findOne({shelves: 2});
-        // // db.storage.update({shelves: 3}, { $inc: {"s1.d1.b1": 1}});
-        // // console.log(`storage ${storage}`);
-        // if(!storage){
-        //     console.log(`inventory location ${number} not found`);
-        // }
-        // console.log(storage, `storage`);
-        // console.log(storage.locationMap.get(shelf));
-        // console.log(storage.locationMap.get(shelf)[drawer]);
-        // console.log(storage.locationMap.get(shelf)[drawer][box]);
-        // let current = storage.locationMap.get(shelf);
-        // current[drawer][box] = current[drawer][box] + 1;
-        // console.log(current);
-        // console.log(current[drawer][box]);
-        // // storage.locationMap.set(`${shelf}`, current);
-        // storage.set(`locationMap.${shelf}`, current);
-        // await storage.save();
-        // // console.log('set');
-        // console.log(storage.locationMap.get(shelf));
-        // console.log(storage.locationMap.get(shelf)[drawer][box]);
-        // console.log(storage.locationMap.get(`${shelf}`), `.map.get`);
-        // console.log(storage.get.locationMap[shelf], `.get.map`);
-        // console.log(storage.locationMap.get(shelf), '.map.get(shelf)');
-        // console.log(storage.get('locationMap'.shelf.drawer.box));
-        // console.log(storage.locationMap.get(shelf.drawer.box), '.map.get(shelf)');
-        // let currentThere = storage.locationMap.get(`${shelf}.${drawer}.${box}`);
-        // let update = currentThere + 1;
-        // console.log(update);
-        // storage.locationMap.set(`${shelf}[${drawer}][${box}]`, update);
-        // await storage.save();
-        // console.log(storage.locationMap.get(`${shelf}.${drawer}.${box}`));
-        // storage.set('locationMap.s1.d1.b1', valueThere );
-        // // await storage.save();
-        // console.log(storage.get('locationMap.s1.d1.b1'), `new`);
-        // console.log(`storeShelf ${storeShelf}`);
-        // console.log(`drawer ${drawer}`);
-        // console.log(`box ${box}`);
-        // console.log(`box ${storeShelf[drawer][box]}`);
-        // storeShelf.drawer.box += 1;
-        // await storage.save()
-        // find storage if storage getlocationMap shelf.drawer.box $inc 1
-        // console.log(unique._id);
+        let number = card.location;
+        const sentence = number.toString();
+        const index = 0;
+        const shelf = 's'+sentence.charAt(index);
+        const drawer = 'd'+sentence.charAt(index+1);
+        const box = 'b'+sentence.charAt(index+2);
+        let newBox = await Storage.findById('62de035bfc0fa0f397501d7f');
+        let updateBox = await newBox.locationMap.get(shelf);
+        updateBox[drawer][box] = updateBox[drawer][box] + 1;
+        storage = await Storage.findByIdAndUpdate(newBox._id, newBox);
+        updateAvailable = unique.quantity.get('available') + 1;
+        updatePhysical = unique.quantity.get('physical') + 1;
         unique = await Unique.findByIdAndUpdate(
             unique._id,
             {
+                $set: {
+                    "quantity.available": updateAvailable,
+                    "quantity.physical": updatePhysical
+                },
                 $push: {
                     cards: card._id,
-                    locations: { location: card.location, card: card._id, price: card.price },
+                    locations: { location: card.location, card: card._id, price: card.price },   
                 }
-            });
-        console.log(unique.cards);
+            }
+        );
     } catch (err) {
         console.log(`could not create`, err);
         res.status(500).json({ message: `could not create`, err: err });
