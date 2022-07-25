@@ -8,7 +8,7 @@ var app = new Vue({
   el: '#app',
   data: {
     message: 'HI WORLD',
-    currentPage: 'View Orders',
+    currentPage: 'Inventory',
     addCardSubPage: 'Search',
     addOrderSubPage: 'searchCard',
     viewOrderSubPage: 'inStore',
