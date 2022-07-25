@@ -143,15 +143,15 @@ var app = new Vue({
         `${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`
       );
       let data = await response.json();
-      console.log(data.object);
+    //   console.log(data.object);
       let listOfCards = data.data;
       this.searchResultsStats = {
                     total_cards: data.total_cards,
                     has_more: data.has_more,
                     next_page: data.next_page,
-                } 
-      this.searchResults = data.data.slice();
-      console.log(this.searchResultsStats)
+                }; 
+      
+    //   console.log(this.searchResultsStats)
       
       data.data.forEach((item) => {
         item.totalConditions = {
@@ -163,6 +163,7 @@ var app = new Vue({
         };
         item.totalCards = 0;
       });
+      this.searchResults = data.data.slice();
       listOfCards.splice(25);
       console.log(data.data);
       this.searchResultsPaginated = data.data;
@@ -209,7 +210,8 @@ var app = new Vue({
       cardObject.totalConditions.DMG++;
       cardObject.totalCards++;
     },
-    // ==== Subtracting 2 on ctrl + click (work around for intial click also adding 1)
+    // ==== Subtracting 2 on ctrl + click (work around for intial click also adding 1) 
+    // ?? Need to add non negative validation
     removeLPtoObject: function (cardObject) {
       cardObject.totalConditions.LP -= 2;
       cardObject.totalCards -= 2;
@@ -358,10 +360,7 @@ var app = new Vue({
 
       return false;
     },
-
-
-
-
+    
     // ==== Testing floating button on bottom
     onScroll (e) {
         if (typeof window === 'undefined') return
