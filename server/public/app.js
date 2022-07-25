@@ -42,6 +42,7 @@ var app = new Vue({
     storeLogins: { "GH0298": "123", "GH0299": "123", "GH0300": "123", "test": "123"},
     invalidLogin: false,
     incorrectLoginAttempts: 0,
+    addSearchCurrentPage: 1,
   },
   methods: {
     newCard: async function (cardObject) {
@@ -475,6 +476,18 @@ var app = new Vue({
             this.incorrectLoginAttempts += 1;
             // console.log('Username and Password Cannot be blank')
         }
+    },
+    changeDisplayedCards: function () {
+        let offset = this.addSearchCurrentPage - 1;
+        let start = offset * 25;
+        let stop = start + 25;
+
+        this.searchResultsPaginated = this.searchResults.slice(start, stop);
+    },
+    changePage: function (page) {
+        this.addSearchCurrentPage = page;
+        this.changeDisplayedCards();
+        return this.searchResultsPaginated;
     }
   },
 

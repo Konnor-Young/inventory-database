@@ -37,7 +37,7 @@
                     <v-btn class="mx-16 mb-8" @click="login(username, password)">Login</button>
                   </v-row>
                   <v-row class="justify-center" v-show="invalidLogin">
-                    <v-alert type="error">
+                    <v-alert type="error" dismissible>
                     Invalid Attempt {{ incorrectLoginAttempts }}
                     </v-alert>
                   </v-row>
@@ -315,27 +315,13 @@
                                   <v-chip v-for="finish in vFinishes(result.finishes, result)" @Click="updateCardFinish(result, finish)">{{ finish }}</v-chip>
                                   
                                 </v-chip-group>
-                                <p>{{ getCardPrice(result) }}</p>
-                                  <p>{{result.finish}}</p>
                               </v-card-text>
                               <v-divider></v-divider>
-
-                              <!-- OLD CODE -->
-                              <!-- <v-row>
-                                <v-checkbox
-                                      class="deep-purple--text lighten-2"
-                                      label="Foil?"
-                                      color="deep-purple lighten-2"
-                                      value="foil"
-                                      hide-details>
-                                </v-checkbox>
-                              </v-row> -->
-
 
                             </v-card-text>
                             <!-- Add Button on cards displayed in add to pile -->
                             <v-row class="mx-1">
-                              <v-card-actions class="pt-0 pl-1 pr-1">
+                              <v-card-actions>
                                 <v-btn
                                   color="deep-purple lighten-2"
                                   text
@@ -348,6 +334,13 @@
                           </v-card>
                         </v-col>
                       </v-row>
+                      <v-pagination
+                            class="py-3"
+                            v-model="addSearchCurrentPage"
+                            :length="Math.ceil( searchResultsStats.total_cards / 25)"
+                            :total-visible="6"
+                            @input="changePage">
+                      </v-pagination>
                     </v-container>
                     <!--===== Pile/Cart Page =====-->
                     <v-container v-if="addCardSubPage == 'Pile'">
