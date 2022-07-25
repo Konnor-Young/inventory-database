@@ -37,6 +37,11 @@ var app = new Vue({
     currentTable: 'active',
     fab: false,
     addPileLoading: false,
+    username: "",
+    password: "",
+    storeLogins: { "GH0298": "123", "GH0299": "123", "GH0300": "123", "test": "123"},
+    invalidLogin: false,
+    incorrectLoginAttempts: 0,
   },
   methods: {
     newCard: async function (cardObject) {
@@ -432,6 +437,45 @@ var app = new Vue({
       // console.log(price)
       return '$' + price;
     },
+    getTotalCards: function (cardObjectArray) {
+        let totalCards = 0;
+        for (let i = 0; i < cardObjectArray.length; i++) {
+            totalCards += cardObjectArray[i].cards.length
+        }
+        return totalCards
+    },
+    login: function (username, password) {
+        // username and password not blank
+        if(username != "" && password != "") {
+            // does the username given exsist?
+            if (typeof this.storeLogins[username] !== "undefined" ) {
+                // console.log('exists');
+                // does the password match?
+                if (this.storeLogins[username] == password) {
+                    // console.log('logged in');
+                    this.loggedIn = true;
+                    this.invalidLogin = false;
+                    this.incorrectLoginAttempts = 0;
+                } else {
+                    // console.log("not logged in");
+                    this.password = "";
+                    this.invalidLogin = true;
+                    this.incorrectLoginAttempts += 1;
+                }
+            } else {
+                // console.log('does not exist');
+                this.invalidLogin = true;
+                this.username = "";
+                this.password = "";
+                this.incorrectLoginAttempts += 1;
+            }
+            this.password = "";
+        } else {
+            this.invalidLogin = true;
+            this.incorrectLoginAttempts += 1;
+            // console.log('Username and Password Cannot be blank')
+        }
+    }
   },
 
   created: function () {
