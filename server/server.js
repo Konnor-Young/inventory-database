@@ -81,9 +81,9 @@ app.post("/cards", async (req, res) => {
         let number = card.location;
         const sentence = number.toString();
         const index = 0;
-        const shelf = 's'+sentence.charAt(index);
-        const drawer = 'd'+sentence.charAt(index+1);
-        const box = 'b'+sentence.charAt(index+2);
+        const shelf = 's' + sentence.charAt(index);
+        const drawer = 'd' + sentence.charAt(index + 1);
+        const box = 'b' + sentence.charAt(index + 2);
         let newBox = await Storage.findById('62de035bfc0fa0f397501d7f');
         let updateBox = await newBox.locationMap.get(shelf);
         updateBox[drawer][box] = updateBox[drawer][box] + 1;
@@ -99,7 +99,7 @@ app.post("/cards", async (req, res) => {
                 },
                 $push: {
                     cards: card._id,
-                    locations: { location: card.location, card: card._id, price: card.price },   
+                    locations: { location: card.location, card: card._id, price: card.price },
                 }
             }
         );
@@ -120,7 +120,28 @@ app.post("/orders", async (req, res) => {
             status: 'standing',
         });
 
+        for (let i = 0; i < req.body.cards.length; i++) {
+            let unique = await Unique.findOne({ tcg_id: req.body.cards[i].card });
+            console.log(unique.quantity.get("available"));
+            console.log(req.body.cards[i].quantity)
 
+
+            if (unique.quantity.get("available") < req.body.cards[i].quantity) {
+                console.log('cards not available: ', "Available: ", unique.quantity.get("available"), "Requested: ", req.body.cards[i].quantity);
+                return;
+            }
+
+            //subtract the quantity of the card in the order with the available quantity in the sku
+            unique.quantity.set('available', unique.quantity.get("available") - req.body.cards[i].quantity);
+            await unique.save();
+
+
+            //add the quantity to reserved
+            unique.quantity.set('reserved', unique.quantity.get("reserved") + req.body.cards[i].quantity);
+            await unique.save();
+            console.log(unique.quantity.get("available"));
+            console.log(unique.quantity.get("reserved"));
+        }
         res.status(201).json(order);
     } catch (err) {
         console.log(`could not create`, err);
@@ -146,8 +167,8 @@ app.patch("/cards/:id", async (req, res) => {
             res.status(404).json({ message: `bug found card does but sku does not exist` });
             return;
         }
-        for (let i in unique.locations){
-            if(unique.locations[i].card == req.params.id){
+        for (let i in unique.locations) {
+            if (unique.locations[i].card == req.params.id) {
                 unique.locations[i] = update;
                 unique.save();
             }
