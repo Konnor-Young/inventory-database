@@ -204,13 +204,16 @@
                           <v-col cols="auto">
                             <v-btn class="mt-2" @Click="resetAddCardSearch()">Reset</v-btn>
                           </v-col>
+                          
                         </v-row>
+                        
                       </v-container>
-
+                      <v-row v-if="searchResults.length > 0"><v-container><v-col> Total Matching Cards: {{ this.searchResultsStats.total_cards }}</v-col></v-container></v-row>
                       <!-- Area to display search results for add card -->
                       <v-row>
+                        
                         <!--****** the v-for of the search results list will go here -->
-                        <v-col v-for="result in searchResults" >
+                        <v-col v-for="result in searchResultsPaginated" >
                           <!--****** Card template that will be displayed by v-for -->
                           <v-card width="146" class="mx-4">
 
@@ -295,7 +298,26 @@
                                   </v-badge>
                                 </v-col>
                               </v-row>
-                              <v-row>
+
+                              <!--=== Card Finishes ===-->
+                              <v-divider></v-divider>
+                              <v-card-text class="pt-2 pb-2 py-1">
+                                <v-chip-group
+                                
+                                  active-class="deep-purple accent-4 white--text"
+                                  column
+                                  mandatory
+                                  max="1">
+                                  <v-chip v-for="finish in vFinishes(result.finishes, result)" @Click="updateCardFinish(result, finish)">{{ finish }}</v-chip>
+                                  
+                                </v-chip-group>
+                                <p>{{ getCardPrice(result) }}</p>
+                                  <p>{{result.finish}}</p>
+                              </v-card-text>
+                              <v-divider></v-divider>
+
+                              <!-- OLD CODE -->
+                              <!-- <v-row>
                                 <v-checkbox
                                       class="deep-purple--text lighten-2"
                                       label="Foil?"
@@ -303,7 +325,9 @@
                                       value="foil"
                                       hide-details>
                                 </v-checkbox>
-                              </v-row>
+                              </v-row> -->
+
+
                             </v-card-text>
                             <!-- Add Button on cards displayed in add to pile -->
                             <v-row class="mx-1">

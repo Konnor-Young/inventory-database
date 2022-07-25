@@ -28,6 +28,8 @@ var app = new Vue({
     pages: ['Inventory', 'Add Card', 'View Orders', 'Add Order'],
     pileList: [],
     searchResults: [],
+    searchResultsStats: {},
+    searchResultsPaginated: [],
     loggedIn: true,
     tableFilters: ['active', 'standing', 'pulling', 'shipped'],
     currentTable: 'active',
@@ -126,16 +128,31 @@ var app = new Vue({
         method: 'GET',
       });
       let data = await response.json();
-      this.searchResults.push(data);
+      data.totalConditions = {
+        NM: 0,
+        LP: 0,
+        MP: 0,
+        HP: 0,
+        DMG: 0,
+      };
+      data.totalCards = 0;
+      this.searchResultsPaginated.push(data);
     },
     getSearch: async function () {
       let response = await fetch(
         `${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`
       );
       let data = await response.json();
-      console.log(data.data);
-      data.data.splice(24);
-      console.log(data.data);
+      console.log(data.object);
+      let listOfCards = data.data;
+      this.searchResultsStats = {
+                    total_cards: data.total_cards,
+                    has_more: data.has_more,
+                    next_page: data.next_page,
+                } 
+      this.searchResults = data.data.slice();
+      console.log(this.searchResultsStats)
+      
       data.data.forEach((item) => {
         item.totalConditions = {
           NM: 0,
@@ -146,8 +163,9 @@ var app = new Vue({
         };
         item.totalCards = 0;
       });
-
-      this.searchResults = data.data;
+      listOfCards.splice(25);
+      console.log(data.data);
+      this.searchResultsPaginated = data.data;
     },
     getSmallImgURI: function (cardObject) {
       if (cardObject.layout == 'normal') {
@@ -314,7 +332,9 @@ var app = new Vue({
       }
     },
     resetAddCardSearch: function () {
-      this.searchResults = [];
+        this.searchResults = [];
+        this.searchResultsPaginated = [];
+        this.searchResultsStats = {};
     },
     focusOntoSearch: function () {
       console.log(this.$refs.searchInput);
@@ -361,7 +381,46 @@ var app = new Vue({
     },
     totalActiveOrders: function () {
         return this.orderList.length
-    }
+    },
+    vFinishes: function (cardFinishes, cardObject) {
+        let tempList = [];
+        if (cardFinishes.includes('nonfoil')) {
+            tempList.push('Non-Foil');
+        }
+        if (cardFinishes.includes('foil')) {
+            tempList.push('Foil');
+        }
+        if (cardFinishes.includes('etched')) {
+            tempList.push('Etched');
+        }
+        if (cardFinishes.includes('glossy')) {
+            tempList.push('Glossy');
+        }
+        cardObject.finish = tempList[0];                                    
+        return tempList
+    },
+    updateCardFinish: function (cardObject, finish) {
+        cardObject.finish = finish;
+        // console.log("Updated Card Finish")
+        // console.log(cardObject.finish)
+        this.getCardPrice(cardObject)
+        return cardObject
+    },
+    getCardPrice: function (cardObject) {
+        let price;
+        // console.log(cardObject.finish)
+        if (cardObject.finish == 'Non-Foil') {
+            price = cardObject.prices.usd;
+        } else if (cardObject.finish == 'Foil') {
+            price = cardObject.prices.usd_foil;
+        } else if (cardObject.finish == 'Etched') {
+            price = cardObject.prices.usd_etched;
+        } else {
+            price = "UKN";
+        }
+        // console.log(price)
+        return "$"+ price
+    },
   },
 
   created: function () {
