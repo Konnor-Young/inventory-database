@@ -36,10 +36,15 @@ var app = new Vue({
     tableFilters: ['active', 'standing', 'pulling', 'shipped'],
     currentTable: 'active',
     fab: false,
+    addPileLoading: false,
   },
   methods: {
-    newCard: function (cardObject) {
-      cardObject.forEach((card) => {
+    newCard: async function (cardObject) {
+        this.addPileLoading = true;
+        let arrayLength = cardObject.length
+        
+    for (let i = 0; i < arrayLength; i++) {
+        let card = cardObject.shift();
         let id;
         if (card.tcgplayer_id) {
           id = card.tcgplayer_id;
@@ -52,12 +57,16 @@ var app = new Vue({
           set: card.set_name,
           image_uris: card.image_uris,
           prices: card.prices,
+          location: 111111,
           condition: card.condition,
-          foil: card.foil,
+          foil: card.finish,
         };
-        this.postCards(newCard);
-      });
+        await this.postCards(newCard);
+        this.pileList
+      };
+      this.addPileLoading = false;
       this.pileList = [];
+
     },
     newOrder: function () {
       let newOrder = {
@@ -272,6 +281,7 @@ var app = new Vue({
         this.getOrders();
       }
     },
+    // Really post SKU
     postCards: async function (card) {
       let response = await fetch(`${URL}/cards`, {
         method: 'POST',

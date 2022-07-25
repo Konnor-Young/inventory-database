@@ -368,7 +368,7 @@
                             <v-card class="float-right mx-3">
                             
                             <v-btn>Get Locations</v-btn>
-                            <v-btn @Click="newCard(pileList)">Add to Inventory</v-btn>
+                            <v-btn @Click="newCard(pileList)" :loading="addPileLoading">Add to Inventory</v-btn>
                             
                             </v-card>
                           </v-col>
