@@ -128,6 +128,7 @@ app.post("/cards", async (req, res) => {
 });
 
 app.post("/orders", async (req, res) => {
+    let unique;
     try {
         let order = Order.create({
             number: req.body.number,
@@ -135,7 +136,30 @@ app.post("/orders", async (req, res) => {
             cards: req.body.cards,
             status: 'standing',
         });
+        console.log(req.body.cards.length)
 
+        for (let i = 0; i < req.body.cards.length; i++) {
+            let unique = await Unique.findOne({ tcg_id: req.body.cards[i].card });
+            console.log(unique.quantity.get("available"));
+            console.log(req.body.cards[i].quantity)
+
+
+            if (unique.quantity.get("available") < req.body.cards[i].quantity) {
+                console.log('cards not available: ', "Available: ", unique.quantity.get("available"), "Requested: ", req.body.cards[i].quantity);
+                return;
+            }
+
+            //subtract the quantity of the card in the order with the available quantity in the sku
+            unique.quantity.set('available', unique.quantity.get("available") - req.body.cards[i].quantity);
+            await unique.save();
+
+
+            //add the quantity to reserved
+            unique.quantity.set('reserved', unique.quantity.get("reserved") + req.body.cards[i].quantity);
+            await unique.save();
+            console.log(unique.quantity.get("available"));
+            console.log(unique.quantity.get("reserved"));
+        }
 
         res.status(201).json(order);
     } catch (err) {
@@ -162,8 +186,8 @@ app.patch("/cards/:id", async (req, res) => {
             res.status(404).json({ message: `bug found card does but sku does not exist` });
             return;
         }
-        for (let i in unique.locations){
-            if(unique.locations[i].card == req.params.id){
+        for (let i in unique.locations) {
+            if (unique.locations[i].card == req.params.id) {
                 unique.locations[i] = update;
                 unique.save();
             }
@@ -187,28 +211,26 @@ app.patch("/orders/:id", async (req, res) => {
             });
             return;
         }
-        for (let i = 0; i < order.cards.length; i++) {
-            // console.log(order.cards[i].quantity);
-            let unique = await Unique.findOne({ tcg_id: order.cards[i].card });
+        //     for (let i = 0; i < order.cards.length; i++) {
+        //         let unique = await Unique.findOne({ tcg_id: order.cards[i].card });
 
 
-            if (unique.quantity.get("available") < order.cards[i].quantity) {
-                console.log('cards not available: ', "Available: ", unique.quantity.get("available"), "Requested: ", order.cards[i].quantity);
-                return;
-            }
-            //subtract the quantity of the card in the order with the available quantity in the sku
-            unique.quantity.set('available', unique.quantity.get("available") - order.cards[i].quantity);
-            await unique.save();
+        //         if (unique.quantity.get("available") < order.cards[i].quantity) {
+        //             console.log('cards not available: ', "Available: ", unique.quantity.get("available"), "Requested: ", order.cards[i].quantity);
+        //             return;
+        //         }
+        //         //subtract the quantity of the card in the order with the available quantity in the sku
+        //         unique.quantity.set('available', unique.quantity.get("available") - order.cards[i].quantity);
+        //         await unique.save();
 
 
-            //add the quantity to reserved
-            unique.quantity.set('reserved', unique.quantity.get("reserved") + order.cards[i].quantity);
-            await unique.save();
+        //         //add the quantity to reserved
+        //         unique.quantity.set('reserved', unique.quantity.get("reserved") + order.cards[i].quantity);
+        //         await unique.save();
 
-            console.log(unique.quantity.get("available"));
-            console.log(unique.quantity.get("reserved"));
+        //         console.log(unique.quantity.get("available"));
+        //         console.log(unique.quantity.get("reserved"));
 
-        }
     } catch (err) {
         console.log(`could not find`, err);
         res.status(500).json({ message: `could not create`, err: err });
