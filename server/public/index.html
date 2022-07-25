@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="max-height: 100%; overflow-y: auto;">
   <head>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet"/>
@@ -11,9 +11,9 @@
 
   <body>
     <div id="app" v-cloak>
-      <v-app>
+      <v-app >
         <!--========= Page Card ==============-->
-        <v-card v-bind:class="{'logIn': !loggedIn}"  class="overflow-auto">
+        <v-card v-bind:class="{'logIn': !loggedIn}"  >
 
           <!-- ==============login page============= -->
           <v-container fluid v-if="!loggedIn">
@@ -43,7 +43,7 @@
           </v-container>
           
           <!--===== Nav & Menu bar with image =====-->
-          <v-container v-show="loggedIn" fluid>
+          <v-container v-show="loggedIn" fluid id="scrolling-techniques-3" style="max-height: 100vh; overflow-y: auto;">
             <v-app-bar absolute color="#6A76AB" 
                       dark 
                       shrink-on-scroll 
@@ -106,14 +106,13 @@
             </v-app-bar>
 
             <!--====== Main page content in main card component ======-->
-            <main>
+            <main >
             <!-- Change max-height to auto to disable scroll header and remove 2nd scroll -->
               <v-sheet
-                    id="scrolling-techniques-3"
-                    class="overflow-y-auto mt-16 pt-16"
+                    style="margin-top: 225px;"
                     max-height="auto">
                 
-                <v-container class="mt-16 pt-16" style="height: 650px;">
+                <v-container  style="height: 650px;">
 
                   <!--======= Inventory Page =======-->
 
@@ -163,7 +162,7 @@
                   <!--===== Vuetify Add Card Page =====-->
 
                   <!--=== Add Card Page Vuetify Card ===-->
-                  <v-card v-if="currentPage == 'Add Card'" class="mx-1">
+                  <v-card v-if="currentPage == 'Add Card'" class="pb-4 mx-1">
                     <!--= Sub Menu with Search/*Deck/Pile-Cart -->
                     <v-tabs grow slider-color="deep-purple lighten-2" class="rounded-lg blue-grey lighten-1">
 
