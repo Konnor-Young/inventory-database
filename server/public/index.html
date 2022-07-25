@@ -89,7 +89,7 @@
                 <!-- For loop going through pages (list of pages) and into tab -->
                 <v-tabs v-for="tab in pages" align-with-title grow hide-slider>
                   <!-- Display component of each tab with on click and highlight after selection -->
-                  <v-tab @Click="currentPage = tab" class="rounded-lg rounded-b-0"
+                  <v-tab @Click="currentPage = tab; inStore = false; currentTable = 'active';" class="rounded-lg rounded-b-0"
                         v-bind:class="{ 'blue-grey lighten-4 deep-purple--text lighten-3 disabled' : currentPage === tab}">
                     <v-badge v-if="tab == 'View Orders'"
                           color="deep-purple lighten-2"
@@ -124,7 +124,7 @@
                       <v-row>
                         <v-col>
                           <!-- Search Inventory Text Input field -->
-                          <v-text-field outlined  hide-details label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
+                          <v-text-field outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
                         </v-col>
                         <v-col>
                           <!-- Submit Inventory Search Button-->
@@ -396,6 +396,11 @@
 
                   <!--=== View Orders ===--->
                   <div id="view-orders" v-if="currentPage == 'View Orders'">
+                    <div v-if="inStore == false">
+                    <v-row class="justify-end">
+                      <!-- <v-btn @click="viewOrderSubPage = 'inStore'" class="pa-6 my-6"><h3>In Store</h3></v-btn> -->
+                      <v-btn @click="inStore = true" class="pa-6 my-6"><h3>In Store</h3></v-btn>
+                    </v-row>
                     <v-row> 
                       <v-col v-for="btn in tableFilters"><v-chip x-large @click="currentTable = btn" class="px-16 py-6 grey lighten-1 white--text">{{ btn.toUpperCase() }}</v-chip></v-col> 
                     </v-row>
@@ -431,6 +436,40 @@
                         </template>
                       </v-simple-table>
                     </template>
+                    <v-row class="justify-end">
+                      <v-btn class="pa-6 my-6"><h3>Progress</h3></v-btn>
+                    </v-row>
+                  </div>
+
+
+
+                    <!-- ================IN STORE PAGE================== -->
+                    <div id="in-store" v-if="inStore == true">
+                      <div>
+                      <v-container>
+                        <!-- v-if="viewOrderSubPage = 'inStore'" -->
+                        <!-- Container for Inventory Search Area -->
+                        <v-container>
+                          <v-row>
+                            <v-col>
+                              <!-- Search Inventory Text Input field -->
+                              <v-text-field outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
+                            </v-col>
+                            <v-col>
+                              <!-- Submit Inventory Search Button-->
+                              <v-btn class="mt-2">Submit</v-btn>
+                            </v-col>
+                            </v-row>
+                        </v-container>
+                      </v-container>
+                      </div>
+                    </div>
+
+
+
+
+
+                  </div>
 
                     <!--=== Add Order Page ===-->
                     <div id="add-orders" v-if="currentPage == 'Add Order'">

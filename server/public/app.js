@@ -8,9 +8,11 @@ var app = new Vue({
   el: '#app',
   data: {
     message: 'HI WORLD',
-    currentPage: 'Inventory',
+    currentPage: 'View Orders',
     addCardSubPage: 'Search',
     addOrderSubPage: 'searchCard',
+    viewOrderSubPage: 'inStore',
+    inStore: false,
     updatingOrder: -1,
     updatingCard: -1,
     currentOrder: {},
@@ -25,7 +27,7 @@ var app = new Vue({
     cardOrderObject: {},
     orderStatus: '',
     searchName: '',
-    pages: ['Inventory', 'Add Card', 'View Orders', 'Add Order'],
+    pages: ['Inventory', 'Add Card', 'View Orders'],
     pileList: [],
     searchResults: [],
     searchResultsStats: {},
@@ -37,25 +39,25 @@ var app = new Vue({
   },
   methods: {
     newCard: function (cardObject) {
-        cardObject.forEach((card) => {
-            let id;
-            if (card.tcgplayer_id) {
-                id = card.tcgplayer_id;
-            } else {
-                id = card.tcgplayer_etched_id;
-            }
-            let newCard = {
-                tcg_id: id,
-                name: card.name,
-                set: card.set_name,
-                image_uris: card.image_uris,
-                prices: card.prices,
-                condition: card.condition,
-                foil: card.foil,
-            };
-            this.postCards(newCard);
-        })
-        this.pileList = [];
+      cardObject.forEach((card) => {
+        let id;
+        if (card.tcgplayer_id) {
+          id = card.tcgplayer_id;
+        } else {
+          id = card.tcgplayer_etched_id;
+        }
+        let newCard = {
+          tcg_id: id,
+          name: card.name,
+          set: card.set_name,
+          image_uris: card.image_uris,
+          prices: card.prices,
+          condition: card.condition,
+          foil: card.foil,
+        };
+        this.postCards(newCard);
+      });
+      this.pileList = [];
     },
     newOrder: function () {
       let newOrder = {
@@ -143,16 +145,16 @@ var app = new Vue({
         `${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`
       );
       let data = await response.json();
-    //   console.log(data.object);
+      //   console.log(data.object);
       let listOfCards = data.data;
       this.searchResultsStats = {
-                    total_cards: data.total_cards,
-                    has_more: data.has_more,
-                    next_page: data.next_page,
-                }; 
-      
-    //   console.log(this.searchResultsStats)
-      
+        total_cards: data.total_cards,
+        has_more: data.has_more,
+        next_page: data.next_page,
+      };
+
+      //   console.log(this.searchResultsStats)
+
       data.data.forEach((item) => {
         item.totalConditions = {
           NM: 0,
@@ -210,7 +212,7 @@ var app = new Vue({
       cardObject.totalConditions.DMG++;
       cardObject.totalCards++;
     },
-    // ==== Subtracting 2 on ctrl + click (work around for intial click also adding 1) 
+    // ==== Subtracting 2 on ctrl + click (work around for intial click also adding 1)
     // ?? Need to add non negative validation
     removeLPtoObject: function (cardObject) {
       cardObject.totalConditions.LP -= 2;
@@ -286,7 +288,7 @@ var app = new Vue({
       if (response.status == 200) {
         this.getCards();
       } else {
-        console.log("Error posting Cards:", response.status);
+        console.log('Error posting Cards:', response.status);
       }
     },
     patchCard: async function (update, card_id, sku_id) {
@@ -334,9 +336,9 @@ var app = new Vue({
       }
     },
     resetAddCardSearch: function () {
-        this.searchResults = [];
-        this.searchResultsPaginated = [];
-        this.searchResultsStats = {};
+      this.searchResults = [];
+      this.searchResultsPaginated = [];
+      this.searchResultsStats = {};
     },
     focusOntoSearch: function () {
       console.log(this.$refs.searchInput);
@@ -360,65 +362,65 @@ var app = new Vue({
 
       return false;
     },
-    
+
     // ==== Testing floating button on bottom
-    onScroll (e) {
-        if (typeof window === 'undefined') return
-        const top = window.pageYOffset ||   e.target.scrollTop || 0
-        this.fab = top > 20
-      },
-      toTop () {
-        this.$vuetify.goTo(0)
+    onScroll(e) {
+      if (typeof window === 'undefined') return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      this.fab = top > 20;
     },
-    
+    toTop() {
+      this.$vuetify.goTo(0);
+    },
+
     // ===== Function to go through list of cards and return single cards
     cardsToCard: function (listOfCards) {
-        listOfCards.forEach((card) => {
-            // console.log(card)
-            return card
-        }) 
+      listOfCards.forEach((card) => {
+        // console.log(card)
+        return card;
+      });
     },
     totalActiveOrders: function () {
-        return this.orderList.length
+      return this.orderList.length;
     },
     vFinishes: function (cardFinishes, cardObject) {
-        let tempList = [];
-        if (cardFinishes.includes('nonfoil')) {
-            tempList.push('Non-Foil');
-        }
-        if (cardFinishes.includes('foil')) {
-            tempList.push('Foil');
-        }
-        if (cardFinishes.includes('etched')) {
-            tempList.push('Etched');
-        }
-        if (cardFinishes.includes('glossy')) {
-            tempList.push('Glossy');
-        }
-        cardObject.finish = tempList[0];                                    
-        return tempList
+      let tempList = [];
+      if (cardFinishes.includes('nonfoil')) {
+        tempList.push('Non-Foil');
+      }
+      if (cardFinishes.includes('foil')) {
+        tempList.push('Foil');
+      }
+      if (cardFinishes.includes('etched')) {
+        tempList.push('Etched');
+      }
+      if (cardFinishes.includes('glossy')) {
+        tempList.push('Glossy');
+      }
+      cardObject.finish = tempList[0];
+      return tempList;
     },
     updateCardFinish: function (cardObject, finish) {
-        cardObject.finish = finish;
-        // console.log("Updated Card Finish")
-        // console.log(cardObject.finish)
-        this.getCardPrice(cardObject)
-        return cardObject
+      cardObject.finish = finish;
+      // console.log("Updated Card Finish")
+      // console.log(cardObject.finish)
+      this.getCardPrice(cardObject);
+      return cardObject;
     },
     getCardPrice: function (cardObject) {
-        let price;
-        // console.log(cardObject.finish)
-        if (cardObject.finish == 'Non-Foil') {
-            price = cardObject.prices.usd;
-        } else if (cardObject.finish == 'Foil') {
-            price = cardObject.prices.usd_foil;
-        } else if (cardObject.finish == 'Etched') {
-            price = cardObject.prices.usd_etched;
-        } else {
-            price = "UKN";
-        }
-        // console.log(price)
-        return "$"+ price
+      let price;
+      // console.log(cardObject.finish)
+      if (cardObject.finish == 'Non-Foil') {
+        price = cardObject.prices.usd;
+      } else if (cardObject.finish == 'Foil') {
+        price = cardObject.prices.usd_foil;
+      } else if (cardObject.finish == 'Etched') {
+        price = cardObject.prices.usd_etched;
+      } else {
+        price = 'UKN';
+      }
+      // console.log(price)
+      return '$' + price;
     },
   },
 
