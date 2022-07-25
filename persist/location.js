@@ -161,12 +161,16 @@ async function pushForward(box){ // first three numbers in location ie 123--- Ca
         await cardsInBox[j].save();
     }
 };
-
+async function allocateCards(order){
+    // for each order.cards
+    // look up tcg_id unique.locations
+    // apply logic for condition quantity foil
+    // push to order.locations
+};
 module.exports = {
     initializeStorage,
     getOpenLocations,
     getPrice,
     updateAllPrices,
+    allocateCards
 }
-
-
