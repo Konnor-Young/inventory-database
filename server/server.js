@@ -42,20 +42,36 @@ app.get("/orders", async (req, res) => {
     res.status(200).json(orderList);
 });
 
+app.post("/locations", async (req, res) => {
+    let list
+    try{
+        list = await logic.getOpenLocations(req.body.number);
+        console.log(list);
+    }catch(err){
+        console.log(list);
+        console.log(err);
+        res.status(500).json({message: `something went wrong. found no location`, err: err});        
+    }
+    res.status(200).json(list);
+});
+
 app.post("/cards", async (req, res) => {
     let unique;
     let card;
     let storage;
+    let isFoil;
+    if(req.body.foil == 'Non-Foil'){
+        isFoil = false
+    }else{ isFoil = true }
     try {
         card = await Card.create({
             location: req.body.location,
-            foil: false,
+            foil: isFoil,
             condition: req.body.condition,
             price: 'price',
             tcg_id: req.body.tcg_id,
             local_image: req.body.image_uris.small
         });
-        // console.log(card._id);
         unique = await Unique.findOne({
             tcg_id: req.body.tcg_id,
         });
@@ -71,54 +87,35 @@ app.post("/cards", async (req, res) => {
                 },
                 price: { usd: req.body.prices.usd, usd_foil: req.body.prices.usd_foil },
                 quantity: { available: 1, reserved: 0, physical: 1 },
-                art: {
-                    borderless: false, textless: false, etched: false, full_art: false,
-                    promo: false, oversized: false
-                }
             });
         }
         logic.getPrice(card);
         await card.save();
-        // let number = card.location;
-        // const sentence = number.toString();
-        // console.log(`number ${number}, sentence ${sentence}`)
-        // const index = 0;
-        // const shelf = 's'+sentence.charAt(index);
-        // const drawer = 'd'+sentence.charAt(index+1);
-        // const box = 'b'+sentence.charAt(index+2);
-        // storage = await Storage.findOneAndUpdate({shelves: 3}, {$inc: {"s1.d1.b1": 1}});
-        // db.storage.update({shelves: 3}, { $inc: {"s1.d1.b1": 1}});
-        // console.log(`storage ${storage}`);
-        // if(!storage){
-        //     console.log(`inventory location ${number} not found`);
-        // }
-        // console.log(storage.locationMap.get(`${shelf}.${drawer}.${box}`));
-        // let currentThere = storage.locationMap.get(`${shelf}.${drawer}.${box}`);
-        // let update = currentThere + 1;
-        // console.log(update);
-        // storage.locationMap.set(`${shelf}[${drawer}][${box}]`, update);
-        // await storage.save();
-        // console.log(storage.locationMap.get(`${shelf}.${drawer}.${box}`));
-        // storage.set('locationMap.s1.d1.b1', valueThere );
-        // // await storage.save();
-        // console.log(storage.get('locationMap.s1.d1.b1'), `new`);
-        // console.log(`storeShelf ${storeShelf}`);
-        // console.log(`drawer ${drawer}`);
-        // console.log(`box ${box}`);
-        // console.log(`box ${storeShelf[drawer][box]}`);
-        // storeShelf.drawer.box += 1;
-        // await storage.save()
-        // find storage if storage getlocationMap shelf.drawer.box $inc 1
-        // console.log(unique._id);
+        let number = card.location;
+        const sentence = number.toString();
+        const index = 0;
+        const shelf = 's' + sentence.charAt(index);
+        const drawer = 'd' + sentence.charAt(index + 1);
+        const box = 'b' + sentence.charAt(index + 2);
+        let newBox = await Storage.findById('62de035bfc0fa0f397501d7f');
+        let updateBox = await newBox.locationMap.get(shelf);
+        updateBox[drawer][box] = updateBox[drawer][box] + 1;
+        storage = await Storage.findByIdAndUpdate(newBox._id, newBox);
+        updateAvailable = unique.quantity.get('available') + 1;
+        updatePhysical = unique.quantity.get('physical') + 1;
         unique = await Unique.findByIdAndUpdate(
             unique._id,
             {
+                $set: {
+                    "quantity.available": updateAvailable,
+                    "quantity.physical": updatePhysical
+                },
                 $push: {
                     cards: card._id,
                     locations: { location: card.location, card: card._id, price: card.price },
                 }
-            });
-        console.log(unique.cards);
+            }
+        );
     } catch (err) {
         console.log(`could not create`, err);
         res.status(500).json({ message: `could not create`, err: err });
@@ -136,7 +133,28 @@ app.post("/orders", async (req, res) => {
             status: 'standing',
         });
 
+        for (let i = 0; i < req.body.cards.length; i++) {
+            let unique = await Unique.findOne({ tcg_id: req.body.cards[i].card });
+            console.log(unique.quantity.get("available"));
+            console.log(req.body.cards[i].quantity)
 
+
+            if (unique.quantity.get("available") < req.body.cards[i].quantity) {
+                console.log('cards not available: ', "Available: ", unique.quantity.get("available"), "Requested: ", req.body.cards[i].quantity);
+                return;
+            }
+
+            //subtract the quantity of the card in the order with the available quantity in the sku
+            unique.quantity.set('available', unique.quantity.get("available") - req.body.cards[i].quantity);
+            await unique.save();
+
+
+            //add the quantity to reserved
+            unique.quantity.set('reserved', unique.quantity.get("reserved") + req.body.cards[i].quantity);
+            await unique.save();
+            console.log(unique.quantity.get("available"));
+            console.log(unique.quantity.get("reserved"));
+        }
         res.status(201).json(order);
     } catch (err) {
         console.log(`could not create`, err);
@@ -162,8 +180,8 @@ app.patch("/cards/:id", async (req, res) => {
             res.status(404).json({ message: `bug found card does but sku does not exist` });
             return;
         }
-        for (let i in unique.locations){
-            if(unique.locations[i].card == req.params.id){
+        for (let i in unique.locations) {
+            if (unique.locations[i].card == req.params.id) {
                 unique.locations[i] = update;
                 unique.save();
             }
