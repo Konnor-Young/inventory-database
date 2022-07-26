@@ -467,7 +467,56 @@
                         </v-container>
                       </v-container>
                       </div>
+                      <div>
+                        <v-row>
+                          <v-col>
+                        <template>
+                          <v-simple-table class="mt-6">
+                            <template v-slot:default>
+                              <thead>
+                                <tr>
+                                  <th width="350px" class="text-left">
+                                    Name
+                                  </th>
+                                  <th width="200px" class="text-left">
+                                    Foil
+                                  </th>
+                                  <th width="200px" class="text-left">
+                                    Condition
+                                  </th>
+                                  <th width="125px" class="text-left">Price</th>
+                                  <th width="50px" class="text-left">Remove</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                
+                                <tr v-for="card, index in inStorePile"
+                                      :key="card.name"
+                                      :class="{'blue':order.direct}">                            
+                                  <td>{{card.name}}</td>
+                                  <td>{{card.foil}}</td>
+                                  <td>{{card.condition}}</td>
+                                  <td>{{card.price}}</td>
+                                  <td><v-checkbox></v-checkbox></td>
+                                </tr>
+                              </tbody>
+                            </template>
+                          </v-simple-table>
+                        </template>
+                     
+                      </v-row>
+                      <v-row class="justify-end mt-6">
+                      
+                        <v-btn class="pa-6"><h2>BUY</h2></v-btn>
+                      </v-col>
+                      </v-row>
+                      </div>
+
+
+
+
                     </div>
+
 
 
 
