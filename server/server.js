@@ -44,13 +44,13 @@ app.get("/orders", async (req, res) => {
 
 app.post("/locations", async (req, res) => {
     let list
-    try{
+    try {
         list = await logic.getOpenLocations(req.body.number);
         console.log(list);
-    }catch(err){
+    } catch (err) {
         console.log(list);
         console.log(err);
-        res.status(500).json({message: `something went wrong. found no location`, err: err});        
+        res.status(500).json({ message: `something went wrong. found no location`, err: err });
     }
     res.status(200).json(list);
 });
@@ -60,9 +60,9 @@ app.post("/cards", async (req, res) => {
     let card;
     let storage;
     let isFoil;
-    if(req.body.foil == 'Non-Foil'){
+    if (req.body.foil == 'Non-Foil') {
         isFoil = false
-    }else{ isFoil = true }
+    } else { isFoil = true }
     try {
         card = await Card.create({
             location: req.body.location,
@@ -167,6 +167,40 @@ app.patch("/cards/:id", async (req, res) => {
     let unique;
     let update;
     try {
+        card = await Card.findById(req.params.id)
+
+        let number = card.location;
+        let newNumber = req.body.location;
+        const newSentence = newNumber.toString();
+        const sentence = number.toString();
+        const results = await Storage.findOne();
+        const index = 0;
+
+        const newShelf = 's' + newSentence.charAt(index);
+        const newDrawer = 'd' + newSentence.charAt(index + 1);
+        const movingBox = 'b' + newSentence.charAt(index + 2);
+        let newBox = await Storage.findById(results._id);
+        let updateNewBox = await newBox.locationMap.get(newShelf);
+
+        const shelf = 's' + sentence.charAt(index);
+        const drawer = 'd' + sentence.charAt(index + 1);
+        const box = 'b' + sentence.charAt(index + 2);
+        let currentBox = await Storage.findById(results._id);
+        let updateCurrentBox = await currentBox.locationMap.get(shelf);
+
+        if (updateCurrentBox[drawer][box] > 0) {
+            updateCurrentBox[drawer][box] = updateCurrentBox[drawer][box] - 1;
+            storage = await Storage.findByIdAndUpdate(currentBox._id, currentBox);
+        } else {
+            console.log('error cannot find card at location ', updateCurrentBox[drawer][box]);
+            return;
+        }
+        updateNewBox[newDrawer][movingBox] = updateNewBox[newDrawer][movingBox] + 1;
+        storage = await Storage.findByIdAndUpdate(newBox._id, newBox);
+
+        console.log(newBox);
+        console.log(currentBox);
+
         card = await Card.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!card) {
             res.status(404).json({
