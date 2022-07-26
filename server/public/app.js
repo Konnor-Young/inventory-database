@@ -489,27 +489,13 @@ var app = new Vue({
         this.addSearchCurrentPage = page;
         this.changeDisplayedCards();
         return this.searchResultsPaginated;
-<<<<<<< HEAD
     }
-=======
-    },
-    
-    // allOfPileHasLocations: function () {
-    //     let answer = false;
-    //     pileList.forEach((card) => {
-    //         if(parseInt(card.location) > )
-    //     })
-    // }
->>>>>>> pagination
   },
 
   created: function () {
     this.getCards();
     this.getOrders();
   },
-<<<<<<< HEAD
-});
-=======
   computed: {
     lengthOfAddCardSearch: function () {
       if (!Object.keys(this.searchResultsStats).includes("total_cards")) {
@@ -523,4 +509,3 @@ var app = new Vue({
     },
   }
 });
->>>>>>> pagination
