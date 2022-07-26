@@ -338,7 +338,7 @@
                             class="py-3"
                             color="deep-purple lighten-2"
                             v-model="addSearchCurrentPage"
-                            :length="Math.ceil( searchResultsStats.total_cards / 25)"
+                            :length="lengthOfAddCardSearch"
                             :total-visible="6"
                             @input="changePage">
                       </v-pagination>
@@ -346,9 +346,7 @@
                     <!--===== Pile/Cart Page =====-->
                     <v-container v-if="addCardSubPage == 'Pile'">
                       <!-- trying floating button -->
-                      <v-btn
-                            v-scroll="onScroll"
-                            v-show="fab"
+                      <v-btn v-if="allOfPileHasLocations"
                             fab
                             dark
                             fixed
@@ -356,11 +354,22 @@
                             right
                             color="primary"
                             @click="toTop">
-                        <v-icon>keyboard_arrow_up</v-icon>
+                          Get Locations
+                      </v-btn>
+                      <v-btn 
+                            fab
+                            dark
+                            fixed
+                            bottom
+                            right
+                            color="primary"
+                            @click="toTop">
+                          <v-icon>mdi-store-plus</v-icon>
                       </v-btn>
                       <v-container v-if="pileList.length == 0">
                         <h3 align-content="center">No Cards Added to Pile</h3>
                       </v-container>
+                      <!-- top menu to manipulate whole pile -->
                       <v-container v-if="pileList.length > 0">
                         <v-row >
                           <v-col>
@@ -372,19 +381,31 @@
                             </v-card>
                           </v-col>
                         </v-row>
-                      
-                        <v-row v-for="pileCard in pileList">
-                          <v-col>
-                            <v-card>
+                        
+                        <v-row>
+                          <v-col v-for="pileCard in pileList">
+                            <v-card width="350" class="my-3 justify-center">
+                              <v-row>
+                              <v-col>
                               <v-card width="146" class="mx-4">
     
                                 <v-img
                                     height="204"
                                     :src="getSmallImgURI(pileCard)">
                                 </v-img>
-
-
+                              
                               </v-card>
+                              </v-col>
+                              <v-col>
+                                
+                                
+                                <v-card-text>Market Price: {{  getCardPrice(pileCard)  }}</v-card-text>
+                                <v-card-text>Condition: {{ pileCard.condition }}</v-card-text>
+                                <v-btn>Delete</v-btn>
+                                <v-btn>Edit</v-btn>
+                                <v-btn>Duplicate</v-btn>
+                              </v-col>
+                              </v-row>
                             </v-card>
                           </v-col>
                         </v-row>
