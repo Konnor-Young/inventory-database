@@ -161,12 +161,96 @@ async function pushForward(box){ // first three numbers in location ie 123--- Ca
         await cardsInBox[j].save();
     }
 };
-
+async function allocateCards(order){
+    console.log(order, `order`);
+    for(item of order.cards){
+        var sku_id = {tcg_id: item.card};
+        let cond = item.condition;
+        let foil = item.foil;
+        var needed = item.quantity;
+        var search;
+        if(foil){
+            search = cond + 'foil';
+        }else{
+            search = cond;
+        }
+        var sku = await Unique.findOne(sku_id);
+        console.log(sku, `sku`);
+        var forAllocation = sku.locations.get(search);
+        console.log(forAllocation);
+        var eq = false;
+        var gt = false;
+        var lt = false;
+        var returnLocation;
+        var returnIds;
+        var ltList = [];
+        for([key, value] of Object.entries(forAllocation)){
+            if(key == 'quantity'){continue;}
+            if(needed > 0){
+                if(value.quantity == item.quantity){
+                    eq = true;
+                    needed -= value.quantity;
+                    returnLocation = key;
+                    returnIds = value.cards;
+                }else if(value.quantity > item.quantity){
+                    gt = true;
+                    needed -= value.quantity;
+                    returnLocation = key;
+                    returnIds = value.cards;
+                }else if(value.quantity < item.quantity){
+                    if(!lt){
+                        let quantityNow = number - value.quantity;
+                        if(quantityNow > 0){
+                            returnIds = value.cards;
+                            ltList[key] = {quantity: value.quantity, ids: returnIds}
+                        }else{
+                            returnIds = value.cards;
+                            ltList[key] = {quantity: number, ids: returnIds}
+                        }
+                        number = number - value.quantity;
+                        if(number <= 0){
+                            lt = true;
+                        }
+                    }
+                }
+            }else{break;}
+            if(eq || gt){
+                order.locations.push({
+                    box: returnLocation,
+                    quantity: item.quantity,
+                    name: sku.name,
+                    ids: returnIds,
+                    condition: item.condition,
+                    foil: item.foil
+                })
+            }else if(lt){
+                for([key, value] of Object.entries(ltList)){
+                    order.locations.push({
+                        box: key,
+                        quantity: value.quantity,
+                        name: sku.name,
+                        ids: value.ids,
+                        condition: item.condition,
+                        foil: item.foil
+                    })
+                }
+            }
+        }
+    }
+    console.log(order.locations);
+};
+async function test(){
+    let trial = await Order.findOne({number: "i really really am sorry "});
+    console.log(trial, `pre`);
+    allocateCards(trial);
+}
 module.exports = {
     initializeStorage,
     getOpenLocations,
     getPrice,
     updateAllPrices,
+    allocateCards,
+    test,
 }
 
 
