@@ -116,9 +116,10 @@ var app = new Vue({
 
       for (let i in conditions) {
         let condition = conditions[i];
-
+        console.log(condition);
+        console.log(i);
         if (item.totalConditions[condition] > 0) {
-          var card = this.createCardForPile(item, condition);
+          var card = this.createCardForPile({...item}, condition);
           var qty = item.totalConditions[condition];
           for (let j = 0; j < qty; j++) {
             this.pileList.push(card);
@@ -488,11 +489,38 @@ var app = new Vue({
         this.addSearchCurrentPage = page;
         this.changeDisplayedCards();
         return this.searchResultsPaginated;
+<<<<<<< HEAD
     }
+=======
+    },
+    
+    // allOfPileHasLocations: function () {
+    //     let answer = false;
+    //     pileList.forEach((card) => {
+    //         if(parseInt(card.location) > )
+    //     })
+    // }
+>>>>>>> pagination
   },
 
   created: function () {
     this.getCards();
     this.getOrders();
   },
+<<<<<<< HEAD
 });
+=======
+  computed: {
+    lengthOfAddCardSearch: function () {
+      if (!Object.keys(this.searchResultsStats).includes("total_cards")) {
+        return 1;
+      }
+      else if (this.searchResultsStats.total_cards > 0) {
+        return Math.ceil( this.searchResultsStats.total_cards / 25);
+      } else {
+        return 1;
+      }
+    },
+  }
+});
+>>>>>>> pagination
