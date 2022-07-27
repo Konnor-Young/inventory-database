@@ -66,9 +66,7 @@ app.post("/cards", async (req, res) => {
     if (req.body.foil == 'Non-Foil') {
         isFoil = false
     } else { isFoil = true }
-    console.log(isFoil);
     console.log(req.body.foil);
-    console.log(req.body.location);
     try {
         card = await Card.create({
             location: req.body.location,
@@ -91,7 +89,7 @@ app.post("/cards", async (req, res) => {
                     large: req.body.image_uris.large, png: req.body.image_uris.png,
                     border_crop: req.body.image_uris.border_crop
                 },
-                price: { usd: req.body.prices.usd, usd_foil: req.body.prices.usd_foil },
+                price: { usd: req.body.prices.usd, usd_foil: req.body.prices.usd_foil, usd_etched: req.body.prices.usd_etched},
                 quantity: { available: 0, reserved: 0, physical: 0 },
                 locations: { NM: {quantity: 0}, LP: {quantity: 0}, MP: {quantity: 0}, HP: {quantity: 0}, DMG: {quantity: 0}, NMfoil: {quantity: 0}, LPfoil: {quantity: 0}, MPfoil: {quantity: 0}, HPfoil: {quantity: 0}, DMGfoil: {quantity: 0}},
             });

@@ -38,6 +38,9 @@ async function getPrice(card) { //Unique.findOne(tcg_id) if card foil card.price
     // console.log(card.price);
     if(card.foil){
         card.price = unique.price.get('usd_foil');
+        if(card.price == null){
+            card.price = unique.price.get('usd_etched');
+        }
     }else{
         card.price = unique.price.get('usd');
     }
@@ -79,11 +82,11 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
     var eq = false;
     var gt = false;
     var lt = false;
+    var eqList = [];
+    var gtList = [];
+    var ltList = [];
     for(var [key, value] of Object.entries(openingList)){
         var open = 0;
-        var eqList = [];
-        var gtList = [];
-        var ltList = [];
         if(value == numberOfCards){
             eq = true; 
             eqList.push(key);
@@ -237,7 +240,6 @@ async function allocateCards(order){
                             box: returnLocation,
                             quantity: item.quantity,
                             name: sku.name,
-                            ids: returnIds,
                             condition: item.condition,
                             foil: item.foil
                         }
@@ -251,7 +253,6 @@ async function allocateCards(order){
                                 box: key,
                                 quantity: value.quantity,
                                 name: sku.name,
-                                ids: value.ids,
                                 condition: item.condition,
                                 foil: item.foil
                             }
