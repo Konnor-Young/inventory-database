@@ -37,7 +37,7 @@
                     <v-btn class="mx-16 mb-8" @click="login(username, password)">Login</button>
                   </v-row>
                   <v-row class="justify-center" v-show="invalidLogin">
-                    <v-alert type="error">
+                    <v-alert type="error" dismissible>
                     Invalid Attempt {{ incorrectLoginAttempts }}
                     </v-alert>
                   </v-row>
@@ -374,27 +374,13 @@
                                   <v-chip v-for="finish in vFinishes(result.finishes, result)" @Click="updateCardFinish(result, finish)">{{ finish }}</v-chip>
                                   
                                 </v-chip-group>
-                                <p>{{ getCardPrice(result) }}</p>
-                                  <p>{{result.finish}}</p>
                               </v-card-text>
                               <v-divider></v-divider>
-
-                              <!-- OLD CODE -->
-                              <!-- <v-row>
-                                <v-checkbox
-                                      class="deep-purple--text lighten-2"
-                                      label="Foil?"
-                                      color="deep-purple lighten-2"
-                                      value="foil"
-                                      hide-details>
-                                </v-checkbox>
-                              </v-row> -->
-
 
                             </v-card-text>
                             <!-- Add Button on cards displayed in add to pile -->
                             <v-row class="mx-1">
-                              <v-card-actions class="pt-0 pl-1 pr-1">
+                              <v-card-actions>
                                 <v-btn
                                   color="deep-purple lighten-2"
                                   text
@@ -407,13 +393,19 @@
                           </v-card>
                         </v-col>
                       </v-row>
+                      <v-pagination
+                            class="py-3"
+                            color="deep-purple lighten-2"
+                            v-model="addSearchCurrentPage"
+                            :length="lengthOfAddCardSearch"
+                            :total-visible="6"
+                            @input="changePage">
+                      </v-pagination>
                     </v-container>
                     <!--===== Pile/Cart Page =====-->
                     <v-container v-if="addCardSubPage == 'Pile'">
                       <!-- trying floating button -->
-                      <v-btn
-                            v-scroll="onScroll"
-                            v-show="fab"
+                      <v-btn v-if="allOfPileHasLocations"
                             fab
                             dark
                             fixed
@@ -421,11 +413,22 @@
                             right
                             color="primary"
                             @click="toTop">
-                        <v-icon>keyboard_arrow_up</v-icon>
+                          Get Locations
+                      </v-btn>
+                      <v-btn 
+                            fab
+                            dark
+                            fixed
+                            bottom
+                            right
+                            color="primary"
+                            @click="toTop">
+                          <v-icon>mdi-store-plus</v-icon>
                       </v-btn>
                       <v-container v-if="pileList.length == 0">
                         <h3 align-content="center">No Cards Added to Pile</h3>
                       </v-container>
+                      <!-- top menu to manipulate whole pile -->
                       <v-container v-if="pileList.length > 0">
                         <v-row >
                           <v-col>
@@ -437,19 +440,31 @@
                             </v-card>
                           </v-col>
                         </v-row>
-                      
-                        <v-row v-for="pileCard in pileList">
-                          <v-col>
-                            <v-card>
+                        
+                        <v-row>
+                          <v-col v-for="pileCard in pileList">
+                            <v-card width="350" class="my-3 justify-center">
+                              <v-row>
+                              <v-col>
                               <v-card width="146" class="mx-4">
     
                                 <v-img
                                     height="204"
                                     :src="getSmallImgURI(pileCard)">
                                 </v-img>
-
-
+                              
                               </v-card>
+                              </v-col>
+                              <v-col>
+                                
+                                
+                                <v-card-text>Market Price: {{  getCardPrice(pileCard)  }}</v-card-text>
+                                <v-card-text>Condition: {{ pileCard.condition }}</v-card-text>
+                                <v-btn>Delete</v-btn>
+                                <v-btn>Edit</v-btn>
+                                <v-btn>Duplicate</v-btn>
+                              </v-col>
+                              </v-row>
                             </v-card>
                           </v-col>
                         </v-row>
