@@ -63,7 +63,7 @@ var app = new Vue({
           set: card.set_name,
           image_uris: card.image_uris,
           prices: card.prices,
-          location: 111111,
+          location: 000000,
           condition: card.condition,
           foil: card.finish,
         };
@@ -508,6 +508,27 @@ var app = new Vue({
         this.addSearchCurrentPage = page;
         this.changeDisplayedCards();
         return this.searchResultsPaginated;
+    },
+    //  NOT FINISHED YET
+    checkInventoryValue: function (inventoryArray) {
+      let conditions = ['NM', 'LP', 'MP', 'HP', 'DMG'];
+      let conditionsFoil = ['NMfoil', 'LPfoil', 'MPfoil', 'HPfoil', 'DMGfoil'];
+      let normalTotal = 0.00;
+      let foilTotal = 0.00;
+
+      for (let i = 0; i < inventoryArray.length; i++) {
+        
+        for (let j = 0; j < conditions; j++) {
+          console.log('here')
+          if (parseFloat(inventoryArray[i].conditions[j]) > 0.00) {
+            console.log(inventoryArray[i].conditions[j])
+            normalTotal += parseFloat(inventoryArray[i].conditions[j]);
+          }
+          if (parseFloat(inventoryArray[i].conditionsFoil[j]) > 0.00) {
+            foilTotal += parseFloat(inventoryArray[i].conditionsFoil[j]);
+        } 
+        }
+      }return normalTotal + foilTotal
     }
   },
 
