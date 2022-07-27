@@ -52,6 +52,7 @@ var app = new Vue({
     for (let i = 0; i < arrayLength; i++) {
         let card = cardObject.shift();
         let id;
+        console.log(cardObject, `here`);
         if (card.tcgplayer_id) {
           id = card.tcgplayer_id;
         } else {
@@ -63,7 +64,7 @@ var app = new Vue({
           set: card.set_name,
           image_uris: card.image_uris,
           prices: card.prices,
-          location: 000000,
+          location: card.location,
           condition: card.condition,
           foil: card.finish,
         };
