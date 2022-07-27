@@ -52,7 +52,7 @@ async function updateAllPrices() { //Cards.find => cards.forEach getPrice(card)
 async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) for ([key, value] of Object.entries(storage.locationMap)) 
     var openingList = {};
     let storage = await Storage.findOne();
-    console.log(storage);
+    // console.log(storage);
     var map1 = storage.get('locationMap');
     var shelfContents = map1.values();
     var b = 1;
@@ -75,7 +75,7 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
         }
         s++;
     }
-    console.log(openingList);
+    // console.log(openingList);
     var eq = false;
     var gt = false;
     var lt = false;
@@ -111,7 +111,7 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
         open_value = openingList.open_key;
         let i = parseInt(open_key);
         min = (i*1000)+(150-open_value);
-        pushForward(key);
+        // pushForward(key);
         for(let j=0; j<numberOfCards; j++){
             min++;
             locate_list[j] = min;
@@ -125,7 +125,7 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
         // console.log(i, `i`);
         min = (i*1000)+(150-open_value);
         // console.log(min, `min`);
-        pushForward(key);
+        // pushForward(key);
         for(let j=0; j<numberOfCards; j++){
             min++;
             locate_list[j] = min;
@@ -138,7 +138,7 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
             let i = parseInt(open_key);
             min = (i*1000)+(150-open_value);
             max = (i*1000)+150;
-            pushForward(key);
+            // pushForward(key);
             for(let j = min; j<=max; j++){
                 min++;
                 locate_list.push(min);
@@ -149,7 +149,7 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
             }
         }
     }
-    console.log(locate_list);
+    // console.log(locate_list);
     return locate_list;
     // iterate through openingList and find a # of openings pushForward(key) return parseInt(key)*1000+(150-#)->parseInt(key)*1000+150
 };
@@ -157,13 +157,15 @@ async function pushForward(box){ // first three numbers in location ie 123--- Ca
     let i = parseInt(box);
     let min = i*1000;
     let max = (i*1000)+150;
-    let cardsInBox = await Card.find({}, {
-        $and: [{location: {$gt: min}},
-            {location: {$lte: max}}]
+    let cardsInBox = await Card.find({
+        $and: [{$gt: {location: min}},
+            {$lte: {location: max}}]
     });
-    for(let j=1; j<=cardsInBox.length(); j++){
-        cardsInBox[j].location = (j+min);
-        await cardsInBox[j].save();
+    let j = 0;
+    for(item of cardsInBox){
+        item.location = (j+min);
+        await item.save();
+        j++;
     }
 };
 async function allocateCards(order){
