@@ -22,7 +22,9 @@ app.get("/cards/:id", async (req, res) => {
     let card;
     try {
         card = await Card.findById(req.params.id);
-        logic.getPrice(card);
+        await logic.getPrice(card);
+        // console.log(card);
+        // console.log(card.price);
         await card.save();
     } catch (err) {
         console.log('could not find card', err);
@@ -46,9 +48,9 @@ app.post("/locations", async (req, res) => {
     let list
     try {
         list = await logic.getOpenLocations(req.body.number);
-        console.log(list);
+        // console.log(list);
     } catch (err) {
-        console.log(list);
+        // console.log(list);
         console.log(err);
         res.status(500).json({ message: `something went wrong. found no location`, err: err });
     }
@@ -86,12 +88,13 @@ app.post("/cards", async (req, res) => {
                     border_crop: req.body.image_uris.border_crop
                 },
                 price: { usd: req.body.prices.usd, usd_foil: req.body.prices.usd_foil },
-                quantity: { available: 1, reserved: 0, physical: 1 },
+                quantity: { available: 0, reserved: 0, physical: 0 },
+                locations: { NM: {quantity: 0}, LP: {quantity: 0}, MP: {quantity: 0}, HP: {quantity: 0}, DMG: {quantity: 0}, NMfoil: {quantity: 0}, LPfoil: {quantity: 0}, MPfoil: {quantity: 0}, HPfoil: {quantity: 0}, DMGfoil: {quantity: 0}},
             });
         }
-        logic.getPrice(card);
+        await logic.getPrice(card);
         await card.save();
-        let number = card.location;
+        const number = card.location;
         const sentence = number.toString();
         const index = 0;
         const shelf = 's' + sentence.charAt(index);
@@ -111,11 +114,48 @@ app.post("/cards", async (req, res) => {
                     "quantity.physical": updatePhysical
                 },
                 $push: {
-                    cards: card._id,
-                    locations: { location: card.location, card: card._id, price: card.price },
+                    cards: card._id
                 }
             }
         );
+        // set conditions as empty objects and update conditions with locations as they are added
+        let filter;
+        if(card.foil){
+            filter = card.condition+'foil';
+        }else{
+            filter = card.condition;
+        }
+        updateSku = await Unique.findById(unique._id);
+        // console.log(updateSku, `pre`);
+        // console.log(updateSku.locations.get(filter));
+        let updateSkuLocations = updateSku.locations.get(filter);
+        let pushLocation = sentence.charAt(index) + sentence.charAt(index+1) + sentence.charAt(index+2);
+        if(updateSkuLocations.quantity === undefined){
+            updateSkuLocations.quantity = 1;
+        }else{
+            updateSkuLocations.quantity += 1;
+        }
+        // console.log(updateSkuLocations);
+        // console.log(updateSkuLocations[pushLocation]);
+        if(updateSkuLocations[pushLocation] == undefined){
+            updateSkuLocations[pushLocation] = {quantity: 1, cards: [card._id]};
+            // console.log(updateSkuLocations);
+        }else{
+            updateSkuLocations[pushLocation]['cards'].push(card._id);
+            if(updateSkuLocations[pushLocation].quantity === undefined){
+                updateSkuLocations[pushLocation].quantity = 1;
+            }else{
+                updateSkuLocations[pushLocation].quantity += 1;
+            }
+            // console.log(updateSkuLocations);
+        }
+        // console.log(updateSkuLocations, `post`);
+        await updateSku.locations.set(filter, updateSkuLocations);
+        await updateSku.save();
+        // console.log(updateSku, `post`);
+        unique = await Unique.findByIdAndUpdate(unique._id, updateSku, {new: true});
+        // console.log(unique, `post post`);
+        // console.log(unique.locations.get(filter));
     } catch (err) {
         console.log(`could not create`, err);
         res.status(500).json({ message: `could not create`, err: err });
@@ -125,15 +165,16 @@ app.post("/cards", async (req, res) => {
 });
 
 app.post("/orders", async (req, res) => {
+    let order;
     try {
-        let order = Order.create({
+        order = Order.create({
             number: req.body.number,
             direct: req.body.direct,
             cards: req.body.cards,
             status: 'standing',
         });
-
-        for (let i = 0; i < req.body.cards.length; i++) {
+        // var cardList = req.body.cards;
+        for (let i in req.body.cards) {
             let unique = await Unique.findOne({ tcg_id: req.body.cards[i].card });
             console.log(unique.quantity.get("available"));
             console.log(req.body.cards[i].quantity)
@@ -166,16 +207,17 @@ app.patch("/cards/:id", async (req, res) => {
     let card;
     let unique;
     let update;
+    let storage;
     try {
         card = await Card.findById(req.params.id)
 
-        let number = card.location;
-        let newNumber = req.body.location;
-        const newSentence = newNumber.toString();
+        const number = card.location;
+        const newNumber = req.body.location;
         const sentence = number.toString();
+        const newSentence = newNumber.toString();
         const results = await Storage.findOne();
-        const index = 0;
 
+        const index = 0;
         const newShelf = 's' + newSentence.charAt(index);
         const newDrawer = 'd' + newSentence.charAt(index + 1);
         const movingBox = 'b' + newSentence.charAt(index + 2);
@@ -208,18 +250,41 @@ app.patch("/cards/:id", async (req, res) => {
             });
             return;
         }
-        update = { location: req.body.location, card: req.params.id, price: card.price };
-        unique = await Unique.findOne({ tcg_id: card.tcg_id });
-        if (!unique) {
-            res.status(404).json({ message: `bug found card does but sku does not exist` });
-            return;
+        let pushLocation = newSentence.charAt(index) + newSentence.charAt(index + 1) + newSentence.charAt(index + 2);
+        let pullLocation = sentence.charAt(index) + sentence.charAt(index + 1) + sentence.charAt(index + 2);
+        let filter;
+        if(card.foil){
+            filter = card.condition+'foil';
+        }else{
+            filter = card.condition;
         }
-        for (let i in unique.locations) {
-            if (unique.locations[i].card == req.params.id) {
-                unique.locations[i] = update;
-                unique.save();
+        updateSku = await Unique.findOne({tcg_id: card.tcg_id});
+        // console.log(updateSku, `pre`);
+        // console.log(updateSku.locations.get(filter));
+        let updateSkuLocations = updateSku.locations.get(filter);
+        if(updateSkuLocations[pushLocation] == undefined){
+            updateSkuLocations[pushLocation] = {quantity: 1, cards: [card._id]};
+            // console.log(updateSkuLocations);
+        }else{
+            updateSkuLocations[pushLocation]['cards'].push(card._id);
+            if(updateSkuLocations[pushLocation].quantity === undefined){
+                updateSkuLocations[pushLocation].quantity = 1;
+            }else{
+                updateSkuLocations[pushLocation].quantity += 1;
             }
+            // console.log(updateSkuLocations);
         }
+        updateSkuLocations[pullLocation].quantity -= 1;
+        let cardIndex = updateSkuLocations[pullLocation]['cards'].indexOf(card._id);
+        updateSkuLocations[pullLocation]['cards'].splice(cardIndex, 1);
+        // console.log(updateSku);
+        // console.log(updateSkuLocations, `post`);
+        await updateSku.locations.set(filter, updateSkuLocations);
+        await updateSku.save();
+        // console.log(updateSku, `post`);
+        unique = await Unique.findOneAndUpdate({tcg_id: card.tcg_id}, updateSku, {new: true});
+        // console.log(unique, `post post`);
+        // console.log(unique.locations.get(filter));
         console.log(unique.locations);
     } catch (err) {
         console.log(`could not find`, err);
@@ -239,27 +304,32 @@ app.patch("/orders/:id", async (req, res) => {
             });
             return;
         }
-        for (let i = 0; i < order.cards.length; i++) {
-            // console.log(order.cards[i].quantity);
-            let unique = await Unique.findOne({ tcg_id: order.cards[i].card });
+        console.log(order);
+        if (req.body.status == 'pulling'){
+            await logic.allocateCards(order);
+            await order.save()
+        }
+        console.log(order);
+        if(req.body.status == 'shipped'){
+            for (let i = 0; i < order.cards.length; i++) {
+                // console.log(order.cards[i].quantity);
+                let unique = await Unique.findOne({ tcg_id: order.cards[i].card });
 
+                if (unique.quantity.get("available") < order.cards[i].quantity) {
+                    console.log('cards not available: ', "Available: ", unique.quantity.get("available"), "Requested: ", order.cards[i].quantity);
+                    return;
+                }
+                //subtract to remove physical and reserved from inventory when moving orders to 'shipped' status
+                unique.quantity.set('physical', unique.quantity.get("physical") - order.cards[i].quantity);
+                await unique.save();
+            
+                unique.quantity.set('reserved', unique.quantity.get("reserved") - order.cards[i].quantity);
+                await unique.save();
 
-            if (unique.quantity.get("available") < order.cards[i].quantity) {
-                console.log('cards not available: ', "Available: ", unique.quantity.get("available"), "Requested: ", order.cards[i].quantity);
-                return;
+                console.log(unique.quantity.get("available"));
+                console.log(unique.quantity.get("reserved"));
+
             }
-            //subtract the quantity of the card in the order with the available quantity in the sku
-            unique.quantity.set('available', unique.quantity.get("available") - order.cards[i].quantity);
-            await unique.save();
-
-
-            //add the quantity to reserved
-            unique.quantity.set('reserved', unique.quantity.get("reserved") + order.cards[i].quantity);
-            await unique.save();
-
-            console.log(unique.quantity.get("available"));
-            console.log(unique.quantity.get("reserved"));
-
         }
     } catch (err) {
         console.log(`could not find`, err);

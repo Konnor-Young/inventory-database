@@ -16,7 +16,7 @@ const uniqueSchema = mongoose.Schema({
     image_uris: { type: Map, of: String },
     price: { type: Map, of: String },
     quantity: { type: Map, of: Number },
-    locations: { type: [] },
+    locations: { type: Map },
     cards: { type: [] },
     art: { type: Map, of: Boolean }
 });

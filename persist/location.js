@@ -32,11 +32,16 @@ async function initializeStorage(shelves, drawers, boxes) {
 };
 async function getPrice(card) { //Unique.findOne(tcg_id) if card foil card.price = unique.prices.usd_foil else card.price = unique.prices.usd
     let unique = await Unique.findOne({tcg_id: card.tcg_id});
+    // console.log(unique);
+    // console.log(card);
+    // console.log(unique.price);
+    // console.log(card.price);
     if(card.foil){
         card.price = unique.price.get('usd_foil');
     }else{
         card.price = unique.price.get('usd');
     }
+    // console.log(card.price);
 };
 async function updateAllPrices() { //Cards.find => cards.forEach getPrice(card)
     let allCards = await Card.find({});
@@ -47,7 +52,7 @@ async function updateAllPrices() { //Cards.find => cards.forEach getPrice(card)
 async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) for ([key, value] of Object.entries(storage.locationMap)) 
     var openingList = {};
     let storage = await Storage.findOne();
-    console.log(storage);
+    // console.log(storage);
     var map1 = storage.get('locationMap');
     var shelfContents = map1.values();
     var b = 1;
@@ -70,7 +75,7 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
         }
         s++;
     }
-    console.log(openingList);
+    // console.log(openingList);
     var eq = false;
     var gt = false;
     var lt = false;
@@ -106,7 +111,7 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
         open_value = openingList.open_key;
         let i = parseInt(open_key);
         min = (i*1000)+(150-open_value);
-        pushForward(key);
+        // pushForward(key);
         for(let j=0; j<numberOfCards; j++){
             min++;
             locate_list[j] = min;
@@ -120,7 +125,7 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
         // console.log(i, `i`);
         min = (i*1000)+(150-open_value);
         // console.log(min, `min`);
-        pushForward(key);
+        // pushForward(key);
         for(let j=0; j<numberOfCards; j++){
             min++;
             locate_list[j] = min;
@@ -133,7 +138,7 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
             let i = parseInt(open_key);
             min = (i*1000)+(150-open_value);
             max = (i*1000)+150;
-            pushForward(key);
+            // pushForward(key);
             for(let j = min; j<=max; j++){
                 min++;
                 locate_list.push(min);
@@ -144,7 +149,7 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
             }
         }
     }
-    console.log(locate_list);
+    // console.log(locate_list);
     return locate_list;
     // iterate through openingList and find a # of openings pushForward(key) return parseInt(key)*1000+(150-#)->parseInt(key)*1000+150
 };
@@ -152,21 +157,122 @@ async function pushForward(box){ // first three numbers in location ie 123--- Ca
     let i = parseInt(box);
     let min = i*1000;
     let max = (i*1000)+150;
-    let cardsInBox = await Card.find({}, {
-        $and: [{location: {$gt: min}},
-            {location: {$lte: max}}]
+    let cardsInBox = await Card.find({
+        $and: [{$gt: {location: min}},
+            {$lte: {location: max}}]
     });
-    for(let j=1; j<=cardsInBox.length(); j++){
-        cardsInBox[j].location = (j+min);
-        await cardsInBox[j].save();
+    let j = 0;
+    for(item of cardsInBox){
+        item.location = (j+min);
+        await item.save();
+        j++;
     }
 };
-
+async function allocateCards(order){
+    console.log(order, `order`);
+    var order_id = order._id;
+    for(item of order.cards){
+        var sku_id = {tcg_id: item.card};
+        console.log(sku_id, `sku_id`);
+        let cond = item.condition;
+        let foil = item.foil;
+        var needed = item.quantity;
+        var search;
+        if(foil){
+            search = cond + 'foil';
+        }else{
+            search = cond;
+        }
+        var sku = await Unique.findOne(sku_id);
+        console.log(sku, `sku`);
+        var forAllocation = sku.locations.get(search);
+        console.log(forAllocation);
+        var eq = false;
+        var gt = false;
+        var lt = false;
+        var returnLocation;
+        var returnIds;
+        var ltList = [];
+        for([key, value] of Object.entries(forAllocation)){
+            if(key == 'quantity'){continue;}
+            if(needed > 0){
+                if(value.quantity == item.quantity){
+                    eq = true;
+                    needed -= value.quantity;
+                    returnLocation = key;
+                    returnIds = value.cards;
+                    console.log(returnLocation, `eq location`);
+                    console.log(returnIds, `eq ids`);
+                }else if(value.quantity > item.quantity){
+                    gt = true;
+                    needed -= value.quantity;
+                    returnLocation = key;
+                    returnIds = value.cards;
+                    console.log(returnLocation, `gt location`);
+                    console.log(returnIds, `gt ids`);
+                }else if(value.quantity < item.quantity){
+                    if(!lt){
+                        let quantityNow = needed - value.quantity;
+                        if(quantityNow > 0){
+                            returnIds = value.cards;
+                            ltList[key] = {quantity: value.quantity, ids: returnIds}
+                        }else{
+                            returnIds = value.cards;
+                            ltList[key] = {quantity: needed, ids: returnIds}
+                        }
+                        needed = needed - value.quantity;
+                        console.log(ltList, `lt location`);
+                        console.log(returnIds, `lt ids`);
+                        if(needed <= 0){
+                            lt = true;
+                        }
+                    }
+                }
+            }else{break;}
+            if(eq || gt){
+                await Order.findByIdAndUpdate(order_id, {
+                    $push: {
+                        locations: {
+                            box: returnLocation,
+                            quantity: item.quantity,
+                            name: sku.name,
+                            ids: returnIds,
+                            condition: item.condition,
+                            foil: item.foil
+                        }
+                    }
+                })
+            }else if(lt){
+                for([key, value] of Object.entries(ltList)){
+                    await Order.findByIdAndUpdate(order_id, {
+                        $push: {
+                            locations: {
+                                box: key,
+                                quantity: value.quantity,
+                                name: sku.name,
+                                ids: value.ids,
+                                condition: item.condition,
+                                foil: item.foil
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    }
+    console.log(order.locations);
+};
+// async function test(){
+//     let trial = await Order.findOne({number: "i really really am sorry "});
+//     console.log(trial, `pre`);
+//     allocateCards(trial);
+// }
 module.exports = {
     initializeStorage,
     getOpenLocations,
     getPrice,
     updateAllPrices,
+    allocateCards,
 }
 
 

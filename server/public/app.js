@@ -398,6 +398,25 @@ var app = new Vue({
         return card;
       });
     },
+    getLocation: async function (){
+      var numberOfCards = { number: this.pileList.length };
+      let response = await fetch(`${URL}/locations`, {
+        method: 'POST',
+        body: JSON.stringify(numberOfCards),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+      let data = await response.json();
+      console.log(response.status);
+      let i = 0;
+      this.pileList.forEach((card) => {
+        card.location = data[i];
+        i++;
+        console.log(card);
+      })
+    },
     totalActiveOrders: function () {
       return this.orderList.length;
     },
