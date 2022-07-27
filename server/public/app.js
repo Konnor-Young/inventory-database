@@ -50,7 +50,7 @@ var app = new Vue({
     newCard: async function (cardObject) {
       this.addPileLoading = true;
       let arrayLength = cardObject.length;
-
+      console.log(cardObject[0], `here`);
       for (let i = 0; i < arrayLength; i++) {
         let card = cardObject.shift();
         let id;
@@ -65,7 +65,7 @@ var app = new Vue({
           set: card.set_name,
           image_uris: card.image_uris,
           prices: card.prices,
-          location: 111111,
+          location: card.location,
           condition: card.condition,
           foil: card.finish,
         };

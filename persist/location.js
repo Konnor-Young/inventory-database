@@ -171,6 +171,9 @@ async function pushForward(box){ // first three numbers in location ie 123--- Ca
 async function allocateCards(order){
     console.log(order, `order`);
     var order_id = order._id;
+    var returnLocation;
+    var returnIds = [];
+    var ltList = [];
     for(item of order.cards){
         var sku_id = {tcg_id: item.card};
         console.log(sku_id, `sku_id`);
@@ -190,10 +193,7 @@ async function allocateCards(order){
         var eq = false;
         var gt = false;
         var lt = false;
-        var returnLocation;
-        var returnIds;
-        var ltList = [];
-        let j = 0;
+        var j = 0;
         for([key, value] of Object.entries(forAllocation)){
             if(key == 'quantity'){continue;}
             if(needed > 0){
@@ -201,14 +201,14 @@ async function allocateCards(order){
                     eq = true;
                     needed -= value.quantity;
                     returnLocation = key;
-                    returnIds = value.cards[j];
+                    returnIds.push(value.cards[j]);
                     console.log(returnLocation, `eq location`);
                     console.log(returnIds, `eq ids`);
                 }else if(value.quantity > item.quantity){
                     gt = true;
                     needed -= value.quantity;
                     returnLocation = key;
-                    returnIds = value.cards[j];
+                    returnIds.push(value.cards[j]);
                     console.log(returnLocation, `gt location`);
                     console.log(returnIds, `gt ids`);
                 }else if(value.quantity < item.quantity){

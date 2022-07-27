@@ -66,6 +66,9 @@ app.post("/cards", async (req, res) => {
     if (req.body.foil == 'Non-Foil') {
         isFoil = false
     } else { isFoil = true }
+    console.log(isFoil);
+    console.log(req.body.foil);
+    console.log(req.body.location);
     try {
         card = await Card.create({
             location: req.body.location,
@@ -126,6 +129,7 @@ app.post("/cards", async (req, res) => {
         }else{
             filter = card.condition;
         }
+        console.log(filter);
         updateSku = await Unique.findById(unique._id);
         // console.log(updateSku, `pre`);
         // console.log(updateSku.locations.get(filter));
