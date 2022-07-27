@@ -193,6 +193,7 @@ async function allocateCards(order){
         var returnLocation;
         var returnIds;
         var ltList = [];
+        let j = 0;
         for([key, value] of Object.entries(forAllocation)){
             if(key == 'quantity'){continue;}
             if(needed > 0){
@@ -200,14 +201,14 @@ async function allocateCards(order){
                     eq = true;
                     needed -= value.quantity;
                     returnLocation = key;
-                    returnIds = value.cards;
+                    returnIds = value.cards[j];
                     console.log(returnLocation, `eq location`);
                     console.log(returnIds, `eq ids`);
                 }else if(value.quantity > item.quantity){
                     gt = true;
                     needed -= value.quantity;
                     returnLocation = key;
-                    returnIds = value.cards;
+                    returnIds = value.cards[j];
                     console.log(returnLocation, `gt location`);
                     console.log(returnIds, `gt ids`);
                 }else if(value.quantity < item.quantity){
@@ -258,6 +259,7 @@ async function allocateCards(order){
                     })
                 }
             }
+            j++;
         }
     }
     console.log(order.locations);
