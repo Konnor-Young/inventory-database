@@ -32,11 +32,16 @@ async function initializeStorage(shelves, drawers, boxes) {
 };
 async function getPrice(card) { //Unique.findOne(tcg_id) if card foil card.price = unique.prices.usd_foil else card.price = unique.prices.usd
     let unique = await Unique.findOne({tcg_id: card.tcg_id});
+    // console.log(unique);
+    // console.log(card);
+    // console.log(unique.price);
+    // console.log(card.price);
     if(card.foil){
         card.price = unique.price.get('usd_foil');
     }else{
         card.price = unique.price.get('usd');
     }
+    // console.log(card.price);
 };
 async function updateAllPrices() { //Cards.find => cards.forEach getPrice(card)
     let allCards = await Card.find({});
@@ -163,8 +168,10 @@ async function pushForward(box){ // first three numbers in location ie 123--- Ca
 };
 async function allocateCards(order){
     console.log(order, `order`);
+    var order_id = order._id;
     for(item of order.cards){
         var sku_id = {tcg_id: item.card};
+        console.log(sku_id, `sku_id`);
         let cond = item.condition;
         let foil = item.foil;
         var needed = item.quantity;
@@ -192,46 +199,60 @@ async function allocateCards(order){
                     needed -= value.quantity;
                     returnLocation = key;
                     returnIds = value.cards;
+                    console.log(returnLocation, `eq location`);
+                    console.log(returnIds, `eq ids`);
                 }else if(value.quantity > item.quantity){
                     gt = true;
                     needed -= value.quantity;
                     returnLocation = key;
                     returnIds = value.cards;
+                    console.log(returnLocation, `gt location`);
+                    console.log(returnIds, `gt ids`);
                 }else if(value.quantity < item.quantity){
                     if(!lt){
-                        let quantityNow = number - value.quantity;
+                        let quantityNow = needed - value.quantity;
                         if(quantityNow > 0){
                             returnIds = value.cards;
                             ltList[key] = {quantity: value.quantity, ids: returnIds}
                         }else{
                             returnIds = value.cards;
-                            ltList[key] = {quantity: number, ids: returnIds}
+                            ltList[key] = {quantity: needed, ids: returnIds}
                         }
-                        number = number - value.quantity;
-                        if(number <= 0){
+                        needed = needed - value.quantity;
+                        console.log(ltList, `lt location`);
+                        console.log(returnIds, `lt ids`);
+                        if(needed <= 0){
                             lt = true;
                         }
                     }
                 }
             }else{break;}
             if(eq || gt){
-                order.locations.push({
-                    box: returnLocation,
-                    quantity: item.quantity,
-                    name: sku.name,
-                    ids: returnIds,
-                    condition: item.condition,
-                    foil: item.foil
+                await Order.findByIdAndUpdate(order_id, {
+                    $push: {
+                        locations: {
+                            box: returnLocation,
+                            quantity: item.quantity,
+                            name: sku.name,
+                            ids: returnIds,
+                            condition: item.condition,
+                            foil: item.foil
+                        }
+                    }
                 })
             }else if(lt){
                 for([key, value] of Object.entries(ltList)){
-                    order.locations.push({
-                        box: key,
-                        quantity: value.quantity,
-                        name: sku.name,
-                        ids: value.ids,
-                        condition: item.condition,
-                        foil: item.foil
+                    await Order.findByIdAndUpdate(order_id, {
+                        $push: {
+                            locations: {
+                                box: key,
+                                quantity: value.quantity,
+                                name: sku.name,
+                                ids: value.ids,
+                                condition: item.condition,
+                                foil: item.foil
+                            }
+                        }
                     })
                 }
             }
@@ -239,18 +260,17 @@ async function allocateCards(order){
     }
     console.log(order.locations);
 };
-async function test(){
-    let trial = await Order.findOne({number: "i really really am sorry "});
-    console.log(trial, `pre`);
-    allocateCards(trial);
-}
+// async function test(){
+//     let trial = await Order.findOne({number: "i really really am sorry "});
+//     console.log(trial, `pre`);
+//     allocateCards(trial);
+// }
 module.exports = {
     initializeStorage,
     getOpenLocations,
     getPrice,
     updateAllPrices,
     allocateCards,
-    test,
 }
 
 
