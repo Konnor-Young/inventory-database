@@ -109,7 +109,8 @@ var app = new Vue({
       card.condition = condition;
       return card;
     },
-    addToPile: function (item) {
+    addToPile: function (index) {
+      let item = this.searchResultsPaginated[index]
       // item.foil = foil;
       var conditions = ['NM', 'LP', 'MP', 'HP', 'DMG'];
       // var cards = this.createCardForPile(item, "DMG", item.totalConditions.DMG);
@@ -121,7 +122,12 @@ var app = new Vue({
         console.log(condition);
         console.log(i);
         if (item.totalConditions[condition] > 0) {
+<<<<<<< HEAD
           var card = this.createCardForPile({ ...item }, condition);
+=======
+          var card = this.createCardForPile({...item}, condition);
+          // console.log(card);
+>>>>>>> working-foil
           var qty = item.totalConditions[condition];
           for (let j = 0; j < qty; j++) {
             this.pileList.push(card);
@@ -182,6 +188,7 @@ var app = new Vue({
           DMG: 0,
         };
         item.totalCards = 0;
+        item.finish = item.finishes[0];
       });
       this.searchResults = data.data.slice();
       listOfCards.splice(25);
@@ -435,15 +442,14 @@ var app = new Vue({
       if (cardFinishes.includes('glossy')) {
         tempList.push('Glossy');
       }
-      cardObject.finish = tempList[0];
       return tempList;
     },
-    updateCardFinish: function (cardObject, finish) {
-      cardObject.finish = finish;
+    updateCardFinish: function (index, finish) {
+      this.searchResultsPaginated[index].finish = finish;
       // console.log("Updated Card Finish")
       // console.log(cardObject.finish)
-      this.getCardPrice(cardObject);
-      return cardObject;
+      // this.getCardPrice(cardObject);
+      // return cardObject;
     },
     getCardPrice: function (cardObject) {
       let price;
@@ -513,24 +519,35 @@ var app = new Vue({
     },
     //  NOT FINISHED YET
     checkInventoryValue: function (inventoryArray) {
-      let conditions = ['NM', 'LP', 'MP', 'HP', 'DMG'];
-      let conditionsFoil = ['NMfoil', 'LPfoil', 'MPfoil', 'HPfoil', 'DMGfoil'];
       let normalTotal = 0.00;
-      let foilTotal = 0.00;
 
       for (let i = 0; i < inventoryArray.length; i++) {
+        // console.log(i)
         
-        for (let j = 0; j < conditions; j++) {
-          console.log('here')
-          if (parseFloat(inventoryArray[i].conditions[j]) > 0.00) {
-            console.log(inventoryArray[i].conditions[j])
-            normalTotal += parseFloat(inventoryArray[i].conditions[j]);
+          // console.log(j);
+        let card = inventoryArray[i];
+
+        if (card.quantity.physical > 0) {
+          
+          if (card.price.usd == null || card.price.usd == 'null') {
+            // try foil price
+            if (card.price.usd_foil == null || card.price.usd_foil == 'null') {
+              console.log('no price');
+              normalTotal += 0.01;
+            } else {
+              console.log(card.price.usd_foil);
+              normalTotal += parseFloat(card.price.usd_foil);
+            }
+          } else {
+          console.log(card.price.usd);
+          normalTotal += parseFloat(card.price.usd);
           }
-          if (parseFloat(inventoryArray[i].conditionsFoil[j]) > 0.00) {
-            foilTotal += parseFloat(inventoryArray[i].conditionsFoil[j]);
-        } 
         }
-      }return normalTotal + foilTotal
+
+        
+        
+      } console.log(normalTotal);
+      return Number((normalTotal).toFixed(2));
     }
   },
 
