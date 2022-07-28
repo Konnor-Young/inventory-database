@@ -611,9 +611,10 @@ var app = new Vue({
       } else {
         return ""
       }
-
-      
     },
+    deleteCardFromPile: function (index) {
+      this.pileList.splice(index, 1);
+    }
     
   },
 
