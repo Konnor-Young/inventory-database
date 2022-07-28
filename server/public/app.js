@@ -46,6 +46,8 @@ var app = new Vue({
     addSearchCurrentPage: 1,
     dialog: false,
     badSearchAlert: false,
+    pileLocations: false,
+    isGettingLocations: false,
   },
   methods: {
     newCard: async function (cardObject) {
@@ -76,6 +78,7 @@ var app = new Vue({
       }
       this.addPileLoading = false;
       this.pileList = [];
+      this.addPileLoading = false;
     },
     newOrder: function () {
       let newOrder = {
@@ -138,6 +141,7 @@ var app = new Vue({
         HP: 0,
         DMG: 0,
       };
+      // item.totalCards = 0;
 
       // {
       //     condition: "" ,
@@ -191,7 +195,7 @@ var app = new Vue({
           DMG: 0,
         };
         item.totalCards = 0;
-        item.finish = item.finishes[0];
+        item.finish = this.vFinishes(item.finishes[0], null)[0];
       });
       this.searchResults = data.data.slice();
       listOfCards.splice(25);
@@ -430,6 +434,7 @@ var app = new Vue({
       });
     },
     getLocation: async function () {
+      this.isGettingLocations = true;
       var numberOfCards = { number: this.pileList.length };
       let response = await fetch(`${URL}/locations`, {
         method: 'POST',
@@ -445,8 +450,10 @@ var app = new Vue({
       this.pileList.forEach((card) => {
         card.location = data[i];
         i++;
-        console.log(card);
+        // console.log(card);
       });
+      this.allPileHasLocations();
+      this.isGettingLocations = false;
     },
     totalActiveOrders: function () {
       return this.orderList.length;
@@ -540,7 +547,7 @@ var app = new Vue({
         this.changeDisplayedCards();
         return this.searchResultsPaginated;
     },
-    //  NOT FINISHED YET
+    //  FINISHED but only adding first price available usd then usd_foil then $0.01
     checkInventoryValue: function (inventoryArray) {
       let normalTotal = 0.00;
 
@@ -564,12 +571,23 @@ var app = new Vue({
           // console.log(card.price.usd);
           normalTotal += parseFloat(card.price.usd) * card.quantity.physical;
           }
-        }
-
-        
-        
+        }       
       } console.log(normalTotal);
       return Number((normalTotal).toFixed(2));
+    },
+    allPileHasLocations: function () {
+      this.pileLocations = true;
+      for (i in this.pileList) {
+        let card = this.pileList[i]
+        console.log(card);
+        if (card.location > 0) {
+          console.log('good');
+
+        } else {
+          console.log('not shown');
+          this.pileLocations = false
+        }
+      }
     }
   },
 

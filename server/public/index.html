@@ -247,7 +247,7 @@
                         Deck
                         </v-tab> -->
 
-                      <v-tab @Click="addCardSubPage = 'Pile'" class="rounded-lg"
+                      <v-tab @Click="addCardSubPage = 'Pile'; allPileHasLocations()" class="rounded-lg"
                         active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
                         Pile
                       </v-tab>
@@ -431,7 +431,7 @@
                     <!--===== Pile/Cart Page =====-->
                     <v-container v-if="addCardSubPage == 'Pile'">
                       <!-- trying floating button -->
-                      <v-btn
+                      <!-- <v-btn
                             fab
                             dark
                             fixed
@@ -450,7 +450,7 @@
                             color="primary"
                             @click="toTop">
                           <v-icon>mdi-store-plus</v-icon>
-                      </v-btn>
+                      </v-btn> -->
                       <v-container v-if="pileList.length == 0">
                         <h3 align-content="center">No Cards Added to Pile</h3>
                       </v-container>
@@ -460,8 +460,8 @@
                           <v-col>
                             <v-card class="float-right mx-3">
                             
-                            <v-btn @click="getLocation()">Get Locations</v-btn>
-                            <v-btn @Click="newCard(pileList)" :loading="addPileLoading">Add to Inventory</v-btn>
+                            <v-btn @click="getLocation()" v-if="!pileLocations" :loading="isGettingLocations">Get Locations</v-btn>
+                            <v-btn @Click="newCard(pileList)" v-else :loading="addPileLoading">Add to Inventory</v-btn>
                             
                             </v-card>
                           </v-col>
@@ -486,6 +486,7 @@
                                 
                                 <v-card-text>Market Price: {{  getCardPrice(pileCard)  }}</v-card-text>
                                 <v-card-text>Condition: {{ pileCard.condition }}</v-card-text>
+                                <v-card-text>Finish: {{ pileCard.finish }}</v-card-text>
                                 <v-btn>Delete</v-btn>
                                 <v-btn>Edit</v-btn>
                                 <v-btn>Duplicate</v-btn>
