@@ -38,6 +38,7 @@
                   </v-row>
                   <v-row class="justify-center" v-show="invalidLogin">
                     <v-alert type="error" dismissible>
+                      {{ loggedMessage}}
                     Invalid Attempt {{ incorrectLoginAttempts }}
                     </v-alert>
                   </v-row>
@@ -405,6 +406,7 @@
                             <v-row class="mx-1">
                               <v-card-actions>
                                 <v-btn
+                                  v-if="result.totalCards > 0"
                                   color="deep-purple lighten-2"
                                   text
                                   @click="addToPile(resultIndex)"
@@ -417,6 +419,7 @@
                         </v-col>
                       </v-row>
                       <v-pagination
+                            v-if="searchResults.length > 0"
                             class="py-3"
                             color="deep-purple lighten-2"
                             v-model="addSearchCurrentPage"

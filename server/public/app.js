@@ -245,27 +245,42 @@ var app = new Vue({
     removeLPtoObject: function (cardObject) {
       if (cardObject.totalConditions.LP  - 2 >= 0) {
       cardObject.totalConditions.LP -= 2;
-      cardObject.totalCards -= 2;}
+      cardObject.totalCards -= 2;
+    } else {
+      cardObject.totalConditions.LP = 0;
+    }
     },
     removeNMtoObject: function (cardObject) {
       if (cardObject.totalConditions.NM  - 2 >= 0) {
       cardObject.totalConditions.NM -= 2;
-      cardObject.totalCards -= 2;}
+      cardObject.totalCards -= 2;
+      } else {
+      cardObject.totalConditions.LP = 0;
+      }
     },
     removeMPtoObject: function (cardObject) {
       if (cardObject.totalConditions.MP  - 2 >= 0) {
       cardObject.totalConditions.MP -= 2;
-      cardObject.totalCards -= 2;}
+      cardObject.totalCards -= 2;
+      } else {
+        cardObject.totalConditions.LP = 0;
+      }
     },
     removeHPtoObject: function (cardObject) {
       if (cardObject.totalConditions.HP  - 2 >= 0) {
       cardObject.totalConditions.HP -= 2;
-      cardObject.totalCards -= 2;}
+      cardObject.totalCards -= 2;
+      } else {
+        cardObject.totalConditions.HP = 0;
+      }
     },
     removeDMGtoObject: function (cardObject) {
       if (cardObject.totalConditions.DMG  - 2 >= 0) {
       cardObject.totalConditions.DMG -= 2;
-      cardObject.totalCards -= 2;}
+      cardObject.totalCards -= 2;
+      } else {
+        cardObject.totalConditions.DMG = 0;
+      }
     },
     getOrders: async function () {
       let response = await fetch(`${URL}/orders`, {
