@@ -122,12 +122,8 @@ var app = new Vue({
         console.log(condition);
         console.log(i);
         if (item.totalConditions[condition] > 0) {
-<<<<<<< HEAD
           var card = this.createCardForPile({...item}, condition);
           // console.log(card);
-=======
-          var card = this.createCardForPile({ ...item }, condition);
->>>>>>> origin/main
           var qty = item.totalConditions[condition];
           for (let j = 0; j < qty; j++) {
             this.pileList.push(card);
