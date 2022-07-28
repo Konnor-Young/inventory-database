@@ -1,14 +1,35 @@
 const express = require(`express`);
 const app = express();
 const cors = require(`cors`);
-const { Card, Order, Unique, Storage } = require(`../persist/model`);
+const setUpSession = require(`./session`);
+const setUpAuth = require(`./auth`);
+const { Card, Order, Unique, Storage, User } = require(`../persist/model`);
 const logic = require(`../persist/location`);
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public/`));
 app.use(cors())
 
-app.get("/cards", async (req, res) => {
+setUpSession(app);
+setUpAuth(app);
+
+app.post("/users", async (req, res) => {
+    try {
+        let user = await User.create({
+            username: req.body.username,
+            password: req.body.password,
+        });
+        res.status(201).json(user);
+    } catch (err) {
+        res.status(500).json({
+            message: `failed to create user`,
+            error: err,
+        });
+        return;
+    }
+});
+
+app.get("/skus", async (req, res) => {
     let uniqueCards;
     try {
         uniqueCards = await Unique.find({});
@@ -17,6 +38,17 @@ app.get("/cards", async (req, res) => {
         res.status(500).json({ message: 'cards not found', err: err });
     }
     res.status(200).json(uniqueCards);
+});
+
+app.get("/cards", async (req, res) => {
+    let cards;
+    try {
+        cards = await Card.find({});
+    } catch (err) {
+        console.log('could not find card list', err);
+        res.status(500).json({ message: 'cards not found', err: err });
+    }
+    res.status(200).json(cards);
 });
 
 app.get("/cards/:id", async (req, res) => {
