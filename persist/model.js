@@ -36,15 +36,22 @@ const storageSchema = mongoose.Schema({
     boxes: { type: Number }
 });
 
+const userSchema = mongoose.Schema ({
+        username: {type: String, required: true, unique: true },
+        password: {type: String, required: true}
+});
+
 // ORDER Card Keys, Integer
 const Card = mongoose.model("Card", cardSchema);
 const Order = mongoose.model("Order", orderSchema);
 const Unique = mongoose.model("Unique", uniqueSchema);
 const Storage = mongoose.model("Storage", storageSchema);
+const User = mongoose.model(`User`, userSchema);
 
 module.exports = {
     Card,
     Order,
     Unique,
-    Storage
+    Storage,
+    User
 }
