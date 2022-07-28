@@ -236,24 +236,29 @@ var app = new Vue({
     // ==== Subtracting 2 on ctrl + click (work around for intial click also adding 1)
     // ?? Need to add non negative validation
     removeLPtoObject: function (cardObject) {
+      if (cardObject.totalConditions.LP  - 2 >= 0) {
       cardObject.totalConditions.LP -= 2;
-      cardObject.totalCards -= 2;
+      cardObject.totalCards -= 2;}
     },
     removeNMtoObject: function (cardObject) {
+      if (cardObject.totalConditions.NM  - 2 >= 0) {
       cardObject.totalConditions.NM -= 2;
-      cardObject.totalCards -= 2;
+      cardObject.totalCards -= 2;}
     },
     removeMPtoObject: function (cardObject) {
+      if (cardObject.totalConditions.MP  - 2 >= 0) {
       cardObject.totalConditions.MP -= 2;
-      cardObject.totalCards -= 2;
+      cardObject.totalCards -= 2;}
     },
     removeHPtoObject: function (cardObject) {
+      if (cardObject.totalConditions.HP  - 2 >= 0) {
       cardObject.totalConditions.HP -= 2;
-      cardObject.totalCards -= 2;
+      cardObject.totalCards -= 2;}
     },
     removeDMGtoObject: function (cardObject) {
+      if (cardObject.totalConditions.DMG  - 2 >= 0) {
       cardObject.totalConditions.DMG -= 2;
-      cardObject.totalCards -= 2;
+      cardObject.totalCards -= 2;}
     },
     getOrders: async function () {
       let response = await fetch(`${URL}/orders`, {
@@ -528,15 +533,14 @@ var app = new Vue({
           if (card.price.usd == null || card.price.usd == 'null') {
             // try foil price
             if (card.price.usd_foil == null || card.price.usd_foil == 'null') {
-              console.log('no price');
-              normalTotal += 0.01;
+              normalTotal += 0.01 * card.quantity.physical;
             } else {
-              console.log(card.price.usd_foil);
-              normalTotal += parseFloat(card.price.usd_foil);
+              // console.log(card.price.usd_foil);
+              normalTotal += parseFloat(card.price.usd_foil) * card.quantity.physical;
             }
           } else {
-          console.log(card.price.usd);
-          normalTotal += parseFloat(card.price.usd);
+          // console.log(card.price.usd);
+          normalTotal += parseFloat(card.price.usd) * card.quantity.physical;
           }
         }
 
