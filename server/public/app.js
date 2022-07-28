@@ -18,6 +18,7 @@ var app = new Vue({
     currentOrder: {},
     currentCard: {},
     cardInfo: null,
+    indCard: {},
     cardList: [],
     orderList: [],
     cardFoil: false,
@@ -507,31 +508,42 @@ var app = new Vue({
       this.searchResultsPaginated = this.searchResults.slice(start, stop);
     },
     changePage: function (page) {
-        this.addSearchCurrentPage = page;
-        this.changeDisplayedCards();
-        return this.searchResultsPaginated;
+      this.addSearchCurrentPage = page;
+      this.changeDisplayedCards();
+      return this.searchResultsPaginated;
     },
     //  NOT FINISHED YET
     checkInventoryValue: function (inventoryArray) {
       let conditions = ['NM', 'LP', 'MP', 'HP', 'DMG'];
       let conditionsFoil = ['NMfoil', 'LPfoil', 'MPfoil', 'HPfoil', 'DMGfoil'];
-      let normalTotal = 0.00;
-      let foilTotal = 0.00;
+      let normalTotal = 0.0;
+      let foilTotal = 0.0;
 
       for (let i = 0; i < inventoryArray.length; i++) {
-        
         for (let j = 0; j < conditions; j++) {
-          console.log('here')
-          if (parseFloat(inventoryArray[i].conditions[j]) > 0.00) {
-            console.log(inventoryArray[i].conditions[j])
+          console.log('here');
+          if (parseFloat(inventoryArray[i].conditions[j]) > 0.0) {
+            console.log(inventoryArray[i].conditions[j]);
             normalTotal += parseFloat(inventoryArray[i].conditions[j]);
           }
-          if (parseFloat(inventoryArray[i].conditionsFoil[j]) > 0.00) {
+          if (parseFloat(inventoryArray[i].conditionsFoil[j]) > 0.0) {
             foilTotal += parseFloat(inventoryArray[i].conditionsFoil[j]);
-        } 
+          }
         }
-      }return normalTotal + foilTotal
-    }
+      }
+      return normalTotal + foilTotal;
+    },
+
+    indCardInfo: async function (card_id) {
+      let response = await fetch(`${URL}/cards/${card_id}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      let data = await response.json();
+      this.indCard = data;
+      console.log(response.status);
+      console.log(data);
+    },
   },
 
   created: function () {
