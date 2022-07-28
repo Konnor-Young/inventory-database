@@ -17,7 +17,8 @@ var app = new Vue({
     updatingCard: -1,
     currentOrder: {},
     currentCard: {},
-    cardInfo: {},
+    cardInfo: null,
+    indCard: {},
     cardList: [],
     orderList: [],
     cardFoil: false,
@@ -114,7 +115,7 @@ var app = new Vue({
       return card;
     },
     addToPile: function (index) {
-      let item = this.searchResultsPaginated[index]
+      let item = this.searchResultsPaginated[index];
       // item.foil = foil;
       var conditions = ['NM', 'LP', 'MP', 'HP', 'DMG'];
       // var cards = this.createCardForPile(item, "DMG", item.totalConditions.DMG);
@@ -126,7 +127,7 @@ var app = new Vue({
         console.log(condition);
         console.log(i);
         if (item.totalConditions[condition] > 0) {
-          var card = this.createCardForPile({...item}, condition);
+          var card = this.createCardForPile({ ...item }, condition);
           // console.log(card);
           var qty = item.totalConditions[condition];
           for (let j = 0; j < qty; j++) {
@@ -170,10 +171,10 @@ var app = new Vue({
       let response = await fetch(
         `${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`
       );
-      if (response.status == 404){
+      if (response.status == 404) {
         this.badSearchAlert = true;
-        console.log('bad Search')
-        return 
+        console.log('bad Search');
+        return;
       }
       let data = await response.json();
       //   console.log(data.object);
@@ -247,41 +248,41 @@ var app = new Vue({
     // ==== Subtracting 2 on ctrl + click (work around for intial click also adding 1)
     // ?? Need to add non negative validation
     removeLPtoObject: function (cardObject) {
-      if (cardObject.totalConditions.LP  - 2 >= 0) {
-      cardObject.totalConditions.LP -= 2;
-      cardObject.totalCards -= 2;
-    } else {
-      cardObject.totalConditions.LP = 0;
-    }
+      if (cardObject.totalConditions.LP - 2 >= 0) {
+        cardObject.totalConditions.LP -= 2;
+        cardObject.totalCards -= 2;
+      } else {
+        cardObject.totalConditions.LP = 0;
+      }
     },
     removeNMtoObject: function (cardObject) {
-      if (cardObject.totalConditions.NM  - 2 >= 0) {
-      cardObject.totalConditions.NM -= 2;
-      cardObject.totalCards -= 2;
+      if (cardObject.totalConditions.NM - 2 >= 0) {
+        cardObject.totalConditions.NM -= 2;
+        cardObject.totalCards -= 2;
       } else {
-      cardObject.totalConditions.LP = 0;
+        cardObject.totalConditions.LP = 0;
       }
     },
     removeMPtoObject: function (cardObject) {
-      if (cardObject.totalConditions.MP  - 2 >= 0) {
-      cardObject.totalConditions.MP -= 2;
-      cardObject.totalCards -= 2;
+      if (cardObject.totalConditions.MP - 2 >= 0) {
+        cardObject.totalConditions.MP -= 2;
+        cardObject.totalCards -= 2;
       } else {
         cardObject.totalConditions.LP = 0;
       }
     },
     removeHPtoObject: function (cardObject) {
-      if (cardObject.totalConditions.HP  - 2 >= 0) {
-      cardObject.totalConditions.HP -= 2;
-      cardObject.totalCards -= 2;
+      if (cardObject.totalConditions.HP - 2 >= 0) {
+        cardObject.totalConditions.HP -= 2;
+        cardObject.totalCards -= 2;
       } else {
         cardObject.totalConditions.HP = 0;
       }
     },
     removeDMGtoObject: function (cardObject) {
-      if (cardObject.totalConditions.DMG  - 2 >= 0) {
-      cardObject.totalConditions.DMG -= 2;
-      cardObject.totalCards -= 2;
+      if (cardObject.totalConditions.DMG - 2 >= 0) {
+        cardObject.totalConditions.DMG -= 2;
+        cardObject.totalCards -= 2;
       } else {
         cardObject.totalConditions.DMG = 0;
       }
@@ -543,52 +544,62 @@ var app = new Vue({
       this.searchResultsPaginated = this.searchResults.slice(start, stop);
     },
     changePage: function (page) {
-        this.addSearchCurrentPage = page;
-        this.changeDisplayedCards();
-        return this.searchResultsPaginated;
+      this.addSearchCurrentPage = page;
+      this.changeDisplayedCards();
+      return this.searchResultsPaginated;
     },
     //  FINISHED but only adding first price available usd then usd_foil then $0.01
     checkInventoryValue: function (inventoryArray) {
-      let normalTotal = 0.00;
+      let normalTotal = 0.0;
 
       for (let i = 0; i < inventoryArray.length; i++) {
         // console.log(i)
-        
-          // console.log(j);
+
+        // console.log(j);
         let card = inventoryArray[i];
 
         if (card.quantity.physical > 0) {
-          
           if (card.price.usd == null || card.price.usd == 'null') {
             // try foil price
             if (card.price.usd_foil == null || card.price.usd_foil == 'null') {
               normalTotal += 0.01 * card.quantity.physical;
             } else {
               // console.log(card.price.usd_foil);
-              normalTotal += parseFloat(card.price.usd_foil) * card.quantity.physical;
+              normalTotal +=
+                parseFloat(card.price.usd_foil) * card.quantity.physical;
             }
           } else {
-          // console.log(card.price.usd);
-          normalTotal += parseFloat(card.price.usd) * card.quantity.physical;
+            // console.log(card.price.usd);
+            normalTotal += parseFloat(card.price.usd) * card.quantity.physical;
           }
-        }       
-      } console.log(normalTotal);
-      return Number((normalTotal).toFixed(2));
+        }
+      }
+      console.log(normalTotal);
+      return Number(normalTotal.toFixed(2));
     },
     allPileHasLocations: function () {
       this.pileLocations = true;
       for (i in this.pileList) {
-        let card = this.pileList[i]
+        let card = this.pileList[i];
         console.log(card);
         if (card.location > 0) {
           console.log('good');
-
         } else {
           console.log('not shown');
-          this.pileLocations = false
+          this.pileLocations = false;
         }
       }
-    }
+    },
+    indCardInfo: async function (card_id) {
+      let response = await fetch(`${URL}/cards/${card_id}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      let data = await response.json();
+      this.indCard = data;
+      console.log(response.status);
+      console.log(data);
+    },
   },
 
   created: function () {
