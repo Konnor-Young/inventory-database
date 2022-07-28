@@ -17,7 +17,7 @@ var app = new Vue({
     updatingCard: -1,
     currentOrder: {},
     currentCard: {},
-    cardInfo: {},
+    cardInfo: null,
     cardList: [],
     orderList: [],
     cardFoil: false,
