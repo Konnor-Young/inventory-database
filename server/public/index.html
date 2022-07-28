@@ -25,13 +25,13 @@
                   <!-- </v-row> -->
                   <v-row class="px-8 mt-4 mb-2">
                     <v-icon class="mr-2"> mdi-account-box</v-icon>
-                    <v-text-field type="text" placeholder="Username" v-model="username">
+                    <v-text-field color="deep-purple lighten-2" type="text" placeholder="Username" v-model="username">
                   </v-row>
                   <v-row class="px-8 mb-2">
                     <v-icon class="mr-2">
                       mdi-lock
                     </v-icon>
-                    <v-text-field type="password" placeholder="Password" v-model="password" autofocus @keypress.enter="login(username, password)">
+                    <v-text-field color="deep-purple lighten-2" type="password" placeholder="Password" v-model="password" autofocus @keypress.enter="login(username, password)">
                   </v-row>
                   <v-row>
                     <v-btn class="mx-16 mb-8" @click="login(username, password)">Login</button>
@@ -129,7 +129,7 @@
                       <v-row no-gutters>
                         <v-col>
                           <!-- Search Inventory Text Input field -->
-                          <v-text-field outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
+                          <v-text-field color="deep-purple lighten-2" outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
                         </v-col>
                         <v-col>
                           <!-- Submit Inventory Search Button-->
@@ -295,11 +295,20 @@
                         active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
                         Deck
                         </v-tab> -->
-
+                      
+                    
                       <v-tab @Click="addCardSubPage = 'Pile'; allPileHasLocations()" class="rounded-lg"
-                        active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
-                        Pile
+                          active-class="blue-grey lighten-4 deep-purple--text lighten-3 disabled">
+                          <v-badge v-if="pileList.length > 0"
+                            color="deep-purple lighten-2"
+                            :content="pileList.length">
+                          Pile
+                        </v-badge>
+                        <v-badge v-else color="rgba(255, 0, 0, 0.0)">
+                          Pile
+                        </v-badge>
                       </v-tab>
+                      
 
                     </v-tabs>
                     <!--= Search subPage  =-->
@@ -308,7 +317,7 @@
                       <v-container>
                         <v-row>
                           <v-col cols="6">
-                            <v-text-field outlined label="Search for a Card" placeholder="Magic the Gathering Cards Only"
+                            <v-text-field color="deep-purple lighten-2" outlined label="Search for a Card" placeholder="Magic the Gathering Cards Only"
                                       v-model="searchName" @keypress.enter="getSearch()" 
                                       ref="searchInput"
                                       autofocus>
@@ -329,6 +338,9 @@
                         </v-row>
                         <v-row>
                           <v-col>
+                            <v-container align-content="center" v-if="searchResultsPaginated.length == 0">
+                              <h3 align="center">No Results to Display</h3>
+                            </v-container>
                           <v-alert
                           align="center"
                           v-model="badSearchAlert"
@@ -503,7 +515,7 @@
                           <v-icon>mdi-store-plus</v-icon>
                       </v-btn> -->
                       <v-container v-if="pileList.length == 0">
-                        <h3 align-content="center">No Cards Added to Pile</h3>
+                        <h3 align="center">No Cards Added to Pile</h3>
                       </v-container>
                       <!-- top menu to manipulate whole pile -->
                       <v-container v-if="pileList.length > 0">
@@ -615,7 +627,7 @@
                           <v-row>
                             <v-col>
                               <!-- Search Inventory Text Input field -->
-                              <v-text-field outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
+                              <v-text-field color="deep-purple lighten-2" outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
                             </v-col>
                             <v-col>
                               <!-- Submit Inventory Search Button-->
