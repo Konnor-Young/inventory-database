@@ -436,7 +436,7 @@
                               </v-row>
 
                               <!--=== Card Finishes ===-->
-                              <v-divider></v-divider>
+                              <v-divider class="pt-1"></v-divider>
                               <v-card-text class="pt-2 pb-2 py-1">
                                 <v-chip-group
                                 
@@ -448,12 +448,13 @@
                                   
                                 </v-chip-group>
                               </v-card-text>
-                              <v-divider></v-divider>
+                              <v-divider class="pb-1"></v-divider>
 
                             </v-card-text>
                             <!-- Add Button on cards displayed in add to pile -->
-                            <v-row class="mx-1">
-                              <v-card-actions>
+                            <v-row class="mx-1" align-content="center">
+                              <v-col>
+                              
                                 <v-btn
                                   v-if="result.totalCards > 0"
                                   color="deep-purple lighten-2"
@@ -462,7 +463,8 @@
                                   class="float-end">
                                   Add
                                 </v-btn>
-                              </v-card-actions>
+                              
+                              </v-col>
                             </v-row>
                           </v-card>
                         </v-col>
@@ -517,7 +519,7 @@
                         </v-row>
                         
                         <v-row>
-                          <v-col v-for="pileCard in pileList">
+                          <v-col v-for="(pileCard, index) in pileList">
                             <v-card width="350" class="my-3 justify-center">
                               <v-row>
                               <v-col>
@@ -533,13 +535,19 @@
                               <v-col>
                                 
                                 
-                                <v-card-text>Market Price: {{  getCardPrice(pileCard)  }}</v-card-text>
+                                <v-card-text class="pt-1">Market Price: {{  getCardPrice(pileCard)  }}</v-card-text>
                                 <v-card-text>Condition: {{ pileCard.condition }}</v-card-text>
                                 <v-card-text>Finish: {{ pileCard.finish }}</v-card-text>
-                                <v-btn>Delete</v-btn>
-                                <v-btn>Edit</v-btn>
-                                <v-btn>Duplicate</v-btn>
+                                <v-card-text>Location: {{ getCardLocation(index) }}</v-card-text>
+                                
                               </v-col>
+                              </v-row>
+                              <v-row>
+                                <v-col align="center">
+                                  <v-btn>Delete</v-btn>
+                                  <v-btn>Edit</v-btn>
+                                  <v-btn>Duplicate</v-btn>
+                                </v-col>
                               </v-row>
                             </v-card>
                           </v-col>

@@ -124,14 +124,14 @@ var app = new Vue({
 
       for (let i in conditions) {
         let condition = conditions[i];
-        console.log(condition);
-        console.log(i);
+        // console.log(condition);
+        // console.log(i);
         if (item.totalConditions[condition] > 0) {
           var card = this.createCardForPile({ ...item }, condition);
           // console.log(card);
           var qty = item.totalConditions[condition];
           for (let j = 0; j < qty; j++) {
-            this.pileList.push(card);
+            this.pileList.push({...card});
           }
         }
       }
@@ -450,6 +450,7 @@ var app = new Vue({
       let i = 0;
       this.pileList.forEach((card) => {
         card.location = data[i];
+        console.log(card.location);
         i++;
         // console.log(card);
       });
@@ -483,7 +484,7 @@ var app = new Vue({
       // return cardObject;
     },
     getCardPrice: function (cardObject) {
-      let price;
+      let price = "";
       // console.log(cardObject.finish)
       if (cardObject.finish == 'Non-Foil') {
         price = cardObject.prices.usd;
@@ -493,6 +494,9 @@ var app = new Vue({
         price = cardObject.prices.usd_etched;
       } else {
         price = 'UKN';
+      }
+      if (price == null) {
+        price = 'NONE';
       }
       // console.log(price)
       return '$' + price;
@@ -581,11 +585,11 @@ var app = new Vue({
       this.pileLocations = true;
       for (i in this.pileList) {
         let card = this.pileList[i];
-        console.log(card);
+        // console.log(card);
         if (card.location > 0) {
-          console.log('good');
+          // console.log('good');
         } else {
-          console.log('not shown');
+          // console.log('not shown');
           this.pileLocations = false;
         }
       }
@@ -600,6 +604,17 @@ var app = new Vue({
       console.log(response.status);
       console.log(data);
     },
+    getCardLocation: function (index) {      
+      let card = this.pileList[index];
+      if (card.location > 0) {
+        return card.location
+      } else {
+        return ""
+      }
+
+      
+    },
+    
   },
 
   created: function () {
