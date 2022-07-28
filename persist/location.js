@@ -38,6 +38,9 @@ async function getPrice(card) { //Unique.findOne(tcg_id) if card foil card.price
     // console.log(card.price);
     if(card.foil){
         card.price = unique.price.get('usd_foil');
+        if(card.price == null){
+            card.price = unique.price.get('usd_etched');
+        }
     }else{
         card.price = unique.price.get('usd');
     }
@@ -79,11 +82,11 @@ async function getOpenLocations(numberOfCards){ //Locations.findOne(store id) fo
     var eq = false;
     var gt = false;
     var lt = false;
+    var eqList = [];
+    var gtList = [];
+    var ltList = [];
     for(var [key, value] of Object.entries(openingList)){
         var open = 0;
-        var eqList = [];
-        var gtList = [];
-        var ltList = [];
         if(value == numberOfCards){
             eq = true; 
             eqList.push(key);
@@ -171,6 +174,9 @@ async function pushForward(box){ // first three numbers in location ie 123--- Ca
 async function allocateCards(order){
     console.log(order, `order`);
     var order_id = order._id;
+    var returnLocation;
+    var returnIds = [];
+    var ltList = [];
     for(item of order.cards){
         var sku_id = {tcg_id: item.card};
         console.log(sku_id, `sku_id`);
@@ -190,9 +196,7 @@ async function allocateCards(order){
         var eq = false;
         var gt = false;
         var lt = false;
-        var returnLocation;
-        var returnIds;
-        var ltList = [];
+        var j = 0;
         for([key, value] of Object.entries(forAllocation)){
             if(key == 'quantity'){continue;}
             if(needed > 0){
@@ -200,14 +204,14 @@ async function allocateCards(order){
                     eq = true;
                     needed -= value.quantity;
                     returnLocation = key;
-                    returnIds = value.cards;
+                    returnIds.push(value.cards[j]);
                     console.log(returnLocation, `eq location`);
                     console.log(returnIds, `eq ids`);
                 }else if(value.quantity > item.quantity){
                     gt = true;
                     needed -= value.quantity;
                     returnLocation = key;
-                    returnIds = value.cards;
+                    returnIds.push(value.cards[j]);
                     console.log(returnLocation, `gt location`);
                     console.log(returnIds, `gt ids`);
                 }else if(value.quantity < item.quantity){
@@ -236,7 +240,6 @@ async function allocateCards(order){
                             box: returnLocation,
                             quantity: item.quantity,
                             name: sku.name,
-                            ids: returnIds,
                             condition: item.condition,
                             foil: item.foil
                         }
@@ -250,7 +253,6 @@ async function allocateCards(order){
                                 box: key,
                                 quantity: value.quantity,
                                 name: sku.name,
-                                ids: value.ids,
                                 condition: item.condition,
                                 foil: item.foil
                             }
@@ -258,6 +260,7 @@ async function allocateCards(order){
                     })
                 }
             }
+            j++;
         }
     }
     console.log(order.locations);

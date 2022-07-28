@@ -17,6 +17,7 @@ var app = new Vue({
     updatingCard: -1,
     currentOrder: {},
     currentCard: {},
+    cardInfo: {},
     cardList: [],
     orderList: [],
     cardFoil: false,
@@ -37,21 +38,23 @@ var app = new Vue({
     currentTable: 'active',
     fab: false,
     addPileLoading: false,
-    username: "",
-    password: "",
-    storeLogins: { "GH0298": "123", "GH0299": "123", "GH0300": "123", "test": "123"},
+    username: '',
+    password: '',
+    storeLogins: { GH0298: '123', GH0299: '123', GH0300: '123', test: '123' },
     invalidLogin: false,
     incorrectLoginAttempts: 0,
     addSearchCurrentPage: 1,
+    dialog: false,
   },
   methods: {
     newCard: async function (cardObject) {
-        this.addPileLoading = true;
-        let arrayLength = cardObject.length
-        
-    for (let i = 0; i < arrayLength; i++) {
+      this.addPileLoading = true;
+      let arrayLength = cardObject.length;
+      console.log(cardObject[0], `here`);
+      for (let i = 0; i < arrayLength; i++) {
         let card = cardObject.shift();
         let id;
+        console.log(cardObject, `here`);
         if (card.tcgplayer_id) {
           id = card.tcgplayer_id;
         } else {
@@ -63,16 +66,15 @@ var app = new Vue({
           set: card.set_name,
           image_uris: card.image_uris,
           prices: card.prices,
-          location: 000000,
+          location: card.location,
           condition: card.condition,
           foil: card.finish,
         };
         await this.postCards(newCard);
-        this.pileList
-      };
+        this.pileList;
+      }
       this.addPileLoading = false;
       this.pileList = [];
-
     },
     newOrder: function () {
       let newOrder = {
@@ -120,8 +122,12 @@ var app = new Vue({
         console.log(condition);
         console.log(i);
         if (item.totalConditions[condition] > 0) {
+<<<<<<< HEAD
           var card = this.createCardForPile({...item}, condition);
           // console.log(card);
+=======
+          var card = this.createCardForPile({ ...item }, condition);
+>>>>>>> origin/main
           var qty = item.totalConditions[condition];
           for (let j = 0; j < qty; j++) {
             this.pileList.push(card);
@@ -400,7 +406,7 @@ var app = new Vue({
         return card;
       });
     },
-    getLocation: async function (){
+    getLocation: async function () {
       var numberOfCards = { number: this.pileList.length };
       let response = await fetch(`${URL}/locations`, {
         method: 'POST',
@@ -417,7 +423,7 @@ var app = new Vue({
         card.location = data[i];
         i++;
         console.log(card);
-      })
+      });
     },
     totalActiveOrders: function () {
       return this.orderList.length;
@@ -461,50 +467,50 @@ var app = new Vue({
       return '$' + price;
     },
     getTotalCards: function (cardObjectArray) {
-        let totalCards = 0;
-        for (let i = 0; i < cardObjectArray.length; i++) {
-            totalCards += cardObjectArray[i].cards.length
-        }
-        return totalCards
+      let totalCards = 0;
+      for (let i = 0; i < cardObjectArray.length; i++) {
+        totalCards += cardObjectArray[i].cards.length;
+      }
+      return totalCards;
     },
     login: function (username, password) {
-        // username and password not blank
-        if(username != "" && password != "") {
-            // does the username given exsist?
-            if (typeof this.storeLogins[username] !== "undefined" ) {
-                // console.log('exists');
-                // does the password match?
-                if (this.storeLogins[username] == password) {
-                    // console.log('logged in');
-                    this.loggedIn = true;
-                    this.invalidLogin = false;
-                    this.incorrectLoginAttempts = 0;
-                } else {
-                    // console.log("not logged in");
-                    this.password = "";
-                    this.invalidLogin = true;
-                    this.incorrectLoginAttempts += 1;
-                }
-            } else {
-                // console.log('does not exist');
-                this.invalidLogin = true;
-                this.username = "";
-                this.password = "";
-                this.incorrectLoginAttempts += 1;
-            }
-            this.password = "";
-        } else {
+      // username and password not blank
+      if (username != '' && password != '') {
+        // does the username given exsist?
+        if (typeof this.storeLogins[username] !== 'undefined') {
+          // console.log('exists');
+          // does the password match?
+          if (this.storeLogins[username] == password) {
+            // console.log('logged in');
+            this.loggedIn = true;
+            this.invalidLogin = false;
+            this.incorrectLoginAttempts = 0;
+          } else {
+            // console.log("not logged in");
+            this.password = '';
             this.invalidLogin = true;
             this.incorrectLoginAttempts += 1;
-            // console.log('Username and Password Cannot be blank')
+          }
+        } else {
+          // console.log('does not exist');
+          this.invalidLogin = true;
+          this.username = '';
+          this.password = '';
+          this.incorrectLoginAttempts += 1;
         }
+        this.password = '';
+      } else {
+        this.invalidLogin = true;
+        this.incorrectLoginAttempts += 1;
+        // console.log('Username and Password Cannot be blank')
+      }
     },
     changeDisplayedCards: function () {
-        let offset = this.addSearchCurrentPage - 1;
-        let start = offset * 25;
-        let stop = start + 25;
+      let offset = this.addSearchCurrentPage - 1;
+      let start = offset * 25;
+      let stop = start + 25;
 
-        this.searchResultsPaginated = this.searchResults.slice(start, stop);
+      this.searchResultsPaginated = this.searchResults.slice(start, stop);
     },
     changePage: function (page) {
         this.addSearchCurrentPage = page;
@@ -551,14 +557,13 @@ var app = new Vue({
   },
   computed: {
     lengthOfAddCardSearch: function () {
-      if (!Object.keys(this.searchResultsStats).includes("total_cards")) {
+      if (!Object.keys(this.searchResultsStats).includes('total_cards')) {
         return 1;
-      }
-      else if (this.searchResultsStats.total_cards > 0) {
-        return Math.ceil( this.searchResultsStats.total_cards / 25);
+      } else if (this.searchResultsStats.total_cards > 0) {
+        return Math.ceil(this.searchResultsStats.total_cards / 25);
       } else {
         return 1;
       }
     },
-  }
+  },
 });

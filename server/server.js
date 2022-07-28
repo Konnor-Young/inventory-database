@@ -6,6 +6,7 @@ const logic = require(`../persist/location`);
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public/`));
+app.use(cors())
 
 app.get("/cards", async (req, res) => {
     let uniqueCards;
@@ -65,6 +66,7 @@ app.post("/cards", async (req, res) => {
     if (req.body.foil == 'Non-Foil') {
         isFoil = false
     } else { isFoil = true }
+    console.log(req.body.foil);
     try {
         card = await Card.create({
             location: req.body.location,
@@ -87,7 +89,7 @@ app.post("/cards", async (req, res) => {
                     large: req.body.image_uris.large, png: req.body.image_uris.png,
                     border_crop: req.body.image_uris.border_crop
                 },
-                price: { usd: req.body.prices.usd, usd_foil: req.body.prices.usd_foil },
+                price: { usd: req.body.prices.usd, usd_foil: req.body.prices.usd_foil, usd_etched: req.body.prices.usd_etched},
                 quantity: { available: 0, reserved: 0, physical: 0 },
                 locations: { NM: {quantity: 0}, LP: {quantity: 0}, MP: {quantity: 0}, HP: {quantity: 0}, DMG: {quantity: 0}, NMfoil: {quantity: 0}, LPfoil: {quantity: 0}, MPfoil: {quantity: 0}, HPfoil: {quantity: 0}, DMGfoil: {quantity: 0}},
             });
@@ -125,6 +127,7 @@ app.post("/cards", async (req, res) => {
         }else{
             filter = card.condition;
         }
+        console.log(filter);
         updateSku = await Unique.findById(unique._id);
         // console.log(updateSku, `pre`);
         // console.log(updateSku.locations.get(filter));
