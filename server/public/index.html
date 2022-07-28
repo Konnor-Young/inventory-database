@@ -96,7 +96,7 @@
                   <!-- Display component of each tab with on click and highlight after selection -->
                   <v-tab @Click="currentPage = tab; inStore = false; currentTable = 'active';" class="rounded-lg rounded-b-0"
                         v-bind:class="{ 'blue-grey lighten-4 deep-purple--text lighten-3 disabled' : currentPage === tab}">
-                    <v-badge v-if="tab == 'View Orders'"
+                    <v-badge v-if="tab == 'View Orders' && orderList.length > 0"
                           color="deep-purple lighten-2"
                           :content="orderList.length">
                           {{ tab }}
@@ -273,7 +273,24 @@
                           <v-col cols="auto">
                             <v-btn class="mt-2" @Click="resetAddCardSearch()">Reset</v-btn>
                           </v-col>
-                          
+                        
+                        
+                        
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                          <v-alert
+                          align="center"
+                          v-model="badSearchAlert"
+                          border="left"
+                          close-text="Close Alert"
+                          color="deep-purple accent-4"
+                          dark
+                          dismissible
+                        >
+                          No Results! Please try another search!
+                        </v-alert>
+                        </v-col>
                         </v-row>
                         
                       </v-container>

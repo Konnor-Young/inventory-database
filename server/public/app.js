@@ -45,6 +45,7 @@ var app = new Vue({
     incorrectLoginAttempts: 0,
     addSearchCurrentPage: 1,
     dialog: false,
+    badSearchAlert: false,
   },
   methods: {
     newCard: async function (cardObject) {
@@ -161,9 +162,15 @@ var app = new Vue({
       this.searchResultsPaginated.push(data);
     },
     getSearch: async function () {
+      this.badSearchAlert = false;
       let response = await fetch(
         `${SEARCH_URL}${this.searchName}${SEARCH_PARAM}`
       );
+      if (response.status == 404){
+        this.badSearchAlert = true;
+        console.log('bad Search')
+        return 
+      }
       let data = await response.json();
       //   console.log(data.object);
       let listOfCards = data.data;
