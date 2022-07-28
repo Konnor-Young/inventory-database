@@ -177,7 +177,7 @@
                               <v-card min-width="146" class="mx-4">
       
                                 <v-img
-                                    @click="cardInfo = item" 
+                                    @click="cardInfo = item"
                                     v-bind="attrs"
                                     v-on="on"
                                     height="204"
@@ -190,7 +190,7 @@
                           </v-row> 
                         </template>
                   
-                        <v-card>
+                        <v-card v-if="cardInfo">
                           <v-row>
                             <v-col>
                           
@@ -202,9 +202,17 @@
                           </v-card-title>
                         </v-row>
                         <v-row>
-                          <v-card-text>
-                            {{cardInfo.price}}
+                          <v-col>
+                          <v-img src="cardInfo.image_uris.small" height="250" contain></v-img>
+                        </v-col>
+                          <v-col>
+                          <v-card-text v-if="cardInfo.price.usd == null || cardInfo.price.usd == ''">
+                            Normal: Price Unavailable
                           </v-card-text>
+                          <v-card-text>
+                            Price: ${{cardInfo.price.usd}}
+                          </v-card-text>
+                          </v-col>
                         </v-row>
                   
                           <v-divider></v-divider>
@@ -216,7 +224,7 @@
                               text
                               @click="dialog = false"
                             >
-                              I accept
+                              Done
                             </v-btn>
                           </v-card-actions>
                         </v-col>
