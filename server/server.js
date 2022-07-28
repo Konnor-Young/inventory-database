@@ -29,7 +29,7 @@ app.post("/users", async (req, res) => {
     }
 });
 
-app.get("/cards", async (req, res) => {
+app.get("/skus", async (req, res) => {
     let uniqueCards;
     try {
         uniqueCards = await Unique.find({});
@@ -38,6 +38,17 @@ app.get("/cards", async (req, res) => {
         res.status(500).json({ message: 'cards not found', err: err });
     }
     res.status(200).json(uniqueCards);
+});
+
+app.get("/cards", async (req, res) => {
+    let cards;
+    try {
+        cards = await Card.find({});
+    } catch (err) {
+        console.log('could not find card list', err);
+        res.status(500).json({ message: 'cards not found', err: err });
+    }
+    res.status(200).json(cards);
 });
 
 app.get("/cards/:id", async (req, res) => {

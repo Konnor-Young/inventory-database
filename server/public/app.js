@@ -46,6 +46,8 @@ var app = new Vue({
     incorrectLoginAttempts: 0,
     addSearchCurrentPage: 1,
     dialog: false,
+    cardsInInventory: [],
+    searchString: '',
   },
   methods: {
     newCard: async function (cardObject) {
@@ -312,7 +314,7 @@ var app = new Vue({
       this.updatingOrder = -1;
     },
     getCards: async function () {
-      let response = await fetch(`${URL}/cards`, {
+      let response = await fetch(`${URL}/skus`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -321,6 +323,15 @@ var app = new Vue({
       console.log(response.status);
       console.log(data);
       this.updatingCard = -1;
+    },
+    getAllCards: async function () {
+      let response = await fetch(`${URL}/cards`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      let data = await response.json();
+      this.cardsInInventory = data;
+      console.log(response.status);
     },
     postOrder: async function (order) {
       let response = await fetch(`${URL}/orders`, {
@@ -559,16 +570,32 @@ var app = new Vue({
           normalTotal += parseFloat(card.price.usd);
           }
         }
-
-        
-        
       } console.log(normalTotal);
       return Number((normalTotal).toFixed(2));
-    }
+    },
+    searchInventory: async function(){
+      searchInventoryList = [];
+      let filters = this.inventorySearchFilter;
+      cardList.forEach(entry=>{
+        let add = true;
+        let thisCard = Object.values(entry);
+        for(i=0;i<filters.length;i++){
+          if(!thisCard.includes(filters[i])){
+            add = false;
+            break;
+          }
+        }
+        if(add){
+          searchInventoryList.push(entry);
+        }
+      })
+      this.searchString = '';
+    },
   },
 
   created: function () {
     this.getCards();
+    this.getAllCards();
     this.getOrders();
   },
   computed: {
@@ -581,5 +608,12 @@ var app = new Vue({
         return 1;
       }
     },
+    inventorySearchFilter: function () {
+      let filterList = this.searchString.split(',');
+      for(let i=0; i<filterList.length; i++){
+        filterList[i] = filterList[i].strip();
+      }
+      return filterList;
+    }
   },
 });

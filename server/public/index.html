@@ -128,11 +128,11 @@
                       <v-row no-gutters>
                         <v-col>
                           <!-- Search Inventory Text Input field -->
-                          <v-text-field outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
+                          <v-text-field outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory" v-model="searchString"></v-text-field>
                         </v-col>
                         <v-col>
                           <!-- Submit Inventory Search Button-->
-                          <v-btn class="mt-2">Submit</v-btn>
+                          <v-btn class="mt-2" @click="searchInventory">Submit</v-btn>
                         </v-col>
                         <!-- Fun Data to Display -->
                         <v-col>
@@ -537,11 +537,11 @@
                           <v-row>
                             <v-col>
                               <!-- Search Inventory Text Input field -->
-                              <v-text-field outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
+                              <v-text-field outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory" v-model="searchString"></v-text-field>
                             </v-col>
                             <v-col>
                               <!-- Submit Inventory Search Button-->
-                              <v-btn class="mt-2">Submit</v-btn>
+                              <v-btn class="mt-2" @click="searchInventory">Submit</v-btn>
                             </v-col>
                             </v-row>
                         </v-container>
