@@ -580,7 +580,7 @@ var app = new Vue({
     searchInventory: async function(){
       searchInventoryList = [];
       let filters = this.inventorySearchFilter;
-      cardList.forEach(entry=>{
+      this.cardList.forEach(entry=>{
         let add = true;
         let thisCard = Object.values(entry);
         for(i=0;i<filters.length;i++){
@@ -598,6 +598,7 @@ var app = new Vue({
   },
 
   created: function () {
+    this.getSession();
     this.getCards();
     this.getAllCards();
     this.getOrders();
@@ -614,9 +615,6 @@ var app = new Vue({
     },
     inventorySearchFilter: function () {
       let filterList = this.searchString.split(',');
-      for(let i=0; i<filterList.length; i++){
-        filterList[i] = filterList[i].strip();
-      }
       return filterList;
     }
   },
