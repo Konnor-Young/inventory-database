@@ -451,8 +451,10 @@
                               </v-row>
 
                               <!--=== Card Finishes ===-->
-                              <v-divider class="pt-1"></v-divider>
-                              <v-card-text class="pt-2 pb-2 py-1">
+                              <v-row>
+                              <v-divider></v-divider>
+                              </v-row>
+                              <v-card-text class="pt-2 pb-0">
                                 <v-chip-group
                                 
                                   active-class="deep-purple accent-4 white--text"
@@ -463,19 +465,22 @@
                                   
                                 </v-chip-group>
                               </v-card-text>
+                              
                               <v-divider class="pb-1"></v-divider>
+                              
 
                             </v-card-text>
                             <!-- Add Button on cards displayed in add to pile -->
-                            <v-row class="mx-1" align-content="center">
-                              <v-col>
+                            <v-row class="mx-1 pb-0">
+                              <v-col class="pb-1">
                               
                                 <v-btn
                                   v-if="result.totalCards > 0"
                                   color="deep-purple lighten-2"
                                   text
                                   @click="addToPile(resultIndex)"
-                                  class="float-end">
+                                  width="100%"
+                                  >
                                   Add
                                 </v-btn>
                               

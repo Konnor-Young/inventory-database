@@ -142,7 +142,7 @@ var app = new Vue({
         HP: 0,
         DMG: 0,
       };
-      // item.totalCards = 0;
+      item.totalCards = 0;
 
       // {
       //     condition: "" ,
