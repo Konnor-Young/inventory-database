@@ -81,9 +81,9 @@
                 <v-icon>mdi-email</v-icon>
               </v-btn>
         
-              <v-btn icon>
+              <!-- <v-btn icon>
                 <v-icon>mdi-account-box </v-icon>
-              </v-btn>
+              </v-btn> -->
 
               <v-btn icon @Click="loggedIn = false">
                 <v-icon>mdi-logout</v-icon>
@@ -126,7 +126,7 @@
                   <v-container v-if="currentPage == 'Inventory'">
                     <!-- Container for Inventory Search Area -->
                     <v-container>
-                      <v-row no-gutters>
+                      <v-row >
                         <v-col>
                           <!-- Search Inventory Text Input field -->
                           <v-text-field color="deep-purple lighten-2" outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory"></v-text-field>
@@ -175,7 +175,7 @@
                         <template v-slot:activator="{ on, attrs }">
                         
                           <v-row>
-                            <v-col class="pr-0 pl-3" cols="auto" v-for="item, index in cardList">                      
+                            <v-col class="pr-0 pl-3" cols="auto" v-for="(item, index) in cardList">                      
                               <v-card min-width="146" class="mx-4">
       
                                 <v-img
@@ -558,7 +558,7 @@
                                 <v-col align="center">
                                   <v-btn @Click="deleteCardFromPile(index)">Delete</v-btn>
                                   <v-btn>Edit</v-btn>
-                                  <v-btn>Duplicate</v-btn>
+                                  <v-btn @Click="duplicateCardFromPile(index)">Duplicate</v-btn>
                                 </v-col>
                               </v-row>
                             </v-card>

@@ -614,6 +614,13 @@ var app = new Vue({
     },
     deleteCardFromPile: function (index) {
       this.pileList.splice(index, 1);
+    },
+    duplicateCardFromPile: function (index) {
+      let card = this.pileList[index];
+      let dupCard = {...card};
+      dupCard.location = "";
+      this.pileList.push(dupCard);
+      this.allPileHasLocations();
     }
     
   },
