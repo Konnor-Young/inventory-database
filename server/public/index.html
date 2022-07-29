@@ -77,6 +77,9 @@
               
               <v-spacer></v-spacer>
 
+              <v-app-bar-title>{{  username }}</v-app-bar-title>
+              
+
               <v-btn href="mailto:d00439987@dmail.dixie.edu" icon>
                 <v-icon>mdi-email</v-icon>
               </v-btn>
@@ -93,7 +96,7 @@
               <template v-slot:extension>
 
                 <!-- For loop going through pages (list of pages) and into tab -->
-                <v-tabs v-for="tab in pages" align-with-title grow hide-slider>
+                <v-tabs v-for="(tab, index) in pages" align-with-title grow hide-slider>
                   <!-- Display component of each tab with on click and highlight after selection -->
                   <v-tab @Click="currentPage = tab; inStore = false; currentTable = 'active';" class="rounded-lg rounded-b-0"
                         v-bind:class="{ 'blue-grey lighten-4 deep-purple--text lighten-3 disabled' : currentPage === tab}">
@@ -214,7 +217,7 @@
                         <v-row>
                           
                           
-                          <v-col v-for="cards, index in cardInfo.cards">
+                          <v-col v-for="(cards, index) in cardInfo.cards">
                           <v-img v-if="cardInfo.cards.length == 1" class="mb-6 justify-center" :src="cardInfo.image_uris.normal" max-height="350" contain></v-img>
                           <v-img v-if="cardInfo.cards.length > 1" class="" @click="indCardInfo(cardInfo.cards[index])" :src="cardInfo.image_uris.small" contain max-height="250"></v-img>
                         
@@ -456,7 +459,7 @@
                                   column
                                   mandatory
                                   max="1">
-                                  <v-chip v-for="finish in vFinishes(result.finishes, result)" @Click="updateCardFinish(resultIndex, finish)">{{ finish }}</v-chip>
+                                  <v-chip v-for="(finish, index) in vFinishes(result.finishes, result)" @Click="updateCardFinish(resultIndex, finish)">{{ finish }}</v-chip>
                                   
                                 </v-chip-group>
                               </v-card-text>
@@ -544,14 +547,21 @@
                               
                               </v-card>
                               </v-col>
-                              <v-col>
-                                
-                                
-                                <v-card-text class="pt-1">Market Price: {{  getCardPrice(pileCard)  }}</v-card-text>
-                                <v-card-text>Condition: {{ pileCard.condition }}</v-card-text>
-                                <v-card-text>Finish: {{ pileCard.finish }}</v-card-text>
-                                <v-card-text>Location: {{ getCardLocation(index) }}</v-card-text>
-                                
+                              <v-col>                               
+                                <v-card-text class="pt-1 px-0">
+                                  <v-row><v-col>
+                                  Market Price: {{  getCardPrice(pileCard)  }}
+                                  </v-col></v-row>
+                                  <v-row><v-col>
+                                  Condition: {{ pileCard.condition }}
+                                  </v-col></v-row>
+                                  <v-row><v-col>
+                                  Finish: {{ pileCard.finish }}
+                                  </v-col></v-row>
+                                  <v-row><v-col>
+                                  Location: {{ getCardLocation(index) }}
+                                  </v-col></v-row>
+                                </v-card-text>                                
                               </v-col>
                               </v-row>
                               <v-row>
@@ -576,7 +586,7 @@
                       <v-btn @click="inStore = true" class="pa-6 my-6"><h3>In Store</h3></v-btn>
                     </v-row>
                     <v-row> 
-                      <v-col v-for="btn in tableFilters"><v-chip x-large @click="currentTable = btn" class="px-16 py-6 grey lighten-1 white--text">{{ btn.toUpperCase() }}</v-chip></v-col> 
+                      <v-col v-for="(btn, index) in tableFilters"><v-chip x-large @click="currentTable = btn" class="px-16 py-6 grey lighten-1 white--text">{{ btn.toUpperCase() }}</v-chip></v-col> 
                     </v-row>
 
                     <template>
@@ -598,7 +608,7 @@
                           </thead>
                           <tbody>
                             
-                            <tr v-for="order, index in orderList"
+                            <tr v-for="(order, index) in orderList"
                                   :key="order.name"
                                   :class="{'blue':order.direct}">                            
                               <td v-if="checkOrder(order)">{{ order.number }}</td>
@@ -661,7 +671,7 @@
                               </thead>
                               <tbody>
                                 
-                                <tr v-for="card, index in inStorePile"
+                                <tr v-for="(card, index) in inStorePile"
                                       :key="card.name"
                                       :class="{'blue':order.direct}">                            
                                   <td>{{card.name}}</td>

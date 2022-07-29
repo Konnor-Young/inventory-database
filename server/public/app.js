@@ -163,6 +163,7 @@ var app = new Vue({
         HP: 0,
         DMG: 0,
       };
+      data.finish = this.vFinishes(data.finishes[0], null)[0];
       data.totalCards = 0;
       this.searchResultsPaginated.push(data);
     },
@@ -173,7 +174,7 @@ var app = new Vue({
       );
       if (response.status == 404) {
         this.badSearchAlert = true;
-        console.log('bad Search');
+        // console.log('bad Search');
         return;
       }
       let data = await response.json();
