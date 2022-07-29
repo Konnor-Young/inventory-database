@@ -34,13 +34,14 @@ var app = new Vue({
     searchResults: [],
     searchResultsStats: {},
     searchResultsPaginated: [],
-    loggedIn: true,
+    loggedIn: false,
     tableFilters: ['active', 'standing', 'pulling', 'shipped'],
     currentTable: 'active',
     fab: false,
     addPileLoading: false,
     username: '',
     password: '',
+    logMessage: '',
     storeLogins: { GH0298: '123', GH0299: '123', GH0300: '123', test: '123' },
     invalidLogin: false,
     incorrectLoginAttempts: 0,
@@ -49,6 +50,8 @@ var app = new Vue({
     badSearchAlert: false,
     pileLocations: false,
     isGettingLocations: false,
+    cardsInInventory: [],
+    searchString: '',
   },
   methods: {
     newCard: async function (cardObject) {
@@ -200,10 +203,18 @@ var app = new Vue({
         item.totalCards = 0;
         item.finish = this.vFinishes(item.finishes[0], null)[0];
       });
-      this.searchResults = data.data.slice();
+      let cardSearchList = data.data;
+      let newCardSearchList = [];
+      cardSearchList.forEach((entry)=>{
+        if (entry.hasOwnProperty(`tcgplayer_id`) || entry.hasOwnProperty(`tcgplayer_etched_id`)){
+          newCardSearchList.push(entry);
+        }
+      })
+      console.log(this.searchResults);
+      this.searchResults = cardSearchList.slice();
       listOfCards.splice(25);
       console.log(data.data);
-      this.searchResultsPaginated = data.data;
+      this.searchResultsPaginated = newCardSearchList;
     },
     getSmallImgURI: function (cardObject) {
       if (cardObject.layout == 'normal') {
@@ -289,6 +300,42 @@ var app = new Vue({
         cardObject.totalConditions.DMG = 0;
       }
     },
+    getSession: async function () {
+      let response = await fetch(`${URL}/sessions`, {
+          method: 'GET',
+          credentials: 'include'
+      });
+      if (response.status == 200){
+          this.loggedIn = true;
+          this.getCards();
+      }
+      let data = await response;
+      console.log(response.status);
+  },
+  postSession: async function (userinfo) {
+    let response = await fetch(`${URL}/sessions`, {
+        method: 'POST',
+        body: JSON.stringify(userinfo),
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include"
+    });
+    // let body = await response.json();
+    console.log(response.status);
+    // console.log(body);
+    if (response.status == 201){
+        this.username = '';
+        this.password = '';
+        this.logMessage = '';
+        this.getSession();
+    }else{
+        this.password = '';
+        this.logMessage = `invalid: username or password incorrect`;
+        this.invalidLogin = true;
+        this.incorrectLoginAttempts += 1;
+    }
+},
     getOrders: async function () {
       let response = await fetch(`${URL}/orders`, {
         method: 'GET',
@@ -301,7 +348,7 @@ var app = new Vue({
       this.updatingOrder = -1;
     },
     getCards: async function () {
-      let response = await fetch(`${URL}/cards`, {
+      let response = await fetch(`${URL}/skus`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -310,6 +357,15 @@ var app = new Vue({
       console.log(response.status);
       console.log(data);
       this.updatingCard = -1;
+    },
+    getAllCards: async function () {
+      let response = await fetch(`${URL}/cards`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      let data = await response.json();
+      this.cardsInInventory = data;
+      console.log(response.status);
     },
     postOrder: async function (order) {
       let response = await fetch(`${URL}/orders`, {
@@ -511,36 +567,11 @@ var app = new Vue({
       return totalCards;
     },
     login: function (username, password) {
-      // username and password not blank
-      if (username != '' && password != '') {
-        // does the username given exsist?
-        if (typeof this.storeLogins[username] !== 'undefined') {
-          // console.log('exists');
-          // does the password match?
-          if (this.storeLogins[username] == password) {
-            // console.log('logged in');
-            this.loggedIn = true;
-            this.invalidLogin = false;
-            this.incorrectLoginAttempts = 0;
-          } else {
-            // console.log("not logged in");
-            this.password = '';
-            this.invalidLogin = true;
-            this.incorrectLoginAttempts += 1;
-          }
-        } else {
-          // console.log('does not exist');
-          this.invalidLogin = true;
-          this.username = '';
-          this.password = '';
-          this.incorrectLoginAttempts += 1;
-        }
-        this.password = '';
-      } else {
-        this.invalidLogin = true;
-        this.incorrectLoginAttempts += 1;
-        // console.log('Username and Password Cannot be blank')
+      let userinfo = {
+        'username': username,
+        'password': password
       }
+      this.postSession(userinfo);
     },
     changeDisplayedCards: function () {
       let offset = this.addSearchCurrentPage - 1;
@@ -637,13 +668,31 @@ var app = new Vue({
       let card = array[index];
       card.editing = false;
       this.$forceUpdate();
-    }
-
-    
+    },
+    searchInventory: async function(){
+      searchInventoryList = [];
+      let filters = this.inventorySearchFilter;
+      this.cardList.forEach(entry=>{
+        let add = true;
+        let thisCard = Object.values(entry);
+        for(i=0;i<filters.length;i++){
+          if(!thisCard.includes(filters[i])){
+            add = false;
+            break;
+          }
+        }
+        if(add){
+          searchInventoryList.push(entry);
+        }
+      })
+      this.searchString = '';
+    },
   },
 
   created: function () {
+    this.getSession();
     this.getCards();
+    this.getAllCards();
     this.getOrders();
   },
   computed: {
@@ -656,5 +705,9 @@ var app = new Vue({
         return 1;
       }
     },
+    inventorySearchFilter: function () {
+      let filterList = this.searchString.split(',');
+      return filterList;
+    }
   },
 });

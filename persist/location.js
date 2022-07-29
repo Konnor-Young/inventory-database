@@ -18,17 +18,17 @@ async function initializeStorage(shelves, drawers, boxes) {
             }
         }
     }
-    // console.log(locations);
-    // console.log(shelves);
-    // console.log(drawers);
-    // console.log(boxes);
+    console.log(locations);
+    console.log(shelves);
+    console.log(drawers);
+    console.log(boxes);
     let storage = await Storage.create({
         locationMap: locations,
         shelves: shelves,
         drawers: drawers,
         boxes: boxes
     });
-    // console.log(storage);
+    console.log(storage);
 };
 async function getPrice(card) { //Unique.findOne(tcg_id) if card foil card.price = unique.prices.usd_foil else card.price = unique.prices.usd
     let unique = await Unique.findOne({tcg_id: card.tcg_id});
