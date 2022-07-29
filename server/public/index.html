@@ -612,7 +612,7 @@
                               <v-row>
                                 <v-col align="center">
                                   <v-btn @Click="deleteCardFromPile(index)">Delete</v-btn>
-                                  <v-btn v-if="pileCard.editing == true" @Click="saveCardFromEditingMode(pileList, index, a, a, a)">Save</v-btn>
+                                  <v-btn v-if="pileCard.editing == true" @Click="saveCardFromEditingMode(pileList, index)">Save</v-btn>
                                   <v-btn v-else @Click="enterEditingMode(pileList, index)">Edit</v-btn>
                                   <v-btn @Click="duplicateCardFromPile(index)">Duplicate</v-btn>
                                 </v-col>
