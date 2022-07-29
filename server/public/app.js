@@ -706,6 +706,10 @@ var app = new Vue({
       })
       this.searchString = '';
     },
+    clearInventorySearch: function () {
+      this.searchInventoryList = [];
+      this.$forceUpdate();
+    },  
     inStorePostOrder: async function(){
       let orderCardList = [];
       let same = false;

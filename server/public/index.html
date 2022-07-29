@@ -121,7 +121,7 @@
                     style="margin-top: 225px;"
                     max-height="auto">
                 
-                <v-container  style="height: 650px;">
+                <v-container  style="height: 2800px;">
 
                   <!--======= Inventory Page =======-->
 
@@ -132,11 +132,12 @@
                       <v-row >
                         <v-col>
                           <!-- Search Inventory Text Input field -->
-                          <v-text-field color="deep-purple lighten-2" outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory" v-model="searchString"></v-text-field>
+                          <v-text-field color="deep-purple lighten-2" @keypress.enter="searchInventory" outlined autofocus  hide-details label="Search for a Card" placeholder="Cards in Inventory" v-model="searchString"></v-text-field>
                         </v-col>
                         <v-col>
                           <!-- Submit Inventory Search Button-->
-                          <v-btn class="mt-2" @click="searchInventory">Submit</v-btn>
+                          <v-btn class="mt-2" @Click="searchInventory">Submit</v-btn>
+                          <v-btn class="mt-2" @Click="clearInventorySearch">Reset Search</v-btn>
                         </v-col>
                         <!-- Fun Data to Display -->
                         <v-col>
