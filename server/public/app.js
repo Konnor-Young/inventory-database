@@ -49,6 +49,7 @@ var app = new Vue({
     badSearchAlert: false,
     pileLocations: false,
     isGettingLocations: false,
+    conditions: ['NM', 'LP', 'MP', 'HP', 'DMG'],
   },
   methods: {
     newCard: async function (cardObject) {

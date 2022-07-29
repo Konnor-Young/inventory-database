@@ -559,7 +559,16 @@
                                   </v-col></v-row>
                                   <v-row>
                                     <v-col v-if="pileCard.editing">
-                                      EDITING MODE
+                                      <v-select
+                                          v-model="pileCard.condition"
+                                          :items="conditions"
+                                          menu-props="auto"
+                                          label="Condition"
+                                          hide-details
+                                          single-line
+                                          dense
+                                          outlined>
+                                      </v-select>
                                     </v-col>
                                     <v-col v-else>
                                       Condition: {{ pileCard.condition }}
@@ -567,7 +576,16 @@
                                   </v-row>
                                   <v-row>
                                     <v-col v-if="pileCard.editing">
-                                      EDITING
+                                      <v-select
+                                          v-model="pileCard.finish"
+                                          :items="vFinishes(pileCard.finishes, index)"
+                                          menu-props="auto"
+                                          label="Finish"
+                                          hide-details
+                                          single-line
+                                          dense
+                                          outlined>
+                                      </v-select>
                                     </v-col>
                                     <v-col  v-else>                                    
                                       Finish: {{ pileCard.finish }}
@@ -575,7 +593,14 @@
                                   </v-row>
                                   <v-row>
                                     <v-col v-if="pileCard.editing">
-                                      EDITING
+                                      <v-text-field
+                                          v-model="pileCard.location"
+                                          label="Location"
+                                          hide-details
+                                          single-line
+                                          dense
+                                          outlined>
+                                      </v-text-field>
                                     </v-col>
                                     <v-col v-else>
                                       Location: {{ getCardLocation(index) }}
