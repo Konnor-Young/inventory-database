@@ -588,28 +588,42 @@ var app = new Vue({
     //  FINISHED but only adding first price available usd then usd_foil then $0.01
     checkInventoryValue: function (inventoryArray) {
       let normalTotal = 0.0;
-
       for (let i = 0; i < inventoryArray.length; i++) {
-        // console.log(i)
-
-        // console.log(j);
-        let card = inventoryArray[i];
-
-        if (card.quantity.physical > 0) {
-          if (card.price.usd == null || card.price.usd == 'null') {
-            // try foil price
-            if (card.price.usd_foil == null || card.price.usd_foil == 'null') {
-              normalTotal += 0.01 * card.quantity.physical;
-            } else {
-              // console.log(card.price.usd_foil);
-              normalTotal +=
-                parseFloat(card.price.usd_foil) * card.quantity.physical;
+        let object = inventoryArray[i];
+        console.log(object);
+        let price = 0.0;
+        for([key, value] of Object.entries(object.locations)){
+          if(key.includes('foil')){
+            if(object.price.usd_foil != null && object.price.usd_foil != 'null'){
+              price += (value.quantity * parseFloat(object.price.usd_foil))
+            }else if(object.price.usd_etched != null && object.price.usd_etched != 'null'){
+              price += (value.quantity * parseFloat(object.price.usd_etched))
             }
-          } else {
-            // console.log(card.price.usd);
-            normalTotal += parseFloat(card.price.usd) * card.quantity.physical;
+          }else{
+            if(object.price.usd != null && object.price.usd != 'null'){
+              price += (value.quantity * parseFloat(object.price.usd))
+            }
           }
         }
+        console.log(price);
+        normalTotal += price;
+        // let card = inventoryArray[i];
+
+      //   if (card.quantity.physical > 0) {
+      //     if (card.price.usd == null || card.price.usd == 'null') {
+      //       // try foil price
+      //       if (card.price.usd_foil == null || card.price.usd_foil == 'null') {
+      //         normalTotal += 0.01 * card.quantity.physical;
+      //       } else {
+      //         // console.log(card.price.usd_foil);
+      //         normalTotal +=
+      //           parseFloat(card.price.usd_foil) * card.quantity.physical;
+      //       }
+      //     } else {
+      //       // console.log(card.price.usd);
+      //       normalTotal += parseFloat(card.price.usd) * card.quantity.physical;
+      //     }
+      //   }
       }
       console.log(normalTotal);
       return Number(normalTotal.toFixed(2));
