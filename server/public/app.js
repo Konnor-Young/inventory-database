@@ -54,6 +54,8 @@ var app = new Vue({
     searchString: '',
     conditions: ['NM', 'LP', 'MP', 'HP', 'DMG'],
     thisOneOrder: {},
+    inStorePile: [],
+    searchInventoryList: [],
   },
   methods: {
     newCard: async function (cardObject) {
@@ -672,7 +674,7 @@ var app = new Vue({
       this.$forceUpdate();
     },
     searchInventory: async function(){
-      searchInventoryList = [];
+      this.searchInventoryList = [];
       let filters = this.inventorySearchFilter;
       this.cardList.forEach(entry=>{
         let add = true;
@@ -684,7 +686,7 @@ var app = new Vue({
           }
         }
         if(add){
-          searchInventoryList.push(entry);
+          this.searchInventoryList.push(entry);
         }
       })
       this.searchString = '';
