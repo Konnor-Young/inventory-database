@@ -656,18 +656,19 @@
                             
                             <tr v-for="(order, index) in orderList"
                                   :key="order.name"
-                                  :class="{'blue':order.direct}">                            
+                                  :class="{'blue':order.direct}"
+                                  @click="showOrder(order)">                            
                               <td v-if="checkOrder(order)">{{ order.number }}</td>
                               <td v-if="checkOrder(order)"> <v-icon v-if="order.direct" id="checkMark"> mdi-check-bold </v-icon> <v-icon v-else id="xOut">mdi-close-circle</v-icon> </td>
                               <td v-if="checkOrder(order)">{{ order.status }}</td>
-                              <td v-if="checkOrder(order)"><v-checkbox></v-checkbox></td>
+                              <td v-if="checkOrder(order)"><v-checkbox v-model="order.progress"></v-checkbox></td>
                             </tr>
                           </tbody>
                         </template>
                       </v-simple-table>
                     </template>
                     <v-row class="justify-end">
-                      <v-btn class="pa-6 my-6"><h3>Progress</h3></v-btn>
+                      <v-btn class="pa-6 my-6" @click="viewOrdersProgress"><h3>Progress</h3></v-btn>
                     </v-row>
                   </div>
 

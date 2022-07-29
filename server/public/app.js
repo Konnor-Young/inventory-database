@@ -53,6 +53,7 @@ var app = new Vue({
     cardsInInventory: [],
     searchString: '',
     conditions: ['NM', 'LP', 'MP', 'HP', 'DMG'],
+    thisOneOrder: {},
   },
   methods: {
     newCard: async function (cardObject) {
@@ -344,6 +345,9 @@ var app = new Vue({
       });
       let data = await response.json();
       this.orderList = data;
+      this.orderList.forEach(order=>{
+        order['progress'] = false;
+      })
       console.log(response.status);
       console.log(data);
       this.updatingOrder = -1;
@@ -718,6 +722,31 @@ var app = new Vue({
         'cards': orderCardList
       }
       this.postOrder(newOrderObject);
+    },
+    viewOrdersProgress: async function(){
+      let stage;
+      let update;
+      this.orderList.forEach(order=>{
+        if(order.progress){
+          stage = order.status;
+          if(stage == 'standing'){
+            update = {'status': 'pulling'}
+          }else if(stage == 'pulling'){
+            update = {'status': 'shipped'}
+          }
+          this.patchOrder(update, order._id);
+        }
+      })
+    },
+    showOrder: async function(order){
+      let response = fetch(`${URL}/orders/${order._id}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      let data = await response.json();
+      this.thisOneOrder = data;
+      console.log(response.status);
+      console.log(data);
     },
   },
 
