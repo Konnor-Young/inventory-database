@@ -78,6 +78,7 @@ var app = new Vue({
           location: card.location,
           condition: card.condition,
           foil: card.finish,
+          scryfall_uri: card.scryfall_uri
         };
         await this.postCards(newCard);
         this.pileList;

@@ -18,7 +18,8 @@ const uniqueSchema = mongoose.Schema({
     quantity: { type: Map, of: Number },
     locations: { type: Map },
     cards: { type: [] },
-    art: { type: Map, of: Boolean }
+    scryfall_uri: { type: String }
+
 });
 
 const orderSchema = mongoose.Schema({
