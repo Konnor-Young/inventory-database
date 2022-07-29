@@ -176,7 +176,25 @@
                         width="800"
                       >
                         <template v-slot:activator="{ on, attrs }">
+                        <v-container v-if="searchInventoryList.length > 0">
+                          <v-row>
+                            <v-col class="pr-0 pl-3" cols="auto" v-for="(item, index) in searchInventoryList">                      
+                              <v-card min-width="146" class="mx-4">
+      
+                                <v-img
+                                    @click="cardInfo = item; indCardInfo(cardInfo.cards[0]);"
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    height="204"
+                                    :src="item.image_uris.small"
+                                    contain>
+                                </v-img>
                         
+                              </v-card>
+                            </v-col>
+                          </v-row> 
+                        </v-container>
+                        <v-container v-else>
                           <v-row>
                             <v-col class="pr-0 pl-3" cols="auto" v-for="(item, index) in cardList">                      
                               <v-card min-width="146" class="mx-4">
@@ -193,6 +211,7 @@
                               </v-card>
                             </v-col>
                           </v-row> 
+                        </v-container>
                         </template>
                   
                         <v-card v-if="cardInfo" height="fit-content">

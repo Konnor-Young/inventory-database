@@ -676,14 +676,29 @@ var app = new Vue({
     searchInventory: async function(){
       this.searchInventoryList = [];
       let filters = this.inventorySearchFilter;
+      
       this.cardList.forEach(entry=>{
         let add = true;
         let thisCard = Object.values(entry);
+        console.log(filters, thisCard);
         for(i=0;i<filters.length;i++){
-          if(!thisCard.includes(filters[i])){
-            add = false;
-            break;
+          let match = false;
+          for(j=0;j<thisCard.length;j++){
+            console.log(typeof thisCard[j])
+            let card = thisCard[j];
+            if (typeof card != "string"){
+              console.log("continue");
+              continue
+            }
+            if(card.toLowerCase().includes(filters[i].toLowerCase())){
+              match= true;
+              break;
+            }
           }
+          if(!match) {
+            add = false;
+          }
+          
         }
         if(add){
           this.searchInventoryList.push(entry);
