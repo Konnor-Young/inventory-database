@@ -143,6 +143,7 @@ var app = new Vue({
         DMG: 0,
       };
       item.totalCards = 0;
+      item.editing = false;
 
       // {
       //     condition: "" ,
@@ -622,7 +623,22 @@ var app = new Vue({
       dupCard.location = "";
       this.pileList.push(dupCard);
       this.allPileHasLocations();
+    },
+    editCardFromArray: function (array, index, condition, type, location) {
+      let card = array[index];
+
+    },
+    enterEditingMode: function (array, index) {
+      let card = array[index];
+      card.editing = true;
+      this.$forceUpdate();
+    },
+    saveCardFromEditingMode: function (array, index, condition, type, location) {
+      let card = array[index];
+      card.editing = false;
+      this.$forceUpdate();
     }
+
     
   },
 

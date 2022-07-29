@@ -557,22 +557,38 @@
                                   <v-row><v-col>
                                   Market Price: {{  getCardPrice(pileCard)  }}
                                   </v-col></v-row>
-                                  <v-row><v-col>
-                                  Condition: {{ pileCard.condition }}
-                                  </v-col></v-row>
-                                  <v-row><v-col>
-                                  Finish: {{ pileCard.finish }}
-                                  </v-col></v-row>
-                                  <v-row><v-col>
-                                  Location: {{ getCardLocation(index) }}
-                                  </v-col></v-row>
+                                  <v-row>
+                                    <v-col v-if="pileCard.editing">
+                                      EDITING MODE
+                                    </v-col>
+                                    <v-col v-else>
+                                      Condition: {{ pileCard.condition }}
+                                    </v-col>
+                                  </v-row>
+                                  <v-row>
+                                    <v-col v-if="pileCard.editing">
+                                      EDITING
+                                    </v-col>
+                                    <v-col  v-else>                                    
+                                      Finish: {{ pileCard.finish }}
+                                    </v-col>
+                                  </v-row>
+                                  <v-row>
+                                    <v-col v-if="pileCard.editing">
+                                      EDITING
+                                    </v-col>
+                                    <v-col v-else>
+                                      Location: {{ getCardLocation(index) }}
+                                    </v-col>
+                                  </v-row>
                                 </v-card-text>                                
                               </v-col>
                               </v-row>
                               <v-row>
                                 <v-col align="center">
                                   <v-btn @Click="deleteCardFromPile(index)">Delete</v-btn>
-                                  <v-btn>Edit</v-btn>
+                                  <v-btn v-if="pileCard.editing == true" @Click="saveCardFromEditingMode(pileList, index, a, a, a)">Save</v-btn>
+                                  <v-btn v-else @Click="enterEditingMode(pileList, index)">Edit</v-btn>
                                   <v-btn @Click="duplicateCardFromPile(index)">Duplicate</v-btn>
                                 </v-col>
                               </v-row>
