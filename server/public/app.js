@@ -52,6 +52,7 @@ var app = new Vue({
     isGettingLocations: false,
     cardsInInventory: [],
     searchString: '',
+    conditions: ['NM', 'LP', 'MP', 'HP', 'DMG'],
   },
   methods: {
     newCard: async function (cardObject) {
@@ -453,7 +454,7 @@ var app = new Vue({
       this.searchResultsStats = {};
     },
     focusOntoSearch: function () {
-      console.log(this.$refs.searchInput);
+      // console.log(this.$refs.searchInput);
       const searchButtonRef = this.$refs.searchInput;
       searchButtonRef.focus();
     },
@@ -504,11 +505,11 @@ var app = new Vue({
         credentials: 'include',
       });
       let data = await response.json();
-      console.log(response.status);
+      // console.log(response.status);
       let i = 0;
       this.pileList.forEach((card) => {
         card.location = data[i];
-        console.log(card.location);
+        // console.log(card.location);
         i++;
         // console.log(card);
       });
@@ -664,7 +665,7 @@ var app = new Vue({
       card.editing = true;
       this.$forceUpdate();
     },
-    saveCardFromEditingMode: function (array, index, condition, type, location) {
+    saveCardFromEditingMode: function (array, index) {
       let card = array[index];
       card.editing = false;
       this.$forceUpdate();
