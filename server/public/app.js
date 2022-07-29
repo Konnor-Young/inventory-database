@@ -586,7 +586,6 @@ var app = new Vue({
       this.changeDisplayedCards();
       return this.searchResultsPaginated;
     },
-    //  FINISHED but only adding first price available usd then usd_foil then $0.01
     checkInventoryValue: function (inventoryArray) {
       let normalTotal = 0.0;
       for (let i = 0; i < inventoryArray.length; i++) {
@@ -608,23 +607,6 @@ var app = new Vue({
         }
         console.log(price);
         normalTotal += price;
-        // let card = inventoryArray[i];
-
-      //   if (card.quantity.physical > 0) {
-      //     if (card.price.usd == null || card.price.usd == 'null') {
-      //       // try foil price
-      //       if (card.price.usd_foil == null || card.price.usd_foil == 'null') {
-      //         normalTotal += 0.01 * card.quantity.physical;
-      //       } else {
-      //         // console.log(card.price.usd_foil);
-      //         normalTotal +=
-      //           parseFloat(card.price.usd_foil) * card.quantity.physical;
-      //       }
-      //     } else {
-      //       // console.log(card.price.usd);
-      //       normalTotal += parseFloat(card.price.usd) * card.quantity.physical;
-      //     }
-      //   }
       }
       console.log(normalTotal);
       return Number(normalTotal.toFixed(2));
@@ -701,6 +683,41 @@ var app = new Vue({
         }
       })
       this.searchString = '';
+    },
+    inStorePostOrder: async function(){
+      let orderCardList = [];
+      let same = false;
+      this.inStorePile.forEach(card=>{
+        for(i=0;i<orderCardList.length;i++){
+          for([key, value] of Object.entries(orderCardList[i])){
+            if(key == 'quantity'){
+              continue;
+            }
+            if(value != card[key]){
+              break;
+            }else{
+              same = true;
+              continue;
+            }
+          }
+          if(same){
+            orderCardList[i].quantity += 1;
+          }else{
+            orderCardList.push({
+              'card': card.tcg_id,
+              'condition': card.condition,
+              'foil': card.foil,
+              'quantity': 1
+            })
+          }
+        }
+      })
+      let newOrderObject = {
+        'number': `INP${date.now()}`,
+        'direct': false,
+        'cards': orderCardList
+      }
+      this.postOrder(newOrderObject);
     },
   },
 
